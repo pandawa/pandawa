@@ -1,0 +1,126 @@
+<?php
+/**
+ * This file is part of the Pandawa package.
+ *
+ * (c) 2018 Pandawa <https://github.com/bl4ckbon3/pandawa>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace Pandawa\Component\Module;
+
+use Illuminate\Console\Application as Artisan;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use ReflectionClass;
+use SplFileInfo;
+use Symfony\Component\Finder\Finder;
+
+/**
+ * @author  Iqbal Maulana <iq.bluejack@gmail.com>
+ */
+abstract class AbstractModule extends ServiceProvider
+{
+    /**
+     * @var array
+     */
+    protected $listen = [];
+
+    /**
+     * @var array
+     */
+    protected $configs = [];
+
+    public function boot(): void
+    {
+        foreach ($this->listens() as $event => $listeners) {
+            foreach ($listeners as $listener) {
+                Event::listen($event, $listener);
+            }
+        }
+
+        $this->importConfigs();
+        $this->importConsoles();
+    }
+
+    public function listens(): array
+    {
+        return $this->listen;
+    }
+
+    protected function importConfigs(): void
+    {
+        $basePath = $this->getCurrentPath() . '/Resources/config';
+
+        if (is_dir($basePath)) {
+            $finder = new Finder();
+            $configs = [];
+
+            /** @var SplFileInfo $file */
+            foreach ($finder->in($basePath)->name('*.php') as $file) {
+                $configs[(string) $file] = config_path($file->getBasename());
+            }
+
+            $this->publishes($configs, 'config');
+        }
+    }
+
+    protected function importConsoles(): void
+    {
+        $consolePath = $this->getCurrentPath() . '/Console';
+
+        if (!is_dir($consolePath)) {
+            return;
+        }
+
+        $namespace = $this->getNamespace();
+
+        foreach (Finder::create()->in($consolePath)->name('*Console.php')->files() as $console) {
+            $console = $namespace . '\\' . str_replace(
+                    ['/', '.php'],
+                    ['\\', ''],
+                    Str::after($console->getPathname(), $this->getCurrentPath() . DIRECTORY_SEPARATOR)
+                );
+            $console = preg_replace('/\\+/', '\\', $console);
+
+            if (is_subclass_of($console, Command::class)
+                && !(new ReflectionClass($console))->isAbstract()) {
+                Artisan::starting(
+                    function ($artisan) use ($console) {
+                        $artisan->resolve($console);
+                    }
+                );
+            }
+        }
+    }
+
+    protected function getCurrentPath(): string
+    {
+        $reflection = new ReflectionClass(get_class($this));
+
+        return dirname($reflection->getFileName());
+    }
+
+    protected function getNamespace(): string
+    {
+        $reflection = new ReflectionClass(get_class($this));
+
+        return $reflection->getNamespaceName();
+    }
+
+    protected function getNestedDirectory(SplFileInfo $file, $configPath): string
+    {
+        $directory = $file->getPath();
+
+        if ($nested = trim(str_replace($configPath, '', $directory), DIRECTORY_SEPARATOR)) {
+            $nested = str_replace(DIRECTORY_SEPARATOR, '.', $nested) . '.';
+        }
+
+        return $nested;
+    }
+}
