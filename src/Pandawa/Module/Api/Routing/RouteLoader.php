@@ -20,7 +20,7 @@ use RuntimeException;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class RouteLoader
+final class RouteLoader implements RouteLoaderInterface
 {
     /**
      * @var LoaderTypeInterface[]|Collection
