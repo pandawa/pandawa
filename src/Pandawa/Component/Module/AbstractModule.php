@@ -63,7 +63,7 @@ abstract class AbstractModule extends ServiceProvider
 
             /** @var SplFileInfo $file */
             foreach ($finder->in($basePath)->name('*.php') as $file) {
-                $configs[(string) $file] = config_path($file->getBasename());
+                $configs[(string) $file] = config_path('modules/' . $file->getBasename());
             }
 
             $this->publishes($configs, 'config');
