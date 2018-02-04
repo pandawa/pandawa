@@ -44,8 +44,8 @@ abstract class AbstractTransformer extends Resource
     {
         $version = $request->route('version');
 
-        if (!$version && config('api.default_version')) {
-            $version = config('api.default_version');
+        if (!$version && config('modules.api.default_version')) {
+            $version = config('modules.api.default_version');
         }
 
         return (string) $version;
@@ -53,7 +53,7 @@ abstract class AbstractTransformer extends Resource
 
     protected function hostname(): ?string
     {
-        if (true === config('api.show_hostname')) {
+        if (true === config('modules.api.show_hostname')) {
             return gethostname();
         }
 

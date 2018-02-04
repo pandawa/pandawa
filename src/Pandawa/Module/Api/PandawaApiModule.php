@@ -33,7 +33,10 @@ final class PandawaApiModule extends AbstractModule
                     [
                         ['loader' => new GroupLoader(), 'priority' => 200],
                         ['loader' => new BasicLoader(), 'priority' => 100],
-                        ['loader' => new MessageLoader((string) config('api.controllers.invokable')), 'priority' => 0],
+                        [
+                            'loader'   => new MessageLoader((string) config('modules.api.controllers.invokable')),
+                            'priority' => 0,
+                        ],
                     ]
                 );
             }
