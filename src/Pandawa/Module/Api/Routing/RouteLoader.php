@@ -49,6 +49,10 @@ final class RouteLoader implements RouteLoaderInterface
      */
     public function add(LoaderTypeInterface $loader, int $priority = 0): void
     {
+        if ($loader instanceof LoaderAwareInterface) {
+            $loader->setLoader($this);
+        }
+
         $this->loaders[] = ['priority' => $priority, 'loader' => $loader];
     }
 
