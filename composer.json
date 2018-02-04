@@ -3,8 +3,14 @@
     "description": "The Laravel Component and Package.",
     "keywords": ["laravel", "pandawa"],
     "license": "MIT",
-    "type": "project",
+    "type": "library",
     "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
     "require": {
         "php": ">=7.2",
         "borobudur/dci": "~0.1",
@@ -31,5 +37,10 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
     }
 }
