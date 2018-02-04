@@ -22,7 +22,7 @@ use Pandawa\Module\Api\Routing\RouteLoaderInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class ApiModule extends AbstractModule
+final class PandawaApiModule extends AbstractModule
 {
     public function register(): void
     {
