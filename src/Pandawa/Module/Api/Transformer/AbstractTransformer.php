@@ -21,10 +21,42 @@ abstract class AbstractTransformer extends Resource
 {
     public function with($request)
     {
-        return [
-            'meta' => [
-                'version' => config('app.version'),
-            ],
-        ];
+        $meta = [];
+        $version = $this->version($request);
+        $hostname = $this->hostname();
+
+        if ($version) {
+            $meta['version'] = $version;
+        }
+
+        if ($hostname) {
+            $meta['hostname'] = $hostname;
+        }
+
+        if ($meta) {
+            return ['meta' => $meta];
+        }
+
+        return [];
+    }
+
+    protected function version($request): string
+    {
+        $version = $request->route('version');
+
+        if (!$version && config('api.default_version')) {
+            $version = config('api.default_version');
+        }
+
+        return (string) $version;
+    }
+
+    protected function hostname(): ?string
+    {
+        if (true === config('api.show_hostname')) {
+            return gethostname();
+        }
+
+        return null;
     }
 }
