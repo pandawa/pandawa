@@ -17,7 +17,7 @@
         "borobudur/exception": "~0.1",
         "borobudur/parameter": "~0.1",
         "fideloper/proxy": "~3.3",
-        "laravel/laravel": "5.5.*",
+        "laravel/framework": "5.5.*",
         "ramsey/uuid": "^3.7"
     },
     "require-dev": {
