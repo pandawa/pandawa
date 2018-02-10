@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Controller;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Ddd\AbstractModel;
@@ -34,7 +34,13 @@ final class InvokableController extends Controller
     {
         $route = $request->route();
 
-        $data = $data = array_merge($request->all(), $request->route()->parameters());
+        $data = array_merge(
+            $request->route()->parameters(),
+            $request->all(),
+            $request->files->all(),
+            ['auth_user' => $request->getUser()]
+        );
+
         $message = $this->getMessage($request);
         $result = $this->dispatch(new $message($data));
 
