@@ -58,7 +58,7 @@ final class JwtAuthenticator implements AuthenticatorInterface
             $claims['exp'] = date('Y-m-d H:i:s', strtotime(sprintf('+%d seconds', $this->ttl)));
         }
 
-        return new Signature((string) $this->jwt->sign($this->defaultAlgo, $claims));
+        return new Signature((string) $this->jwt->sign($this->defaultAlgo, $claims), ['expires_in' => $this->ttl]);
     }
 
     /**
