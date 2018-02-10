@@ -46,7 +46,10 @@ final class MessageLoader extends AbstractLoader
 
         $options['defaults']['message'] = array_get($route, 'message');
 
-        return Route::{$type}($path, sprintf('%s@handle', $controller), $options);
+        $route = Route::{$type}($path, sprintf('%s@handle', $controller), $options);
+        $route->defaults = array_merge((array) $route->defaults, $options['defaults']);
+
+        return $route;
     }
 
     /**
