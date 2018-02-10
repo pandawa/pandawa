@@ -14,4 +14,23 @@ return [
     ],
     'show_hostname'   => env('API_SHOW_HOSTNAME', true),
     'default_version' => env('API_DEFAULT_VERSION'),
+    'auth'            => [
+        'default' => 'jwt',
+
+        'jwt' => [
+            'algo' => env('AUTH_API_JWT_ALGO', 'RS512'),
+            'keys' => [
+                'rs' => [
+                    'private_key' => env('AUTH_API_JWT_PRIVATE_KEY', storage_path('jwt/private.pem')),
+                    'public_key'  => env('AUTH_API_JWT_PUBLIC_KEY', storage_path('jwt/public.pem')),
+                    'passphrase'  => env('AUTH_API_JWT_PRIVATE_KEY_PHRASE', ''),
+                ],
+                'hs' => [
+                    'secret_key' => env('AUTH_API_JWT_HASH_SECRET', ''),
+                ],
+            ],
+            'ttl'  => env('AUTH_API_JWT_TTL'),
+        ],
+
+    ],
 ];
