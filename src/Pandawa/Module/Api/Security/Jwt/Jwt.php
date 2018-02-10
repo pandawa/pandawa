@@ -47,7 +47,7 @@ final class Jwt
         foreach ($claims as $key => $value) {
             switch ($key) {
                 case 'id':
-                    $tokenBuilder->identifiedBy($value);
+                    $tokenBuilder->identifiedBy((string) $value);
                     break;
                 case 'sub':
                     $tokenBuilder->relatedTo($value);
