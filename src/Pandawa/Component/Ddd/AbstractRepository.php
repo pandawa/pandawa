@@ -77,11 +77,43 @@ abstract class AbstractRepository
     }
 
     /**
-     * {@inheritdoc}
+     * @param array $criteria
+     *
+     * @return AbstractModel|mixed
+     */
+    public function findOneBy(array $criteria): ?AbstractModel
+    {
+        $stmt = $this->createQueryBuilder();
+
+        foreach ($criteria as $key => $value) {
+            $stmt->where($key, $value);
+        }
+
+        return $this->executeSingle($stmt);
+    }
+
+    /**
+     * @param array $criteria
+     *
+     * @return Collection|LengthAwarePaginator|AbstractModel[]|mixed
+     */
+    public function findBy(array $criteria)
+    {
+        $stmt = $this->createQueryBuilder();
+
+        foreach ($criteria as $key => $value) {
+            $stmt->where($key, $value);
+        }
+
+        return $this->execute($stmt);
+    }
+
+    /**
+     * @return LengthAwarePaginator|mixed|AbstractModel[]|Collection
      */
     public function findAll()
     {
-        return $this->execute($this->createQueryBuilder());
+        return $this->findBy([]);
     }
 
     /**
@@ -141,6 +173,16 @@ abstract class AbstractRepository
         }
 
         return $query->get();
+    }
+
+    /**
+     * @param Builder|QueryBuilder $query
+     *
+     * @return AbstractModel|mixed
+     */
+    protected function executeSingle($query): ?AbstractModel
+    {
+        return $query->first();
     }
 
     /**
