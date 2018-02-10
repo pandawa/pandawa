@@ -111,7 +111,7 @@ final class PandawaApiModule extends AbstractModule
                         'HS256' => new Hs256(),
                     ]
                 );
-                $keys = new Keys(config('modules.api.jwt.keys'), $signers);
+                $keys = new Keys(config('modules.api.auth.jwt.keys'), $signers);
 
                 return new Jwt($signers, $keys);
             }
@@ -120,8 +120,8 @@ final class PandawaApiModule extends AbstractModule
         $this->app->singleton(
             AuthenticationManager::class,
             function ($app) {
-                $ttl = config('modules.api.jwt.ttl');
-                $algo = config('modules.api.jwt.algo');
+                $ttl = config('modules.api.auth.jwt.ttl');
+                $algo = config('modules.api.auth.jwt.algo');
 
                 return new AuthenticationManager(
                     [

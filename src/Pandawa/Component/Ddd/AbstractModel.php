@@ -61,7 +61,7 @@ abstract class AbstractModel extends Eloquent
      *
      * @return $this
      */
-    public function setAttribute(string $key, $value)
+    public function setAttribute($key, $value)
     {
         parent::setAttribute($key, $value);
 
