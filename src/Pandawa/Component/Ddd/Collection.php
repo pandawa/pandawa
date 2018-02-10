@@ -26,14 +26,14 @@ class Collection extends EloquentCollection
      * @param IdentifierInterface $identifier
      * @param mixed|null          $default
      *
-     * @return AbstractEntity|mixed|static
+     * @return AbstractModel|mixed|static
      */
     public function find($identifier, $default = null)
     {
         return Arr::first(
             $this->items,
-            function (AbstractEntity $entity) use ($identifier) {
-                $currKey = $entity->getKey();
+            function (AbstractModel $model) use ($identifier) {
+                $currKey = $model->getKey();
 
                 if ($currKey instanceof Uuid) {
                     return $currKey->equals($identifier);

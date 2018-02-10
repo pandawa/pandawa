@@ -31,7 +31,7 @@ abstract class AbstractRepository
     private $reflection;
 
     /**
-     * @var AbstractEntity[]
+     * @var AbstractModel[]
      */
     private $queuing = [];
 
@@ -42,6 +42,8 @@ abstract class AbstractRepository
 
     /**
      * Constructor.
+     *
+     * @throws \ReflectionException
      */
     public function __construct()
     {
@@ -52,9 +54,9 @@ abstract class AbstractRepository
      * @param IdentifierInterface $id
      * @param int|null            $lockMode
      *
-     * @return AbstractEntity|mixed|null
+     * @return AbstractModel|mixed|null
      */
-    public function find(IdentifierInterface $id, int $lockMode = null): ?AbstractEntity
+    public function find(IdentifierInterface $id, int $lockMode = null): ?AbstractModel
     {
         if ($id instanceof SerializableInterface) {
             $id = $id->serialize();
@@ -83,19 +85,21 @@ abstract class AbstractRepository
     }
 
     /**
-     * Perform save entity.
+     * Perform save model.
      *
-     * @param AbstractEntity $entity
+     * @param AbstractModel $model
+     *
+     * @throws \ReflectionException
      */
-    public function save(AbstractEntity $entity): void
+    public function save(AbstractModel $model): void
     {
-        if ($entity instanceof AbstractEntity) {
-            $this->persist($entity);
+        if ($model instanceof AbstractModel) {
+            $this->persist($model);
 
             return;
         }
 
-        throw new \InvalidArgumentException(sprintf('Entity should instance of "%s"', AbstractEntity::class));
+        throw new \InvalidArgumentException(sprintf('Model should instance of "%s"', AbstractModel::class));
     }
 
     /**
@@ -103,24 +107,24 @@ abstract class AbstractRepository
      */
     protected function createQueryBuilder()
     {
-        $entity = $this->createEntity();
-        $queryBuilder = $entity->newQuery();
+        $model = $this->createModel();
+        $queryBuilder = $model->newQuery();
 
         return $queryBuilder;
     }
 
     /**
-     * Get entity class.
+     * Get model class.
      *
      * @return string
      */
-    protected function getEntityClass(): string
+    protected function getModelClass(): string
     {
         $fullName = $this->reflection->getName();
         $className = $this->reflection->getShortName();
         $className = substr($className, 0, strpos($className, 'Repository'));
         $namespace = substr($fullName, 0, strrpos($fullName, '\\'));
-        $namespace = str_replace('Repository', 'Entity', $namespace);
+        $namespace = str_replace('Repository', 'Model', $namespace);
 
         return sprintf('%s\\%s', $namespace, $className);
     }
@@ -128,7 +132,7 @@ abstract class AbstractRepository
     /**
      * @param Builder|QueryBuilder $query
      *
-     * @return Collection|LengthAwarePaginator|AbstractEntity[]|mixed
+     * @return Collection|LengthAwarePaginator|AbstractModel[]|mixed
      */
     protected function execute($query)
     {
@@ -140,26 +144,27 @@ abstract class AbstractRepository
     }
 
     /**
-     * Create entity.
+     * Create model.
      *
-     * @return AbstractEntity
+     * @return AbstractModel
      */
-    private function createEntity(): AbstractEntity
+    private function createModel(): AbstractModel
     {
-        $entityClass = $this->getEntityClass();
+        $modelClass = $this->getModelClass();
 
-        return new $entityClass;
+        return new $modelClass;
     }
 
     /**
-     * Cascade persist entity.
+     * Cascade persist model.
      *
-     * @param AbstractEntity $entity
-     * @param string         $walker
+     * @param AbstractModel $model
+     * @param string        $walker
      *
      * @return bool
+     * @throws \ReflectionException
      */
-    private function persist(AbstractEntity $entity, string $walker = null): bool
+    private function persist(AbstractModel $model, string $walker = null): bool
     {
         if (null === $walker) {
             $walker = uniqid();
@@ -167,26 +172,26 @@ abstract class AbstractRepository
         }
 
         $saved = false;
-        if (empty($entity->getKey())) {
-            if (!$this->invokeSaveEntity($entity)) {
+        if (empty($model->getKey())) {
+            if (!$this->invokeSaveModel($model)) {
                 return false;
             }
 
             $saved = true;
         }
 
-        $this->queuing[$walker][spl_object_hash($entity)] = true;
-        foreach ($entity->getRelations() as $entities) {
+        $this->queuing[$walker][spl_object_hash($model)] = true;
+        foreach ($model->getRelations() as $entities) {
             $entities = $entities instanceof Collection ? $entities->all() : [$entities];
 
             foreach (array_filter($entities) as $item) {
                 if (isset($this->queuing[$walker][spl_object_hash($item)])) {
-                    $this->invokeSaveEntity($item);
+                    $this->invokeSaveModel($item);
 
                     continue;
                 }
 
-                if ($item instanceof AbstractEntity && !$this->persist($item, $walker)) {
+                if ($item instanceof AbstractModel && !$this->persist($item, $walker)) {
                     return false;
                 }
             }
@@ -196,7 +201,7 @@ abstract class AbstractRepository
             unset($this->queuing[$walker]);
         }
 
-        if (!$saved && !$this->invokeSaveEntity($entity)) {
+        if (!$saved && !$this->invokeSaveModel($model)) {
             return false;
         }
 
@@ -204,17 +209,18 @@ abstract class AbstractRepository
     }
 
     /**
-     * Access private method persist entity.
+     * Access private method persist model.
      *
-     * @param AbstractEntity $entity
+     * @param AbstractModel $model
      *
      * @return bool
+     * @throws \ReflectionException
      */
-    private function invokeSaveEntity(AbstractEntity $entity): bool
+    private function invokeSaveModel(AbstractModel $model): bool
     {
-        $method = new ReflectionMethod(get_class($entity), 'persist');
+        $method = new ReflectionMethod(get_class($model), 'persist');
         $method->setAccessible(true);
 
-        return $method->invoke($entity);
+        return $method->invoke($model);
     }
 }

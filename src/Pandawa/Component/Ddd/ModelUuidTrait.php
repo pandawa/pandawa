@@ -17,14 +17,14 @@ use Pandawa\Component\Identifier\Uuid;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait EntityUuidTrait
+trait ModelUuidTrait
 {
-    public static function bootEntityUuidTrait()
+    public static function bootModelUuidTrait()
     {
-        static::creating(function(AbstractEntity $entity) {
-            $entity->incrementing = false;
-            if (null === $entity->{$entity->getKeyName()}) {
-                $entity->{$entity->getKeyName()} = Uuid::generate();
+        static::creating(function(AbstractModel $model) {
+            $model->incrementing = false;
+            if (null === $model->{$model->getKeyName()}) {
+                $model->{$model->getKeyName()} = Uuid::generate();
             }
         });
     }

@@ -25,9 +25,9 @@ use RuntimeException;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-abstract class AbstractEntity extends Eloquent
+abstract class AbstractModel extends Eloquent
 {
-    use EntityUuidTrait;
+    use ModelUuidTrait;
 
     /**
      * @var array
@@ -50,11 +50,11 @@ abstract class AbstractEntity extends Eloquent
      */
     public function save(array $options = []): void
     {
-        throw new RuntimeException('Forbidden save directly from entity. Please use repository instead.');
+        throw new RuntimeException('Forbidden save directly from model. Please use repository instead.');
     }
 
     /**
-     * Set attribute to entity.
+     * Set attribute to model.
      *
      * @param string $key
      * @param mixed  $value
@@ -92,7 +92,7 @@ abstract class AbstractEntity extends Eloquent
     }
 
     /**
-     * Cast entity to array.
+     * Cast model to array.
      *
      * @return array
      */
@@ -112,7 +112,7 @@ abstract class AbstractEntity extends Eloquent
     }
 
     /**
-     * Perform persist entity.
+     * Perform persist model.
      *
      * @param array $options
      *
@@ -245,18 +245,18 @@ abstract class AbstractEntity extends Eloquent
             if ($value instanceof LaravelCollection) {
                 $temp = [];
                 $value->each(
-                    function (AbstractEntity $entity) use (&$temp, $parents, $value) {
-                        if ($entity instanceof AbstractEntity) {
-                            $temp[] = $entity->serialize(array_merge($parents, [spl_object_hash($value) => true]));
+                    function (AbstractModel $model) use (&$temp, $parents, $value) {
+                        if ($model instanceof AbstractModel) {
+                            $temp[] = $model->serialize(array_merge($parents, [spl_object_hash($value) => true]));
 
                             return;
                         }
 
-                        $temp[] = $entity->toArray();
+                        $temp[] = $model->toArray();
                     }
                 );
             } else {
-                if ($value instanceof AbstractEntity) {
+                if ($value instanceof AbstractModel) {
                     $temp = $value->serialize($parents);
                 } else {
                     if ($value instanceof Arrayable) {

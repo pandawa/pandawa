@@ -20,7 +20,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Pandawa\Component\Ddd\AbstractEntity;
+use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Module\Api\Transformer\Transformer;
 
 /**
@@ -64,7 +64,7 @@ final class InvokableController extends Controller
 
             if ($stmt instanceof Builder) {
                 $stmt->with($withs);
-            } else if ($stmt instanceof AbstractEntity) {
+            } else if ($stmt instanceof AbstractModel) {
                 $stmt->load($withs);
             }
         }
