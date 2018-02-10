@@ -63,9 +63,17 @@ trait PayloadTrait
 
     /**
      * Use this method to initialize message with defaults or extend your class
+     *
+     * @param array $payload
      */
-    abstract protected function init(): void;
+    abstract protected function init(array &$payload): void;
 
+    /**
+     * @param $key
+     * @param $value
+     *
+     * @throws \ReflectionException
+     */
     private function setPropValue($key, $value): void
     {
         $property = new ReflectionProperty(get_class($this), $key);

@@ -21,15 +21,15 @@ abstract class AbstractMessage
 
     final public function __construct(array $payload = [])
     {
+        $this->init($payload);
         $this->setPayload($payload);
-        $this->init();
     }
 
     /**
-     * Use this method to initialize message with defaults or extend your class
+     * {@inheritdoc}
      */
-    protected function init(): void
+    protected function init(array &$payload): void
     {
+        // Override this method to custom initialization
     }
-
 }
