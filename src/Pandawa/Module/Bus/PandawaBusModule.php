@@ -1,0 +1,54 @@
+<?php
+/**
+ * This file is part of the Pandawa package.
+ *
+ * (c) 2018 Pandawa <https://github.com/bl4ckbon3/pandawa>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
+
+namespace Pandawa\Module\Bus;
+
+use Pandawa\Component\Bus\Pipe\DatabaseTransactionPipe;
+use Pandawa\Component\Bus\Pipe\EventPublisherPipe;
+use Pandawa\Component\Module\AbstractModule;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Pandawa\Component\Bus\Dispatcher as PandawaDispatcher;
+
+/**
+ * @author  Iqbal Maulana <iq.bluejack@gmail.com>
+ */
+final class PandawaBusModule extends AbstractModule
+{
+    public function boot(): void
+    {
+        parent::boot();
+
+        $pipes = [];
+
+        if (true === config('modules.bus.enable_event_publisher', false)) {
+            $pipes[] = EventPublisherPipe::class;
+        }
+
+        if (true === config('modules.bus.enable_db_transaction', false)) {
+            $pipes[] = DatabaseTransactionPipe::class;
+        }
+
+        if (!empty($pipes)) {
+            $this->dispatcher()->pipeThrough($pipes);
+        }
+    }
+
+    public function register(): void
+    {
+        $this->app->singleton(Dispatcher::class, PandawaDispatcher::class);
+    }
+
+    private function dispatcher(): Dispatcher
+    {
+        return $this->app[Dispatcher::class];
+    }
+}

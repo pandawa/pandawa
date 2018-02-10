@@ -45,7 +45,8 @@
         },
         "laravel": {
             "providers": [
-                "Pandawa\\Module\\Api\\PandawaApiModule"
+                "Pandawa\\Module\\Api\\PandawaApiModule",
+                "Pandawa\\Module\\Bus\\PandawaBusModule"
             ]
         }
     }
