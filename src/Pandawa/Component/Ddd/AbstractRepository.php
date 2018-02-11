@@ -188,11 +188,11 @@ abstract class AbstractRepository
      */
     protected function execute($query)
     {
+        $this->applyRelations($query);
+
         if (null !== $this->pageSize) {
             return $query->paginate($this->pageSize);
         }
-
-        $this->applyRelations($query);
 
         return $query->get();
     }
