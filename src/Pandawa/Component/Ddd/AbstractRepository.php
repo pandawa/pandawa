@@ -41,6 +41,11 @@ abstract class AbstractRepository
     private $pageSize;
 
     /**
+     * @var array
+     */
+    private $relations = [];
+
+    /**
      * Constructor.
      *
      * @throws \ReflectionException
@@ -48,6 +53,22 @@ abstract class AbstractRepository
     public function __construct()
     {
         $this->reflection = new ReflectionClass(get_called_class());
+    }
+
+    /**
+     * @param array $withs
+     */
+    public function with(array $withs): void
+    {
+        $this->relations = array_merge($this->relations, $withs);
+    }
+
+    /**
+     * @param int $pageSize
+     */
+    public function paginate(int $pageSize): void
+    {
+        $this->pageSize = $pageSize;
     }
 
     /**
@@ -172,6 +193,8 @@ abstract class AbstractRepository
             return $query->paginate($this->pageSize);
         }
 
+        $this->applyRelations($query);
+
         return $query->get();
     }
 
@@ -182,7 +205,21 @@ abstract class AbstractRepository
      */
     protected function executeSingle($query): ?AbstractModel
     {
+        $this->applyRelations($query);
+
         return $query->first();
+    }
+
+    /**
+     * @param Builder|QueryBuilder $query
+     */
+    private function applyRelations($query): void
+    {
+        if (!empty($this->relations)) {
+            $query->with($this->relations);
+
+            $this->relations = [];
+        }
     }
 
     /**

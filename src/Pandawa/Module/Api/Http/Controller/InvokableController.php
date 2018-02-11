@@ -21,6 +21,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Message\AbstractQuery;
 use Pandawa\Module\Api\Transformer\Transformer;
 
 /**
@@ -42,6 +43,11 @@ final class InvokableController extends Controller
         );
 
         $message = $this->getMessage($request);
+
+        if ($message instanceof AbstractQuery) {
+            $this->modifyQuery($message, $request);
+        }
+
         $result = $this->dispatch(new $message($data));
 
         $this->withRelations($result, $route->defaults);
@@ -56,6 +62,19 @@ final class InvokableController extends Controller
         }
 
         throw new InvalidArgumentException('Parameter "message" not found on route.');
+    }
+
+    private function modifyQuery(AbstractQuery $query, Request $request): void
+    {
+        $route = $request->route();
+
+        if (null !== $withs = array_get($route->defaults, 'withs')) {
+            $query->withRelations($withs);
+        }
+
+        if (true === array_get($route->defaults, 'paginate', false)) {
+            $query->paginate($request->get('limit', 50));
+        }
     }
 
     private function withRelations($stmt, array $options): void

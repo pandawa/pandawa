@@ -25,6 +25,11 @@ abstract class AbstractQuery extends AbstractMessage
     private $pageSize;
 
     /**
+     * @var array
+     */
+    private $relations;
+
+    /**
      * @param int $pageSize
      *
      * @return static
@@ -32,6 +37,18 @@ abstract class AbstractQuery extends AbstractMessage
     final public function paginate(int $pageSize = self::DEFAULT_PAGE_SIZE): AbstractQuery
     {
         $this->pageSize = $pageSize;
+
+        return $this;
+    }
+
+    /**
+     * @param array $relations
+     *
+     * @return AbstractQuery
+     */
+    final public function withRelations(array $relations): AbstractQuery
+    {
+        $this->relations = $relations;
 
         return $this;
     }
@@ -44,5 +61,15 @@ abstract class AbstractQuery extends AbstractMessage
     public function isPaginated(): bool
     {
         return null !== $this->pageSize;
+    }
+
+    public function hasRelations(): bool
+    {
+        return null !== $this->relations;
+    }
+
+    public function getRelations(): array
+    {
+        return $this->relations;
     }
 }
