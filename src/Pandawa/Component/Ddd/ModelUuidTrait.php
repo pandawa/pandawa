@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Pandawa\Component\Identifier\Uuid;
+use Illuminate\Support\Str;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -24,7 +24,7 @@ trait ModelUuidTrait
         static::creating(function(AbstractModel $model) {
             $model->incrementing = false;
             if (null === $model->{$model->getKeyName()}) {
-                $model->{$model->getKeyName()} = Uuid::generate();
+                $model->{$model->getKeyName()} = Str::uuid();
             }
         });
     }

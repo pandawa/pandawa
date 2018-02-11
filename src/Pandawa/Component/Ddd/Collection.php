@@ -12,36 +12,11 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Pandawa\Component\Identifier\IdentifierInterface;
-use Pandawa\Component\Identifier\Uuid;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Arr;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 class Collection extends EloquentCollection
 {
-    /**
-     * @param IdentifierInterface $identifier
-     * @param mixed|null          $default
-     *
-     * @return AbstractModel|mixed|static
-     */
-    public function find($identifier, $default = null)
-    {
-        return Arr::first(
-            $this->items,
-            function (AbstractModel $model) use ($identifier) {
-                $currKey = $model->getKey();
-
-                if ($currKey instanceof Uuid) {
-                    return $currKey->equals($identifier);
-                }
-
-                return $currKey == $identifier;
-            },
-            $default
-        );
-    }
 }

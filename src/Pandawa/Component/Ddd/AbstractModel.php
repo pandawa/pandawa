@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Pandawa\Component\Identifier\IdentifierInterface;
-use Pandawa\Component\Identifier\Uuid;
-use Pandawa\Component\Serializer\DeserializableInterface;
-use Pandawa\Component\Serializer\SerializableInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as LaravelCollection;
+use Pandawa\Component\Serializer\DeserializableInterface;
+use Pandawa\Component\Serializer\SerializableInterface;
 use RuntimeException;
 
 /**
@@ -39,7 +37,7 @@ abstract class AbstractModel extends Eloquent
      */
     protected $hidden = ['pivot'];
 
-    public function getId(): IdentifierInterface
+    public function getId()
     {
         return $this->getKey();
     }
@@ -99,16 +97,6 @@ abstract class AbstractModel extends Eloquent
     public function toArray(): array
     {
         return $this->serialize([]);
-    }
-
-    /**
-     * Get type casts.
-     *
-     * @return array
-     */
-    public function getCasts(): array
-    {
-        return array_merge($this->casts, ['id' => Uuid::class]);
     }
 
     /**

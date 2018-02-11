@@ -12,11 +12,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Pandawa\Component\Identifier\IdentifierInterface;
-use Pandawa\Component\Serializer\SerializableInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Pandawa\Component\Serializer\SerializableInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -72,12 +71,12 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param IdentifierInterface $id
-     * @param int|null            $lockMode
+     * @param mixed    $id
+     * @param int|null $lockMode
      *
      * @return AbstractModel|mixed|null
      */
-    public function find(IdentifierInterface $id, int $lockMode = null): ?AbstractModel
+    public function find($id, int $lockMode = null): ?AbstractModel
     {
         if ($id instanceof SerializableInterface) {
             $id = $id->serialize();
