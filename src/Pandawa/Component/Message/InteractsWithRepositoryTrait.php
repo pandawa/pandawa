@@ -17,7 +17,7 @@ use Pandawa\Component\Ddd\AbstractRepository;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait InteractWithRepositoryHandlerTrait
+trait InteractsWithRepositoryTrait
 {
     final public function handle(AbstractQuery $query)
     {
@@ -25,7 +25,7 @@ trait InteractWithRepositoryHandlerTrait
             $this->repository()->paginate($query->getPageSize());
         }
 
-        if (null !== $query->hasRelations()) {
+        if ($query->hasRelations()) {
             $this->repository()->with($query->getRelations());
         }
 
