@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
  */
 trait ModelUuidTrait
 {
-    public static function bootModelUuidTrait()
+    public static function bootModelUuidTrait(): void
     {
         static::creating(function(AbstractModel $model) {
             $model->incrementing = false;
@@ -27,5 +27,10 @@ trait ModelUuidTrait
                 $model->{$model->getKeyName()} = Str::uuid();
             }
         });
+    }
+
+    public function getCasts(): array
+    {
+        return ['id' => 'string'];
     }
 }
