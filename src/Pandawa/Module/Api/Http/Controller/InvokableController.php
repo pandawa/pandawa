@@ -43,12 +43,13 @@ final class InvokableController extends Controller
         );
 
         $message = $this->getMessage($request);
+        $message = new $message($data);
 
         if ($message instanceof AbstractQuery) {
             $this->modifyQuery($message, $request);
         }
 
-        $result = $this->dispatch(new $message($data));
+        $result = $this->dispatch($message);
 
         $this->withRelations($result, $route->defaults);
 
