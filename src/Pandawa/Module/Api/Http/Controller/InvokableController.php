@@ -12,16 +12,19 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Controller;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Message\AbstractQuery;
+use Pandawa\Module\Api\Transformer\CollectionTransformer;
 use Pandawa\Module\Api\Transformer\Transformer;
 
 /**
@@ -53,7 +56,16 @@ final class InvokableController extends Controller
 
         $this->withRelations($result, $route->defaults);
 
-        return new Transformer($result);
+        return $this->sendResponse($result);
+    }
+
+    private function sendResponse($results)
+    {
+        if ($results instanceof Collection || $results instanceof LengthAwarePaginator) {
+            return new CollectionTransformer($results);
+        }
+
+        return new Transformer($results);
     }
 
     private function getMessage(Request $request): string
