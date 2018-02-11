@@ -80,7 +80,7 @@ final class PandawaApiModule extends AbstractModule
                     Auth::createUserProvider($config['provider']),
                     $app[AuthenticationManager::class],
                     $app[Request::class],
-                    (string) config('authenticator.default')
+                    (string) config('modules.api.auth.default')
                 );
             }
         );
