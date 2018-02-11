@@ -36,6 +36,11 @@ abstract class AbstractModule extends ServiceProvider
      */
     protected $configs = [];
 
+    protected $servicePaths = [
+        'Repository',
+        'Service',
+    ];
+
     public function boot(): void
     {
         foreach ($this->listens() as $event => $listeners) {
@@ -46,6 +51,26 @@ abstract class AbstractModule extends ServiceProvider
 
         $this->importConfigs();
         $this->importConsoles();
+    }
+
+    public function register(): void
+    {
+        foreach ($this->servicePaths as $path) {
+            $servicePath = $this->getCurrentPath() . '/' . trim($path, '/');
+
+            if (is_dir($servicePath) && is_readable($servicePath)) {
+                foreach (Finder::create()->in($servicePath)->files() as $serviceFile) {
+                    $serviceClass = $this->getClassFromFile($serviceFile);
+                    $reflectionClass = new ReflectionClass($serviceClass);
+
+                    if (count($reflectionClass->getInterfaces())) {
+                        $this->app->singleton($reflectionClass->getInterfaces()[0], $serviceClass);
+                    } else {
+                        $this->app->singleton($serviceClass);
+                    }
+                }
+            }
+        }
     }
 
     public function listens(): array
@@ -78,15 +103,8 @@ abstract class AbstractModule extends ServiceProvider
             return;
         }
 
-        $namespace = $this->getNamespace();
-
         foreach (Finder::create()->in($consolePath)->name('*Console.php')->files() as $console) {
-            $console = $namespace . '\\' . str_replace(
-                    ['/', '.php'],
-                    ['\\', ''],
-                    Str::after($console->getPathname(), $this->getCurrentPath() . DIRECTORY_SEPARATOR)
-                );
-            $console = preg_replace('/\\+/', '\\', $console);
+            $console = $this->getClassFromFile($console);
 
             if (is_subclass_of($console, Command::class)
                 && !(new ReflectionClass($console))->isAbstract()) {
@@ -122,5 +140,16 @@ abstract class AbstractModule extends ServiceProvider
         }
 
         return $nested;
+    }
+
+    private function getClassFromFile(SplFileInfo $file): string
+    {
+        $className = $this->getNamespace() . '\\' . str_replace(
+                ['/', '.php'],
+                ['\\', ''],
+                Str::after($file->getPathname(), $this->getCurrentPath() . DIRECTORY_SEPARATOR)
+            );
+
+        return preg_replace('/\\+/', '\\', $className);
     }
 }
