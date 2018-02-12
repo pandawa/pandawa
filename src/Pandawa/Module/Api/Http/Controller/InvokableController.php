@@ -12,27 +12,20 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Controller;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Message\AbstractQuery;
-use Pandawa\Module\Api\Transformer\CollectionTransformer;
-use Pandawa\Module\Api\Transformer\Transformer;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class InvokableController extends Controller
+final class InvokableController extends Controller implements InvokableControllerInterface
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, InteractsWithRelationsTrait, InteractsWithTransformerTrait;
 
     public function handle(Request $request)
     {
@@ -56,16 +49,7 @@ final class InvokableController extends Controller
 
         $this->withRelations($result, $route->defaults);
 
-        return $this->sendResponse($result);
-    }
-
-    private function sendResponse($results)
-    {
-        if ($results instanceof Collection || $results instanceof LengthAwarePaginator) {
-            return new CollectionTransformer($results);
-        }
-
-        return new Transformer($results);
+        return $this->transform($result);
     }
 
     private function getMessage(Request $request): string
@@ -87,24 +71,6 @@ final class InvokableController extends Controller
 
         if (true === array_get($route->defaults, 'paginate', false)) {
             $query->paginate($request->get('limit', 50));
-        }
-    }
-
-    private function withRelations($stmt, array $options): void
-    {
-        if (null !== $withs = array_get($options, 'withs')) {
-            $withs = array_map(
-                function (string $rel) {
-                    return Str::camel($rel);
-                },
-                $withs
-            );
-
-            if ($stmt instanceof Builder) {
-                $stmt->with($withs);
-            } else if ($stmt instanceof AbstractModel) {
-                $stmt->load($withs);
-            }
         }
     }
 }

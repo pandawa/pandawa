@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Carbon;
@@ -49,6 +50,14 @@ abstract class AbstractModel extends Eloquent
     public function save(array $options = []): void
     {
         throw new RuntimeException('Forbidden save directly from model. Please use repository instead.');
+    }
+
+    /**
+     * @deprecated
+     */
+    public function delete(): void
+    {
+        throw new RuntimeException('Forbidden delete directly from model. Please use repository instead.');
     }
 
     /**
@@ -109,6 +118,15 @@ abstract class AbstractModel extends Eloquent
     protected function persist(array $options = []): bool
     {
         return parent::save($options);
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    protected function remove(): bool
+    {
+        return parent::delete();
     }
 
     /**

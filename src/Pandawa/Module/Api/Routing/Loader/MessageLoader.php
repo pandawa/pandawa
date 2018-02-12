@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace Pandawa\Module\Api\Routing\Loader;
 
 use InvalidArgumentException;
+use Pandawa\Module\Api\Http\Controller\InvokableControllerInterface;
 use Route;
+use RuntimeException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -32,24 +34,34 @@ final class MessageLoader extends AbstractLoader
      */
     public function __construct(string $invokableController)
     {
+        if (!in_array(InvokableControllerInterface::class, class_implements($invokableController))) {
+            throw new RuntimeException(
+                sprintf(
+                    'Controller "%s" should implement "%s"',
+                    $invokableController,
+                    InvokableControllerInterface::class
+                )
+            );
+        }
+
         $this->invokableController = $invokableController;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function createRoute(string $type, string $path, string $controller, array $options, array $route)
+    protected function createRoutes(string $type, string $path, string $controller, array $route): array
     {
         if (null === array_get($route, 'message')) {
             throw new InvalidArgumentException('Route with type "message" should has message class.');
         }
 
-        $options['defaults']['message'] = array_get($route, 'message');
+        return [Route::{$type}($path, sprintf('%s@handle', $controller))];
+    }
 
-        $route = Route::{$type}($path, sprintf('%s@handle', $controller), $options);
-        $route->defaults = array_merge((array) $route->defaults, $options['defaults']);
-
-        return $route;
+    protected function getRouteDefaultParameters(array $route): array
+    {
+        return ['message' => array_get($route, 'message')];
     }
 
     /**

@@ -22,6 +22,7 @@ use Pandawa\Component\Module\AbstractModule;
 use Pandawa\Module\Api\Routing\Loader\BasicLoader;
 use Pandawa\Module\Api\Routing\Loader\GroupLoader;
 use Pandawa\Module\Api\Routing\Loader\MessageLoader;
+use Pandawa\Module\Api\Routing\Loader\ResourceLoader;
 use Pandawa\Module\Api\Routing\RouteLoader;
 use Pandawa\Module\Api\Routing\RouteLoaderInterface;
 use Pandawa\Module\Api\Security\Authentication\AuthenticationManager;
@@ -50,6 +51,10 @@ final class PandawaApiModule extends AbstractModule
                     [
                         ['loader' => new GroupLoader(), 'priority' => 200],
                         ['loader' => new BasicLoader(), 'priority' => 100],
+                        [
+                            'loader'   => new ResourceLoader((string) config('modules.api.controllers.resource')),
+                            'priority' => 0,
+                        ],
                         [
                             'loader'   => new MessageLoader((string) config('modules.api.controllers.invokable')),
                             'priority' => 0,

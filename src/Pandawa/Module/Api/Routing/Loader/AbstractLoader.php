@@ -49,11 +49,17 @@ abstract class AbstractLoader implements LoaderTypeInterface
             }
         }
 
-        $routeObject = $this->createRoute($type, $path, $controller, $options, $route);
+        foreach ($this->createRoutes($type, $path, $controller, $route) as $routeObject) {
+            $routeObject->defaults = array_merge(
+                (array) $routeObject->defaults,
+                $options['defaults'],
+                $this->getRouteDefaultParameters($route)
+            );
 
-        foreach (['middleware', 'name'] as $index) {
-            if (isset($route[$index]) && $route[$index]) {
-                call_user_func_array([$routeObject, $index], (array) $route[$index]);
+            foreach (['middleware', 'name'] as $option) {
+                if (isset($route[$option]) && $route[$option]) {
+                    $this->applyOption($option, $routeObject, $route, (array) $route[$option]);
+                }
             }
         }
     }
@@ -69,13 +75,37 @@ abstract class AbstractLoader implements LoaderTypeInterface
     }
 
     /**
+     * Apply route option.
+     *
+     * @param string      $option
+     * @param Route|mixed $routeObject
+     * @param array       $route
+     * @param array       $values
+     */
+    protected function applyOption(string $option, $routeObject, array $route, array $values): void
+    {
+        call_user_func_array([$routeObject, $option], $values);
+    }
+
+    /**
+     * Get custom route parameters.
+     *
+     * @param array $route
+     *
+     * @return array
+     */
+    protected function getRouteDefaultParameters(array $route): array
+    {
+        return [];
+    }
+
+    /**
      * @param string $type
      * @param string $path
      * @param string $controller
-     * @param array  $options
      * @param array  $route
      *
-     * @return Route|mixed
+     * @return Route[]|mixed
      */
-    abstract protected function createRoute(string $type, string $path, string $controller, array $options, array $route);
+    abstract protected function createRoutes(string $type, string $path, string $controller, array $route): array;
 }

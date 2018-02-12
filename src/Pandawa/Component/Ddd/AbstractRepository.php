@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Pandawa\Component\Serializer\SerializableInterface;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -47,7 +48,7 @@ abstract class AbstractRepository
     /**
      * Constructor.
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct()
     {
@@ -141,17 +142,21 @@ abstract class AbstractRepository
      *
      * @param AbstractModel $model
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function save(AbstractModel $model): void
     {
-        if ($model instanceof AbstractModel) {
-            $this->persist($model);
+        $this->persist($model);
+    }
 
-            return;
-        }
-
-        throw new \InvalidArgumentException(sprintf('Model should instance of "%s"', AbstractModel::class));
+    /**
+     * Perform remove model.
+     *
+     * @param AbstractModel $model
+     */
+    public function remove(AbstractModel $model): void
+    {
+        $this->remove($model);
     }
 
     /**
@@ -240,7 +245,7 @@ abstract class AbstractRepository
      * @param string        $walker
      *
      * @return bool
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function persist(AbstractModel $model, string $walker = null): bool
     {
@@ -292,11 +297,25 @@ abstract class AbstractRepository
      * @param AbstractModel $model
      *
      * @return bool
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function invokeSaveModel(AbstractModel $model): bool
     {
         $method = new ReflectionMethod(get_class($model), 'persist');
+        $method->setAccessible(true);
+
+        return $method->invoke($model);
+    }
+
+    /**
+     * @param AbstractModel $model
+     *
+     * @return bool
+     * @throws ReflectionException
+     */
+    private function invokeDeleteModel(AbstractModel $model): bool
+    {
+        $method = new ReflectionMethod(get_class($model), 'remove');
         $method->setAccessible(true);
 
         return $method->invoke($model);

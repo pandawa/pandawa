@@ -22,9 +22,9 @@ final class BasicLoader extends AbstractLoader
     /**
      * {@inheritdoc}
      */
-    protected function createRoute(string $type, string $path, string $controller, array $options, array $route)
+    protected function createRoutes(string $type, string $path, string $controller, array $route): array
     {
-        return Route::{$type}($path, $controller, $options);
+        return [Route::{$type}($path, $controller)];
     }
 
     /**
