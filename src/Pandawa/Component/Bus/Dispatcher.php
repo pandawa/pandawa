@@ -33,10 +33,10 @@ final class Dispatcher extends LaravelDispatcher
      * Constructor.
      *
      * @param Container                $container
-     * @param Closure                  $queueResolver
      * @param MessageRegistryInterface $messageRegistry
+     * @param Closure                  $queueResolver
      */
-    public function __construct(Container $container, Closure $queueResolver = null, MessageRegistryInterface $messageRegistry)
+    public function __construct(Container $container, MessageRegistryInterface $messageRegistry, Closure $queueResolver = null)
     {
         parent::__construct($container, $queueResolver);
         $this->messageRegistry = $messageRegistry;
