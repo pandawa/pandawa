@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Routing\Loader;
 
-use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route;
 use Pandawa\Module\Api\Http\Controller\ResourceControllerInterface;
 use RuntimeException;
 
