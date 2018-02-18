@@ -1,6 +1,6 @@
 {
     "name": "pandawa/pandawa",
-    "description": "The Laravel Component and Package.",
+    "description": "The Laravel Higher Framework.",
     "keywords": ["laravel", "pandawa"],
     "license": "MIT",
     "type": "library",
