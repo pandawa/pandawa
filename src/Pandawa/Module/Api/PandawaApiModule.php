@@ -19,6 +19,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha512 as Hs512;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as Rsa256;
 use Lcobucci\JWT\Signer\Rsa\Sha512 as Rsa512;
 use Pandawa\Component\Module\AbstractModule;
+use Pandawa\Component\Resource\ResourceRegistryInterface;
 use Pandawa\Module\Api\Routing\Loader\BasicLoader;
 use Pandawa\Module\Api\Routing\Loader\GroupLoader;
 use Pandawa\Module\Api\Routing\Loader\MessageLoader;
@@ -74,7 +75,10 @@ final class PandawaApiModule extends AbstractModule
                         ['loader' => new GroupLoader(), 'priority' => 200],
                         ['loader' => new BasicLoader(), 'priority' => 100],
                         [
-                            'loader'   => new ResourceLoader((string) config('modules.api.controllers.resource')),
+                            'loader'   => new ResourceLoader(
+                                (string) config('modules.api.controllers.resource'),
+                                app(ResourceRegistryInterface::class)
+                            ),
                             'priority' => 0,
                         ],
                         [
