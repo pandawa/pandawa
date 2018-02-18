@@ -143,7 +143,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     protected function getModelClass(Route $route): string
     {
         if (null !== $resource = array_get($route->defaults, 'resource')) {
-            return $this->registry()->get($resource)->getModelClass();
+            return $this->resourceRegistry()->get($resource)->getModelClass();
         }
 
         throw new RuntimeException('Parameter "resource" not found');
@@ -219,7 +219,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return $modelClass::{'query'}();
     }
 
-    protected function registry(): ResourceRegistryInterface
+    protected function resourceRegistry(): ResourceRegistryInterface
     {
         return app(ResourceRegistryInterface::class);
     }

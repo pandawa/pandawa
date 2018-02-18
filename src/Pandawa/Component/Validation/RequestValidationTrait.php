@@ -28,11 +28,11 @@ trait RequestValidationTrait
             $request->route()->parameters()
         );
 
-        if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->registry()) {
+        if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
             $filtered = [];
 
             foreach ($rules as $rule) {
-                $filtered = array_merge($filtered, $this->registry()->validate($rule, $data));
+                $filtered = array_merge($filtered, $this->ruleRegistry()->validate($rule, $data));
             }
 
             return $filtered;
@@ -41,7 +41,7 @@ trait RequestValidationTrait
         return $data;
     }
 
-    private function registry(): ?RuleRegistryInterface
+    private function ruleRegistry(): ?RuleRegistryInterface
     {
         if (app()->has(RuleRegistryInterface::class)) {
             return app(RuleRegistryInterface::class);
