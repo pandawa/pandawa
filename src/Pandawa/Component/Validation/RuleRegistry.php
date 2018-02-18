@@ -70,7 +70,7 @@ final class RuleRegistry implements RuleRegistryInterface
             throw new RuntimeException(sprintf('Rule "%s" has no constraints.', $rule));
         }
 
-        $this->validationFactory->make($data, $constraints, $messages);
+        $this->validationFactory->make($data, $constraints, $messages)->validate();
 
         return $this->filterData($constraints, $data);
     }
