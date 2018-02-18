@@ -21,6 +21,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\AbstractRepository;
+use Pandawa\Component\Validation\RequestValidationTrait;
 use ReflectionObject;
 use RuntimeException;
 
@@ -29,7 +30,7 @@ use RuntimeException;
  */
 class ResourceController extends Controller implements ResourceControllerInterface
 {
-    use InteractsWithRelationsTrait, InteractsWithTransformerTrait;
+    use InteractsWithRelationsTrait, InteractsWithTransformerTrait, RequestValidationTrait;
 
     public function show(Request $request)
     {
@@ -169,9 +170,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     protected function getRequestData(Request $request): array
     {
         return array_merge(
-            $request->route()->parameters(),
-            $request->all(),
-            $request->files->all(),
+            $this->validateRequest($request),
             ['auth_user' => $request->getUser()]
         );
     }

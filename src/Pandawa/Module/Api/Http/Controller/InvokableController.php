@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use InvalidArgumentException;
 use Pandawa\Component\Message\AbstractQuery;
+use Pandawa\Component\Validation\RequestValidationTrait;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -26,15 +27,14 @@ use Pandawa\Component\Message\AbstractQuery;
 final class InvokableController extends Controller implements InvokableControllerInterface
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, InteractsWithRelationsTrait, InteractsWithTransformerTrait;
+    use RequestValidationTrait;
 
     public function handle(Request $request)
     {
         $route = $request->route();
 
         $data = array_merge(
-            $request->route()->parameters(),
-            $request->all(),
-            $request->files->all(),
+            $this->validateRequest($request),
             ['auth_user' => $request->getUser()]
         );
 

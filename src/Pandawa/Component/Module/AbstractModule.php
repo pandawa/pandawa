@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module;
 
-use Illuminate\Console\Application as Artisan;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -26,6 +24,8 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractModule extends ServiceProvider
 {
+    use ImportConfigTrait, ImportConsoleTrait, ImportRuleTrait;
+
     /**
      * @var array
      */
@@ -49,8 +49,16 @@ abstract class AbstractModule extends ServiceProvider
             }
         }
 
-        $this->importConfigs();
-        $this->importConsoles();
+        $class = static::class;
+
+        foreach (class_uses_recursive($class) as $trait) {
+            $method = 'boot'.class_basename($trait);
+            $method = preg_replace('/Trait$/', '', $method);
+
+            if (method_exists($class, $method)) {
+                call_user_func([$class, $method]);
+            }
+        }
     }
 
     public function register(): void
@@ -76,49 +84,6 @@ abstract class AbstractModule extends ServiceProvider
     public function listens(): array
     {
         return $this->listen;
-    }
-
-    protected function importConfigs(): void
-    {
-        $basePath = $this->getCurrentPath() . '/Resources/config';
-
-        if (is_dir($basePath)) {
-            $finder = new Finder();
-            $configs = [];
-
-            /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath)->name('*.php') as $file) {
-                $configs[(string) $file] = config_path('modules/' . $file->getBasename());
-                $this->mergeConfigFrom(
-                    (string) $file,
-                    sprintf('modules.%s', pathinfo($file->getBasename(), PATHINFO_FILENAME))
-                );
-            }
-
-            $this->publishes($configs, 'config');
-        }
-    }
-
-    protected function importConsoles(): void
-    {
-        $consolePath = $this->getCurrentPath() . '/Console';
-
-        if (!is_dir($consolePath)) {
-            return;
-        }
-
-        foreach (Finder::create()->in($consolePath)->name('*Console.php')->files() as $console) {
-            $console = $this->getClassFromFile($console);
-
-            if (is_subclass_of($console, Command::class)
-                && !(new ReflectionClass($console))->isAbstract()) {
-                Artisan::starting(
-                    function ($artisan) use ($console) {
-                        $artisan->resolve($console);
-                    }
-                );
-            }
-        }
     }
 
     protected function getCurrentPath(): string
