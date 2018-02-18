@@ -42,7 +42,29 @@ use Pandawa\Module\Api\Security\UserProvider\StatelessUserProvider;
  */
 final class PandawaApiModule extends AbstractModule
 {
-    public function register(): void
+    protected function build(): void
+    {
+        Auth::provider(
+            'stateless',
+            function ($app, array $config) {
+                return new StatelessUserProvider($config['model']);
+            }
+        );
+
+        Auth::extend(
+            'authenticator',
+            function ($app, $name, array $config) {
+                return new AuthenticationGuard(
+                    Auth::createUserProvider($config['provider']),
+                    $app[AuthenticationManager::class],
+                    $app[Request::class],
+                    (string) config('modules.api.auth.default')
+                );
+            }
+        );
+    }
+
+    protected function init(): void
     {
         $this->app->singleton(
             RouteLoaderInterface::class,
@@ -65,30 +87,6 @@ final class PandawaApiModule extends AbstractModule
         );
 
         $this->registerSecurity();
-    }
-
-    public function boot(): void
-    {
-        parent::boot();
-
-        Auth::provider(
-            'stateless',
-            function ($app, array $config) {
-                return new StatelessUserProvider($config['model']);
-            }
-        );
-
-        Auth::extend(
-            'authenticator',
-            function ($app, $name, array $config) {
-                return new AuthenticationGuard(
-                    Auth::createUserProvider($config['provider']),
-                    $app[AuthenticationManager::class],
-                    $app[Request::class],
-                    (string) config('modules.api.auth.default')
-                );
-            }
-        );
     }
 
     private function registerSecurity(): void

@@ -21,7 +21,7 @@ use Symfony\Component\Finder\Finder;
  */
 trait ImportRuleTrait
 {
-    public function bootImportRule(): void
+    protected function bootImportRule(): void
     {
         if (null === $this->registry()) {
             return;

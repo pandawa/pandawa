@@ -26,7 +26,7 @@ trait ImportConsoleTrait
     /**
      * @throws ReflectionException
      */
-    public function bootImportConsole(): void
+    protected function bootImportConsole(): void
     {
         $consolePath = $this->getCurrentPath() . '/Console';
 

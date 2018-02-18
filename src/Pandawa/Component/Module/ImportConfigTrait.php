@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module;
 
+use Generator;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -20,24 +21,43 @@ use Symfony\Component\Finder\Finder;
  */
 trait ImportConfigTrait
 {
-    public function bootConfig(): void
+    protected function bootConfig(): void
+    {
+        $basePath = $this->getCurrentPath() . '/Resources/config';
+
+        if (is_dir($basePath)) {
+            $configs = [];
+
+            /** @var SplFileInfo $file */
+            foreach ($this->getConfigFiles() as $file) {
+                $configs[(string) $file] = config_path('modules/' . $file->getBasename());
+            }
+
+            $this->publishes($configs, 'config');
+        }
+    }
+
+    protected function registerConfig(): void
+    {
+        foreach ($this->getConfigFiles() as $file) {
+            $this->mergeConfigFrom(
+                (string) $file,
+                sprintf('modules.%s', pathinfo($file->getBasename(), PATHINFO_FILENAME))
+            );
+        }
+    }
+
+    private function getConfigFiles(): Generator
     {
         $basePath = $this->getCurrentPath() . '/Resources/config';
 
         if (is_dir($basePath)) {
             $finder = new Finder();
-            $configs = [];
 
             /** @var SplFileInfo $file */
             foreach ($finder->in($basePath)->name('*.php') as $file) {
-                $configs[(string) $file] = config_path('modules/' . $file->getBasename());
-                $this->mergeConfigFrom(
-                    (string) $file,
-                    sprintf('modules.%s', pathinfo($file->getBasename(), PATHINFO_FILENAME))
-                );
+                yield $file;
             }
-
-            $this->publishes($configs, 'config');
         }
     }
 }

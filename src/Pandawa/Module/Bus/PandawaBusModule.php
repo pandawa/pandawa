@@ -23,10 +23,8 @@ use Pandawa\Component\Bus\Dispatcher as PandawaDispatcher;
  */
 final class PandawaBusModule extends AbstractModule
 {
-    public function boot(): void
+    protected function build(): void
     {
-        parent::boot();
-
         $pipes = [];
 
         if (true === config('modules.bus.enable_event_publisher', false)) {
@@ -42,7 +40,7 @@ final class PandawaBusModule extends AbstractModule
         }
     }
 
-    public function register(): void
+    protected function init(): void
     {
         $this->app->singleton(Dispatcher::class, PandawaDispatcher::class);
     }

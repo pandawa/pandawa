@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module;
 
+use Generator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -41,7 +42,7 @@ abstract class AbstractModule extends ServiceProvider
         'Service',
     ];
 
-    public function boot(): void
+    public final function boot(): void
     {
         foreach ($this->listens() as $event => $listeners) {
             foreach ($listeners as $listener) {
@@ -49,19 +50,18 @@ abstract class AbstractModule extends ServiceProvider
             }
         }
 
-        $class = static::class;
+        foreach ($this->getTraits() as $trait) {
+            $method = 'boot' . $trait;
 
-        foreach (class_uses_recursive($class) as $trait) {
-            $method = 'boot'.class_basename($trait);
-            $method = preg_replace('/Trait$/', '', $method);
-
-            if (method_exists($class, $method)) {
-                call_user_func([$class, $method]);
+            if (method_exists($this, $method)) {
+                call_user_func([$this, $method]);
             }
         }
+
+        $this->build();
     }
 
-    public function register(): void
+    public final function register(): void
     {
         foreach ($this->servicePaths as $path) {
             $servicePath = $this->getCurrentPath() . '/' . trim($path, '/');
@@ -79,11 +79,31 @@ abstract class AbstractModule extends ServiceProvider
                 }
             }
         }
+
+        foreach ($this->getTraits() as $trait) {
+            $method = 'register' . $trait;
+
+            if (method_exists($this, $method)) {
+                call_user_func([$this, $method]);
+            }
+        }
+
+        $this->init();
     }
 
     public function listens(): array
     {
         return $this->listen;
+    }
+
+    protected function init(): void
+    {
+        // Override this method for custom initialization.
+    }
+
+    protected function build(): void
+    {
+        // Override this method for custom build.
     }
 
     protected function getCurrentPath(): string
@@ -109,6 +129,18 @@ abstract class AbstractModule extends ServiceProvider
         }
 
         return $nested;
+    }
+
+    protected function getTraits(): Generator
+    {
+        $class = static::class;
+
+        foreach (class_uses_recursive($class) as $trait) {
+            $traitName = class_basename($trait);
+            $traitName = preg_replace('/Trait$/', '', $traitName);
+
+            yield $traitName;
+        }
     }
 
     private function getClassFromFile(SplFileInfo $file): string

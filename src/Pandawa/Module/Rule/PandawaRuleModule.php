@@ -20,7 +20,7 @@ use Pandawa\Component\Validation\RuleRegistryInterface;
  */
 final class PandawaRuleModule extends AbstractModule
 {
-    public function register(): void
+    public function init(): void
     {
         $this->app->singleton(RuleRegistryInterface::class, config('modules.rule.registry'));
     }
