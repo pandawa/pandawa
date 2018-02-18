@@ -19,9 +19,9 @@ use Symfony\Component\Finder\Finder;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait ImportRuleTrait
+trait RuleProviderTrait
 {
-    protected function bootImportRule(): void
+    protected function bootRuleProvider(): void
     {
         if (null === $this->registry()) {
             return;

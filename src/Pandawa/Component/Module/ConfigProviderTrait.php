@@ -19,9 +19,9 @@ use Symfony\Component\Finder\Finder;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait ImportConfigTrait
+trait ConfigProviderTrait
 {
-    protected function bootConfig(): void
+    protected function bootConfigProvider(): void
     {
         $basePath = $this->getCurrentPath() . '/Resources/config';
 
@@ -37,7 +37,7 @@ trait ImportConfigTrait
         }
     }
 
-    protected function registerConfig(): void
+    protected function registerConfigProvider(): void
     {
         foreach ($this->getConfigFiles() as $file) {
             $this->mergeConfigFrom(

@@ -25,7 +25,7 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractModule extends ServiceProvider
 {
-    use ImportConfigTrait, ImportConsoleTrait, ImportRuleTrait;
+    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait;
 
     /**
      * @var array

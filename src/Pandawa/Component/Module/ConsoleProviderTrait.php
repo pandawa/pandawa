@@ -21,12 +21,12 @@ use Symfony\Component\Finder\Finder;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait ImportConsoleTrait
+trait ConsoleProviderTrait
 {
     /**
      * @throws ReflectionException
      */
-    protected function bootImportConsole(): void
+    protected function bootConsoleProvider(): void
     {
         $consolePath = $this->getCurrentPath() . '/Console';
 

@@ -18,9 +18,9 @@ use Pandawa\Module\Api\Routing\RouteLoaderInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait ImportRouteTrait
+trait RouteProviderTrait
 {
-    public function bootRoute(): void
+    public function bootRouteProvider(): void
     {
         if ($this->app->routesAreCached()) {
             $this->loadCachedRoutes();
