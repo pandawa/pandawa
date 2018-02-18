@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Module\Api\Routing\Loader;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Pandawa\Module\Api\Http\Controller\ResourceControllerInterface;
 use RuntimeException;
 
@@ -28,8 +29,10 @@ final class ResourceLoader extends AbstractLoader
         'show'    => ['get'],
         'store'   => ['post'],
         'update'  => ['patch', 'put'],
-        'destroy' => ['get'],
+        'destroy' => ['delete'],
     ];
+
+    const NEED_ID = ['show', 'update', 'destroy'];
 
     /**
      * @var string
@@ -70,14 +73,20 @@ final class ResourceLoader extends AbstractLoader
         foreach ($this->getAllowedResources($route) as $type) {
             $resourceController = sprintf('%s@%s', $controller, $type);
 
-            foreach (self::RESOURCE_METHODS[$type] as $methods) {
-                /** @var Route $route */
-                $route = Route::match($methods, $path, $resourceController);
-                $route->name($this->fixRouteName($path, $type));
-                $route->defaults = array_merge($route->defaults, ['type' => $type]);
+            $methods = self::RESOURCE_METHODS[$type];
+            $targetPath = $path;
 
-                $routes[] = $route;
+            if (in_array($type, self::NEED_ID)) {
+                $resource = $this->getResourceNameFromPath($path);
+                $targetPath = sprintf('%s/{%s}', $path, $resource);
             }
+
+            /** @var Route $route */
+            $route = Route::match($methods, $targetPath, $resourceController);
+            $route->name($this->fixRouteName($path, $type));
+            $route->defaults = array_merge($route->defaults, ['type' => $type]);
+
+            $routes[] = $route;
         }
 
         if (empty($routes)) {
@@ -115,13 +124,15 @@ final class ResourceLoader extends AbstractLoader
                                 return in_array($middleware, $only, true);
                             }
                         );
-                    } else if (!empty($except = (array) array_get($route, 'except'))) {
-                        $values = array_filter(
-                            $values,
-                            function (string $middleware) use ($only) {
-                                return !in_array($middleware, $only, true);
-                            }
-                        );
+                    } else {
+                        if (!empty($except = (array) array_get($route, 'except'))) {
+                            $values = array_filter(
+                                $values,
+                                function (string $middleware) use ($only) {
+                                    return !in_array($middleware, $only, true);
+                                }
+                            );
+                        }
                     }
                 }
             }
@@ -175,5 +186,20 @@ final class ResourceLoader extends AbstractLoader
         }
 
         return $resources;
+    }
+
+    /**
+     * Get resource name.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function getResourceNameFromPath(string $path): string
+    {
+        $resource = substr($path, (int) strrpos($path, '/'));
+        $resource = str_replace('-', '_', $resource);
+
+        return Str::singular($resource);
     }
 }
