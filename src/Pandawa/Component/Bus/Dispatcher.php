@@ -14,6 +14,7 @@ namespace Pandawa\Component\Bus;
 
 use Closure;
 use Pandawa\Component\Message\MessageRegistryInterface;
+use Pandawa\Component\Message\NameableMessageInterface;
 use Pandawa\Component\Message\QueueEnvelope;
 use Illuminate\Bus\Dispatcher as LaravelDispatcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -88,7 +89,9 @@ final class Dispatcher extends LaravelDispatcher
         $messageClass = get_class($message);
 
         if (null !== $this->messageRegistry) {
-            return $this->messageRegistry->get($messageClass)->getHandlerClass();
+            $name = $message instanceof NameableMessageInterface ? $messageClass::{'name'}() : $messageClass;
+
+            return $this->messageRegistry->get($name)->getHandlerClass();
         }
 
         return sprintf('%sHandler', $messageClass);
