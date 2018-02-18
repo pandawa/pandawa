@@ -169,10 +169,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
     protected function getRequestData(Request $request): array
     {
-        return array_merge(
-            $this->validateRequest($request),
-            ['auth_user' => $request->getUser()]
-        );
+        return $this->validateRequest($request);
     }
 
     protected function appendRelations(AbstractModel $model, array &$data): void
