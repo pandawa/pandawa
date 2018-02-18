@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Module;
+namespace Pandawa\Component\Module\Provider;
 
 use Illuminate\Routing\Router;
 use Pandawa\Module\Api\Routing\RouteLoaderInterface;

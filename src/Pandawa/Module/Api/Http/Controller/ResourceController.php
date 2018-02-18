@@ -21,6 +21,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\AbstractRepository;
+use Pandawa\Component\Resource\ResourceRegistryInterface;
 use Pandawa\Component\Validation\RequestValidationTrait;
 use ReflectionObject;
 use RuntimeException;
@@ -141,11 +142,11 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
     protected function getModelClass(Route $route): string
     {
-        if (null !== $modelClass = array_get($route->defaults, 'model')) {
-            return $modelClass;
+        if (null !== $resource = array_get($route->defaults, 'resource')) {
+            return $this->registry()->get($resource)->getModelClass();
         }
 
-        throw new RuntimeException('Model parameter not found');
+        throw new RuntimeException('Parameter "resource" not found');
     }
 
     protected function getModelKey(string $modelClass, Route $route): string
@@ -216,5 +217,10 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     protected function createQueryBuilder(string $modelClass)
     {
         return $modelClass::{'query'}();
+    }
+
+    protected function registry(): ResourceRegistryInterface
+    {
+        return app(ResourceRegistryInterface::class);
     }
 }

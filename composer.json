@@ -47,7 +47,8 @@
             "providers": [
                 "Pandawa\\Module\\Api\\PandawaApiModule",
                 "Pandawa\\Module\\Bus\\PandawaBusModule",
-                "Pandawa\\Module\\Rule\\PandawaRuleModule"
+                "Pandawa\\Module\\Rule\\PandawaRuleModule",
+                "Pandawa\\Module\\Resource\\PandawaResourceModule"
             ]
         }
     }

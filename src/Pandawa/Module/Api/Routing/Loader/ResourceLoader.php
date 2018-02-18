@@ -14,6 +14,7 @@ namespace Pandawa\Module\Api\Routing\Loader;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Pandawa\Component\Resource\ResourceRegistryInterface;
 use Pandawa\Module\Api\Http\Controller\ResourceControllerInterface;
 use RuntimeException;
 
@@ -40,11 +41,17 @@ final class ResourceLoader extends AbstractLoader
     private $resourceController;
 
     /**
+     * @var ResourceRegistryInterface
+     */
+    private $registry;
+
+    /**
      * Constructor.
      *
-     * @param string $resourceController
+     * @param string                    $resourceController
+     * @param ResourceRegistryInterface $registry
      */
-    public function __construct(string $resourceController)
+    public function __construct(string $resourceController, ResourceRegistryInterface $registry = null)
     {
         if (!in_array(ResourceControllerInterface::class, class_implements($resourceController))) {
             throw new RuntimeException(
@@ -57,6 +64,7 @@ final class ResourceLoader extends AbstractLoader
         }
 
         $this->resourceController = $resourceController;
+        $this->registry = $registry;
     }
 
     /**
@@ -64,8 +72,16 @@ final class ResourceLoader extends AbstractLoader
      */
     protected function createRoutes(string $type, string $path, string $controller, array $route): array
     {
-        if (null === $model = array_get($route, 'model')) {
-            throw new RuntimeException(sprintf('Parameter "model" required for route resource on path "%s"', $path));
+        if (null === $this->registry) {
+            throw new RuntimeException('There are not registry class registered. Please enable PandawaResourceModule');
+        }
+
+        if (null === $resource = array_get($route, 'resource')) {
+            throw new RuntimeException(sprintf('Parameter "resource" required for route resource on path "%s"', $path));
+        }
+
+        if (!$this->registry->has($resource)) {
+            throw new RuntimeException(sprintf('Resource "%s" is not registered.', $resource));
         }
 
         $routes = [];
@@ -109,7 +125,7 @@ final class ResourceLoader extends AbstractLoader
      */
     protected function getRouteDefaultParameters(array $route): array
     {
-        return ['model' => array_get($route, 'model')];
+        return ['resource' => array_get($route, 'resource')];
     }
 
     protected function applyOption(string $option, $routeObject, array $route, array $values): void

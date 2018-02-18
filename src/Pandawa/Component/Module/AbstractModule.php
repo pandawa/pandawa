@@ -16,6 +16,10 @@ use Generator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Pandawa\Component\Module\Provider\ConfigProviderTrait;
+use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
+use Pandawa\Component\Module\Provider\ResourceProviderTrait;
+use Pandawa\Component\Module\Provider\RuleProviderTrait;
 use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
@@ -25,7 +29,7 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractModule extends ServiceProvider
 {
-    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait;
+    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ResourceProviderTrait;
 
     /**
      * @var array
