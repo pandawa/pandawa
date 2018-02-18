@@ -23,7 +23,7 @@ trait RuleProviderTrait
 {
     protected function bootRuleProvider(): void
     {
-        if (null === $this->registry()) {
+        if (null === $this->ruleRegistry()) {
             return;
         }
 
@@ -34,12 +34,12 @@ trait RuleProviderTrait
 
             /** @var SplFileInfo $file */
             foreach ($finder->in($basePath)->name('*.php') as $file) {
-                $this->registry()->load(require (string) $file);
+                $this->ruleRegistry()->load(require (string) $file);
             }
         }
     }
 
-    private function registry(): ?RuleRegistryInterface
+    private function ruleRegistry(): ?RuleRegistryInterface
     {
         if (isset($this->app[RuleRegistryInterface::class])) {
             return $this->app[RuleRegistryInterface::class];

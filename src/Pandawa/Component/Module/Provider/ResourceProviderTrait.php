@@ -31,7 +31,7 @@ trait ResourceProviderTrait
 
     protected function bootResourceProvider(): void
     {
-        if (null === $this->registry()) {
+        if (null === $this->resourceRegistry()) {
             return;
         }
 
@@ -48,13 +48,13 @@ trait ResourceProviderTrait
                     $name = substr($modelClass, (int) strrpos($modelClass, '\\') + 1);
                     $name = Str::snake($name);
 
-                    $this->registry()->add($name, new Metadata($modelClass));
+                    $this->resourceRegistry()->add($name, new Metadata($modelClass));
                 }
             }
         }
     }
 
-    private function registry(): ?ResourceRegistryInterface
+    private function resourceRegistry(): ?ResourceRegistryInterface
     {
         if (isset($this->app[ResourceRegistryInterface::class])) {
             return $this->app[ResourceRegistryInterface::class];
