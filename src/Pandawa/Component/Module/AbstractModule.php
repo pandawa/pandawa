@@ -18,6 +18,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Pandawa\Component\Module\Provider\ConfigProviderTrait;
 use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
+use Pandawa\Component\Module\Provider\MessageProviderTrait;
 use Pandawa\Component\Module\Provider\ResourceProviderTrait;
 use Pandawa\Component\Module\Provider\RuleProviderTrait;
 use ReflectionClass;
@@ -29,7 +30,7 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractModule extends ServiceProvider
 {
-    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ResourceProviderTrait;
+    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ResourceProviderTrait, MessageProviderTrait;
 
     /**
      * @var array

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Module\Api\Routing\Loader;
 
 use InvalidArgumentException;
+use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Module\Api\Http\Controller\InvokableControllerInterface;
 use Route;
 use RuntimeException;
@@ -28,11 +29,17 @@ final class MessageLoader extends AbstractLoader
     private $invokableController;
 
     /**
+     * @var null|MessageRegistryInterface
+     */
+    private $messageRegistry;
+
+    /**
      * Constructor.
      *
-     * @param string $invokableController
+     * @param string                        $invokableController
+     * @param MessageRegistryInterface|null $messageRegistry
      */
-    public function __construct(string $invokableController)
+    public function __construct(string $invokableController, MessageRegistryInterface $messageRegistry = null)
     {
         if (!in_array(InvokableControllerInterface::class, class_implements($invokableController))) {
             throw new RuntimeException(
@@ -45,6 +52,7 @@ final class MessageLoader extends AbstractLoader
         }
 
         $this->invokableController = $invokableController;
+        $this->messageRegistry = $messageRegistry;
     }
 
     /**
@@ -52,8 +60,16 @@ final class MessageLoader extends AbstractLoader
      */
     protected function createRoutes(string $type, string $path, string $controller, array $route): array
     {
-        if (null === array_get($route, 'message')) {
+        if (null === $message = array_get($route, 'message')) {
             throw new InvalidArgumentException('Route with type "message" should has message class.');
+        }
+
+        if (null === $this->messageRegistry) {
+            throw new RuntimeException('There are not message registry detected.');
+        }
+
+        if (!$this->messageRegistry->has($message)) {
+            throw new RuntimeException(sprintf('Message "%s" is not registered.', $message));
         }
 
         return [Route::{$type}($path, sprintf('%s@handle', $controller))];

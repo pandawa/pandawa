@@ -8,8 +8,14 @@
  * file that was distributed with this source code.
  */
 
-return [
-    'enable_event_publisher' => true,
-    'enable_db_transaction'  => true,
-    'registry'               => Pandawa\Component\Message\MessageRegistry::class,
-];
+declare(strict_types=1);
+
+namespace Pandawa\Component\Message;
+
+/**
+ * @author  Iqbal Maulana <iq.bluejack@gmail.com>
+ */
+interface NameableMessageInterface
+{
+    public static function name(): string;
+}

@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use InvalidArgumentException;
 use Pandawa\Component\Message\AbstractQuery;
+use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Component\Validation\RequestValidationTrait;
 
 /**
@@ -55,6 +56,10 @@ final class InvokableController extends Controller implements InvokableControlle
     private function getMessage(Request $request): string
     {
         if (null !== $message = array_get($request->route()->defaults, 'message')) {
+            if (null !== $this->messageRegistry()) {
+                return $this->messageRegistry()->get($message)->getMessageClass();
+            }
+
             return $message;
         }
 
@@ -72,5 +77,14 @@ final class InvokableController extends Controller implements InvokableControlle
         if (true === array_get($route->defaults, 'paginate', false)) {
             $query->paginate($request->get('limit', 50));
         }
+    }
+
+    private function messageRegistry(): ?MessageRegistryInterface
+    {
+        if (app()->has(MessageRegistryInterface::class)) {
+            return app(MessageRegistryInterface::class);
+        }
+
+        return null;
     }
 }
