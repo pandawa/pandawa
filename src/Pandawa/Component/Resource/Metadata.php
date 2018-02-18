@@ -41,7 +41,7 @@ final class Metadata
 
     public function getModelClass(): string
     {
-        return $this->getModelClass();
+        return $this->modelClass;
     }
 
     public function getOptions(): array

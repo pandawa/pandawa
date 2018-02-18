@@ -77,7 +77,7 @@ final class ResourceLoader extends AbstractLoader
         }
 
         if (null === $resource = array_get($route, 'resource')) {
-            throw new RuntimeException(sprintf('Parameter "resource" required for route resource on path "%s"', $path));
+            $resource = $this->getResourceNameFromPath($path);
         }
 
         if (!$this->registry->has($resource)) {
@@ -125,7 +125,10 @@ final class ResourceLoader extends AbstractLoader
      */
     protected function getRouteDefaultParameters(array $route): array
     {
-        return ['resource' => array_get($route, 'resource')];
+        $path = array_get($route, 'path');
+        $resource = array_get($route, 'resource', $this->getResourceNameFromPath($path));
+
+        return ['resource' => $resource];
     }
 
     protected function applyOption(string $option, $routeObject, array $route, array $values): void

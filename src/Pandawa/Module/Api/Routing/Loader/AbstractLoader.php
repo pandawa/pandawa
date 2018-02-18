@@ -36,7 +36,6 @@ abstract class AbstractLoader implements LoaderTypeInterface
         }
 
         unset($route['type']);
-        unset($route['path']);
         unset($route['controller']);
         unset($route['rules']);
         unset($route['method']);
