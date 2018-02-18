@@ -29,6 +29,8 @@ final class MessageRegistry implements MessageRegistryInterface
         if ($this->has($message)) {
             throw new RuntimeException(sprintf('Message "%s" already registered.', $message));
         }
+
+        $this->messages[$message] = $metadata;
     }
 
     public function has(string $message): bool

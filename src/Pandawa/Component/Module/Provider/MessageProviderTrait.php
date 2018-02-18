@@ -39,10 +39,10 @@ trait MessageProviderTrait
                 $finder = new Finder();
 
                 /** @var SplFileInfo $file */
-                foreach ($finder->in($basePath) as $file) {
+                foreach ($finder->in($basePath)->notName('*Handler.php') as $file) {
                     $messageClass = $this->getClassFromFile($file);
 
-                    if (is_subclass_of($messagePathName, AbstractMessage::class)) {
+                    if (is_subclass_of($messageClass, AbstractMessage::class)) {
                         $name = $this->getMessageName($messageClass);
 
                         $this->messageRegistry()->add(
