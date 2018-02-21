@@ -12,44 +12,66 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Resource;
 
+use Illuminate\Http\Resources\CollectsResources;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
-use Pandawa\Component\Transformer\TransformerInterface;
+use Pandawa\Component\Transformer\TransformerRegistryInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class JsonResource extends Resource
 {
+    use CollectsResources;
+
     /**
-     * @var TransformerInterface
+     * @var TransformerRegistryInterface
      */
-    private $transformer;
+    private $transformerRegistry;
+
+    /**
+     * The resource that this resource collects.
+     *
+     * @var string
+     */
+    public $collects;
+
+    /**
+     * The mapped collection instance.
+     *
+     * @var Collection
+     */
+    public $collection;
 
     /**
      * Constructor.
      *
-     * @param                      $resource
-     * @param TransformerInterface $transformer
+     * @param                              $resource
+     * @param TransformerRegistryInterface $transformer
      */
-    public function __construct($resource, TransformerInterface $transformer)
+    public function __construct($resource, TransformerRegistryInterface $transformerRegistry)
     {
         parent::__construct($resource);
-        $this->transformer = $transformer;
+
+        if ($resource instanceof Collection || $resource instanceof AbstractPaginator) {
+            $this->collectResource($resource);
+        }
+
+        $this->transformerRegistry = $transformerRegistry;
     }
 
-    public function toArray($request): array
+    public function toArray($request)
     {
-        if ($this->resource instanceof Collection) {
-            return $this->resource->map(
-                function ($resource) use ($request) {
-                    return $this->transformer->transform($request, $resource);
+        if (null !== $this->collection) {
+            return $this->collection->map(
+                function ($data) use ($request) {
+                    return $this->transformerRegistry->transform($request, $data);
                 }
             );
         }
 
-        return $this->transformer->transform($request, $this->resource);
+        return $this->transformerRegistry->transform($request, $this->resource);
     }
 
     public function toResponse($request)

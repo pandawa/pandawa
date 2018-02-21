@@ -14,7 +14,7 @@ namespace Pandawa\Module\Api\Renderer;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
-use Pandawa\Component\Transformer\TransformerInterface;
+use Pandawa\Component\Transformer\TransformerRegistryInterface;
 use Pandawa\Module\Api\Http\Resource\JsonResource;
 
 /**
@@ -23,22 +23,22 @@ use Pandawa\Module\Api\Http\Resource\JsonResource;
 final class JsonApiRenderer implements RendererInterface
 {
     /**
-     * @var TransformerInterface
+     * @var TransformerRegistryInterface
      */
-    private $transformer;
+    private $transformerRegistry;
 
     /**
      * Constructor.
      *
-     * @param TransformerInterface $transformer
+     * @param TransformerRegistryInterface $transformerRegistry
      */
-    public function __construct(TransformerInterface $transformer)
+    public function __construct(TransformerRegistryInterface $transformerRegistry)
     {
-        $this->transformer = $transformer;
+        $this->transformerRegistry = $transformerRegistry;
     }
 
     public function render(Request $request, $data): Responsable
     {
-        return new JsonResource($data, $this->transformer);
+        return new JsonResource($data, $this->transformerRegistry);
     }
 }

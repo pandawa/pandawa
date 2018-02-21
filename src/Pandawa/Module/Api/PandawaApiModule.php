@@ -155,14 +155,14 @@ final class PandawaApiModule extends AbstractModule
             function () {
                 $transformers = [];
 
-                foreach ((array) config_path('modules.api.default_transformers') as $transformerClass) {
-                    $transformers = new $transformerClass();
+                foreach ((array) config('modules.api.default_transformers') as $transformerClass) {
+                    $transformers[] = new $transformerClass();
                 }
 
                 return new TransformerRegistry($transformers);
             }
         );
 
-        $this->app->singleton(RendererInterface::class, config_path('modules.api.renderer'));
+        $this->app->singleton(RendererInterface::class, config('modules.api.renderer'));
     }
 }
