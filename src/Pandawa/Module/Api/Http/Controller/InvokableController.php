@@ -27,7 +27,7 @@ use Pandawa\Component\Validation\RequestValidationTrait;
  */
 final class InvokableController extends Controller implements InvokableControllerInterface
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, InteractsWithRelationsTrait, InteractsWithTransformerTrait;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, InteractsWithRelationsTrait, InteractsWithRendererTrait;
     use RequestValidationTrait;
 
     public function handle(Request $request)
@@ -50,7 +50,7 @@ final class InvokableController extends Controller implements InvokableControlle
 
         $this->withRelations($result, $route->defaults);
 
-        return $this->transform($result);
+        return $this->render($request, $result);
     }
 
     private function getMessage(Request $request): string

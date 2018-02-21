@@ -31,7 +31,7 @@ use RuntimeException;
  */
 class ResourceController extends Controller implements ResourceControllerInterface
 {
-    use InteractsWithRelationsTrait, InteractsWithTransformerTrait, RequestValidationTrait;
+    use InteractsWithRelationsTrait, InteractsWithRendererTrait, RequestValidationTrait;
 
     public function show(Request $request)
     {
@@ -47,7 +47,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $this->withRelations($result, $route->defaults);
         }
 
-        return $this->transform($result);
+        return $this->render($request, $result);
     }
 
     public function index(Request $request)
@@ -69,7 +69,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             }
         }
 
-        return $this->transform($results);
+        return $this->render($request, $results);
     }
 
     public function store(Request $request)
@@ -82,7 +82,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
         $this->persist($model, $data);
 
-        return $this->transform($model);
+        return $this->render($request, $model);
     }
 
     public function update(Request $request)
@@ -96,7 +96,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
         $this->persist($model, $data);
 
-        return $this->transform($model);
+        return $this->render($request, $model);
     }
 
     public function destroy(Request $request)
@@ -111,7 +111,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $persist->setAccessible(true);
         $persist->invoke($model);
 
-        return $this->transform($model);
+        return $this->render($request, $model);
     }
 
     protected function callRepository(Request $request, array $repo)

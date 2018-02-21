@@ -21,6 +21,9 @@ use Lcobucci\JWT\Signer\Rsa\Sha512 as Rsa512;
 use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Component\Module\AbstractModule;
 use Pandawa\Component\Resource\ResourceRegistryInterface;
+use Pandawa\Component\Transformer\TransformerRegistry;
+use Pandawa\Component\Transformer\TransformerRegistryInterface;
+use Pandawa\Module\Api\Renderer\RendererInterface;
 use Pandawa\Module\Api\Routing\Loader\BasicLoader;
 use Pandawa\Module\Api\Routing\Loader\GroupLoader;
 use Pandawa\Module\Api\Routing\Loader\MessageLoader;
@@ -95,6 +98,7 @@ final class PandawaApiModule extends AbstractModule
         );
 
         $this->registerSecurity();
+        $this->registerRenderer();
     }
 
     private function registerSecurity(): void
@@ -142,5 +146,23 @@ final class PandawaApiModule extends AbstractModule
                 );
             }
         );
+    }
+
+    private function registerRenderer(): void
+    {
+        $this->app->singleton(
+            TransformerRegistryInterface::class,
+            function () {
+                $transformers = [];
+
+                foreach ((array) config_path('modules.api.default_transformers') as $transformerClass) {
+                    $transformers = new $transformerClass();
+                }
+
+                return new TransformerRegistry($transformers);
+            }
+        );
+
+        $this->app->singleton(RendererInterface::class, config_path('modules.api.renderer'));
     }
 }

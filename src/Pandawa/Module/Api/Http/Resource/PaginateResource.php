@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Module\Api\Transformer;
+namespace Pandawa\Module\Api\Http\Resource;
 
 use Illuminate\Http\Resources\Json\PaginatedResourceResponse;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class PaginateTransformer extends PaginatedResourceResponse
+final class PaginateResource extends PaginatedResourceResponse
 {
     protected function paginationInformation($request): array
     {

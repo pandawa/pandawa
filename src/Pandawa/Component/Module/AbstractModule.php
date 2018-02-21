@@ -42,9 +42,13 @@ abstract class AbstractModule extends ServiceProvider
      */
     protected $configs = [];
 
+    /**
+     * @var array
+     */
     protected $servicePaths = [
         'Repository',
         'Service',
+        'Transformer',
     ];
 
     public final function boot(): void

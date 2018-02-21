@@ -32,6 +32,9 @@ return [
             ],
             'ttl'  => env('AUTH_API_JWT_TTL'),
         ],
-
     ],
+    'renderer' => Pandawa\Module\Api\Renderer\JsonApiRenderer::class,
+    'default_transformers' => [
+        Pandawa\Component\Transformer\ArrayableTransformer::class,
+    ]
 ];
