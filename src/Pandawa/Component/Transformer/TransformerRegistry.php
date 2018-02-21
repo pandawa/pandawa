@@ -44,7 +44,7 @@ final class TransformerRegistry implements TransformerRegistryInterface
 
     public function transform(Request $request, $data)
     {
-        foreach ($this->transformers as $transformer) {
+        foreach (array_reverse($this->transformers) as $transformer) {
             if ($transformer->support($request, $data)) {
                 $data = $transformer->transform($request, $data);
 
