@@ -21,6 +21,7 @@ use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
 use Pandawa\Component\Module\Provider\MessageProviderTrait;
 use Pandawa\Component\Module\Provider\ResourceProviderTrait;
 use Pandawa\Component\Module\Provider\RuleProviderTrait;
+use Pandawa\Component\Module\Provider\TransformerProviderTrait;
 use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
@@ -31,6 +32,7 @@ use Symfony\Component\Finder\Finder;
 abstract class AbstractModule extends ServiceProvider
 {
     use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ResourceProviderTrait, MessageProviderTrait;
+    use TransformerProviderTrait;
 
     /**
      * @var array
@@ -48,7 +50,6 @@ abstract class AbstractModule extends ServiceProvider
     protected $servicePaths = [
         'Repository',
         'Service',
-        'Transformer',
     ];
 
     public final function boot(): void
