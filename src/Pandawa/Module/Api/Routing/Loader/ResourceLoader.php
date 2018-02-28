@@ -136,21 +136,28 @@ final class ResourceLoader extends AbstractLoader
         if ('middleware' === $option) {
             if (!empty($values)) {
                 if (!empty($middlewareOptions = array_get($route, 'options.middleware'))) {
-                    if (!empty($only = (array) array_get($middlewareOptions, 'only'))) {
-                        $values = array_filter(
-                            $values,
-                            function (string $middleware) use ($only) {
-                                return in_array($middleware, $only, true);
+                    $middlewareValues = $values;
+                    $values = [];
+
+                    foreach ($middlewareValues as $index => $middleware) {
+                        if (!array_key_exists($middleware, $middlewareOptions)) {
+                            $values[] = $middleware;
+
+                            continue;
+                        }
+
+                        $currentMiddlewareOptions = $middlewareOptions[$middleware];
+                        $routeName = $routeObject->getName();
+                        $routeAction = substr($routeName, strpos($routeName, '.') + 1);
+
+                        if (!empty($only = (array) array_get($currentMiddlewareOptions, 'only'))) {
+                            if (in_array($routeAction, $only)) {
+                                $values[] = $middleware;
                             }
-                        );
-                    } else {
-                        if (!empty($except = (array) array_get($route, 'except'))) {
-                            $values = array_filter(
-                                $values,
-                                function (string $middleware) use ($only) {
-                                    return !in_array($middleware, $only, true);
-                                }
-                            );
+                        } else if (!empty($except = (array) array_get($currentMiddlewareOptions, 'except'))) {
+                            if (!in_array($routeAction, $except)) {
+                                $values[] = $middleware;
+                            }
                         }
                     }
                 }
