@@ -33,11 +33,11 @@ final class InvokableController extends Controller implements InvokableControlle
     public function handle(Request $request)
     {
         $route = $request->route();
+        $data = $this->validateRequest($request);
 
-        $data = array_merge(
-            $this->validateRequest($request),
-            ['auth_user' => $request->getUser()]
-        );
+        if (null !== $request->user()) {
+            $data['auth_user'] = $request->user()->id;
+        }
 
         $message = $this->getMessage($request);
         $message = new $message($data);
