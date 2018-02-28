@@ -64,6 +64,10 @@ final class MessageLoader extends AbstractLoader
             throw new InvalidArgumentException('Route with type "message" should has message class.');
         }
 
+        if (null === $methods = array_get($route, 'methods')) {
+            throw new InvalidArgumentException('Missing "methods" parameter on type route type "message".');
+        }
+
         if (null === $this->messageRegistry) {
             throw new RuntimeException('There are not message registry detected.');
         }
@@ -72,7 +76,7 @@ final class MessageLoader extends AbstractLoader
             throw new RuntimeException(sprintf('Message "%s" is not registered.', $message));
         }
 
-        return [Route::{$type}($path, sprintf('%s@handle', $controller))];
+        return [Route::match($methods, $path, sprintf('%s@handle', $controller))];
     }
 
     protected function getRouteDefaultParameters(array $route): array
@@ -94,17 +98,5 @@ final class MessageLoader extends AbstractLoader
     protected function getController(array $route): string
     {
         return $this->invokableController;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getType(array $route): string
-    {
-        if (null === array_get($route, 'method')) {
-            throw new InvalidArgumentException('Missing "method" parameter on type route type "message".');
-        }
-
-        return array_get($route, 'method');
     }
 }

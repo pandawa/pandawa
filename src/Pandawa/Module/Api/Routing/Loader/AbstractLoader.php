@@ -38,7 +38,6 @@ abstract class AbstractLoader implements LoaderTypeInterface
         unset($route['type']);
         unset($route['controller']);
         unset($route['rules']);
-        unset($route['method']);
 
         foreach ($this->createRoutes($type, $path, $controller, $route) as $routeObject) {
             $routeObject->defaults = array_merge(
