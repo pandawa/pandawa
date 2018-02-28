@@ -140,7 +140,7 @@ abstract class AbstractRepository
     /**
      * Perform save model.
      *
-     * @param AbstractModel $model
+     * @param AbstractModel|mixed $model
      *
      * @throws ReflectionException
      */
