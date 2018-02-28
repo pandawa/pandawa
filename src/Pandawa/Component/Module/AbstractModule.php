@@ -50,6 +50,7 @@ abstract class AbstractModule extends ServiceProvider
     protected $servicePaths = [
         'Repository',
         'Service',
+        'Finder',
     ];
 
     public final function boot(): void
