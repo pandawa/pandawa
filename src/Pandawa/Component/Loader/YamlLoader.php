@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Loader;
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
@@ -19,7 +21,7 @@ class YamlLoader implements LoaderInterface
 {
     public function load(string $file): array
     {
-        return YamlLoader::load($file);
+        return Yaml::parseFile($file);
     }
 
     public function supports(string $extension): bool
