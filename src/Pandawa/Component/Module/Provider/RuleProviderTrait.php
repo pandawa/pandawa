@@ -27,7 +27,7 @@ trait RuleProviderTrait
             return;
         }
 
-        $basePath = $this->getCurrentPath() . '/Resources/rule';
+        $basePath = $this->getCurrentPath() . '/Resources/rules';
 
         if (is_dir($basePath)) {
             $finder = new Finder();

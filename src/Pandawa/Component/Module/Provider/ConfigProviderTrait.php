@@ -23,7 +23,7 @@ trait ConfigProviderTrait
 {
     protected function bootConfigProvider(): void
     {
-        $basePath = $this->getCurrentPath() . '/Resources/config';
+        $basePath = $this->getCurrentPath() . '/Resources/configs';
 
         if (is_dir($basePath)) {
             $configs = [];
