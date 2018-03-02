@@ -21,9 +21,14 @@ use Symfony\Component\Finder\Finder;
  */
 trait ConfigProviderTrait
 {
+    /**
+     * @var string
+     */
+    protected $configPath = 'Resources/configs';
+
     protected function bootConfigProvider(): void
     {
-        $basePath = $this->getCurrentPath() . '/Resources/configs';
+        $basePath = $this->getCurrentPath() . '/' . trim($this->configPath, '/');
 
         if (is_dir($basePath)) {
             $configs = [];

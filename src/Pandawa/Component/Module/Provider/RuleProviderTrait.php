@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module\Provider;
 
+use Pandawa\Component\Loader\ChainLoader;
 use Pandawa\Component\Validation\RuleRegistryInterface;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
@@ -21,20 +22,26 @@ use Symfony\Component\Finder\Finder;
  */
 trait RuleProviderTrait
 {
+    /**
+     * @var string
+     */
+    protected $rulePath = 'Resources/rules';
+
     protected function bootRuleProvider(): void
     {
         if (null === $this->ruleRegistry()) {
             return;
         }
 
-        $basePath = $this->getCurrentPath() . '/Resources/rules';
+        $basePath = $this->getCurrentPath() . '/' . trim($this->rulePath, '/');
+        $loader = ChainLoader::create();
 
         if (is_dir($basePath)) {
             $finder = new Finder();
 
             /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath)->name('*.php') as $file) {
-                $this->ruleRegistry()->load(require (string) $file);
+            foreach ($finder->in($basePath) as $file) {
+                $this->ruleRegistry()->load($loader->load((string) $file));
             }
         }
     }

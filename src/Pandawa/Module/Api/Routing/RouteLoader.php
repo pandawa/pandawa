@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Module\Api\Routing;
 
 use Illuminate\Support\Collection;
+use Pandawa\Component\Loader\ChainLoader;
 use Pandawa\Module\Api\Routing\Loader\LoaderAwareInterface;
 use Pandawa\Module\Api\Routing\Loader\LoaderTypeInterface;
 use RuntimeException;
@@ -28,6 +29,11 @@ final class RouteLoader implements RouteLoaderInterface
     private $loaders;
 
     /**
+     * @var ChainLoader
+     */
+    private $fileLoader;
+
+    /**
      * Constructor.
      *
      * @param array $loaders
@@ -35,6 +41,7 @@ final class RouteLoader implements RouteLoaderInterface
     public function __construct(array $loaders)
     {
         $this->loaders = collect();
+        $this->fileLoader = ChainLoader::create();
 
         foreach ($loaders as $loader) {
             $this->add(array_get($loader, 'loader'), array_get($loader, 'priority', 0));
@@ -67,7 +74,7 @@ final class RouteLoader implements RouteLoaderInterface
             throw new RuntimeException(sprintf('File "%s" not found.', $file));
         }
 
-        $routes = require $file;
+        $routes = $this->fileLoader->load($file);
         if ($routes && is_array($routes)) {
             $this->load($routes);
         }

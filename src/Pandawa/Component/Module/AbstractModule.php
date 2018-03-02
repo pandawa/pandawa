@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace Pandawa\Component\Module;
 
 use Generator;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Pandawa\Component\Loader\ChainLoader;
 use Pandawa\Component\Module\Provider\ConfigProviderTrait;
 use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
 use Pandawa\Component\Module\Provider\MessageProviderTrait;
@@ -52,6 +54,23 @@ abstract class AbstractModule extends ServiceProvider
         'Service',
         'Finder',
     ];
+
+    /**
+     * @var ChainLoader
+     */
+    protected $loader;
+
+    /**
+     * Constructor.
+     *
+     * @param Application $app
+     */
+    public function __construct(Application $app)
+    {
+        parent::__construct($app);
+
+        $this->loader = ChainLoader::create();
+    }
 
     public final function boot(): void
     {
@@ -105,6 +124,16 @@ abstract class AbstractModule extends ServiceProvider
     public function listens(): array
     {
         return $this->listen;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function mergeConfigFrom($path, $key)
+    {
+        $config = $this->app['config']->get($key, []);
+
+        $this->app['config']->set($key, array_merge($this->loader->load($path), $config));
     }
 
     protected function init(): void
