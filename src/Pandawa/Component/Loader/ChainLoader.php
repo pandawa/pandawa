@@ -52,8 +52,10 @@ final class ChainLoader implements LoaderInterface
         throw new RuntimeException(sprintf('There is no loader for extension "%s".', $extension));
     }
 
-    public function supports(string $extension): bool
+    public function supports(string $file): bool
     {
+        $extension = pathinfo($file, PATHINFO_EXTENSION);
+
         foreach ($this->loaders as $loader) {
             if (true === $loader->supports($extension)) {
                 return true;
