@@ -1,0 +1,2 @@
+Pandawa\Component\Resource\ResourceRegistryInterface:
+    class: "%modules.resource.registry%"

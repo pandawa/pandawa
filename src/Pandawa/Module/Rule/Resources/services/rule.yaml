@@ -1,0 +1,2 @@
+Pandawa\Component\Validation\RuleRegistryInterface:
+    class: "%modules.rule.registry%"

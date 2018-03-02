@@ -11,5 +11,6 @@
 return [
     'enable_event_publisher' => true,
     'enable_db_transaction'  => true,
-    'registry'               => Pandawa\Component\Message\MessageRegistry::class,
+    'registry_class'         => Pandawa\Component\Message\MessageRegistry::class,
+    'dispatcher_class'       => Pandawa\Component\Bus\Dispatcher::class,
 ];

@@ -13,15 +13,10 @@ declare(strict_types=1);
 namespace Pandawa\Module\Rule;
 
 use Pandawa\Component\Module\AbstractModule;
-use Pandawa\Component\Validation\RuleRegistryInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class PandawaRuleModule extends AbstractModule
 {
-    public function init(): void
-    {
-        $this->app->singleton(RuleRegistryInterface::class, config('modules.rule.registry'));
-    }
 }

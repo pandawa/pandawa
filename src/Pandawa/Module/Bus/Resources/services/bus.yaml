@@ -1,0 +1,5 @@
+Pandawa\Component\Message\MessageRegistryInterface:
+    class: "%modules.bus.registry_class%"
+
+Illuminate\Contracts\Bus\Dispatcher:
+    class: "%modules.bus.dispatcher_class%"

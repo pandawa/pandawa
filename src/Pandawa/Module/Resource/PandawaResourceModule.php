@@ -13,15 +13,10 @@ declare(strict_types=1);
 namespace Pandawa\Module\Resource;
 
 use Pandawa\Component\Module\AbstractModule;
-use Pandawa\Component\Resource\ResourceRegistryInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class PandawaResourceModule extends AbstractModule
 {
-    protected function init(): void
-    {
-        $this->app->singleton(ResourceRegistryInterface::class, config('modules.resource.registry'));
-    }
 }

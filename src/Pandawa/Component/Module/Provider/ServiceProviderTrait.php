@@ -48,9 +48,8 @@ trait ServiceProviderTrait
 
     private function parseService(array $service)
     {
-        if (!empty($arguments = array_get($service, 'arguments', []))) {
-            $arguments = $this->parseArguments($arguments);
-        }
+        $service = $this->parseConfigs($service);
+        $arguments = array_get($service, 'arguments', []);
 
         if (null !== $factory = array_get($service, 'factory')) {
             return function () use ($service, $factory, $arguments) {
@@ -73,22 +72,34 @@ trait ServiceProviderTrait
         throw new InvalidArgumentException('Service configuration should has factory or class parameter.');
     }
 
-    private function parseArguments(array $arguments): array
+    private function parseConfigs(array $configs): array
     {
-        return array_map(
-            function ($argument) {
-                if (0 === $index = strpos($argument, '@')) {
-                    return $this->app[substr($argument, 1)];
-                }
+        $parsed = [];
 
-                if (preg_match('/^\%([a-zA-Z0-9\.\-\_]+)\%$/', $argument, $matches)) {
-                    return config($matches[1]);
-                }
+        foreach ($configs as $key => $value) {
+            if (is_array($value)) {
+                $value = $this->parseConfigs($value);
+            } else if (is_string($value)) {
+                $value = $this->parseConfigValue($value);
+            }
 
-                return $argument;
-            },
-            $arguments
-        );
+            $parsed[$this->parseConfigValue($key)] = $value;
+        }
+
+        return $parsed;
+    }
+
+    private function parseConfigValue(string $value)
+    {
+        if (0 === $index = strpos($value, '@')) {
+            return $this->app[substr($value, 1)];
+        }
+
+        if (preg_match('/^\%([a-zA-Z0-9\.\-\_]+)\%$/', $value, $matches)) {
+            return config($matches[1]);
+        }
+
+        return $value;
     }
 
     private function getServiceFiles(): Generator
