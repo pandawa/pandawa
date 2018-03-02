@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
@@ -42,16 +41,17 @@ final class TransformerRegistry implements TransformerRegistryInterface
         $this->transformers[] = $transformer;
     }
 
-    public function transform(Request $request, $data)
+    public function transform($data, string $tag = null)
     {
+        /** @var TransformerInterface $transformer */
         foreach (array_reverse($this->transformers) as $transformer) {
-            if ($transformer->support($request, $data)) {
-                $data = $transformer->transform($request, $data);
+            if ($transformer->support($data, $tag)) {
+                $data = $transformer->transform($data);
 
                 if (is_array($data) || $data instanceof Collection) {
                     foreach ($data as $key => $value) {
                         if (!is_scalar($value)) {
-                            $data[$key] = $this->transform($request, $value);
+                            $data[$key] = $this->transform($value, $tag);
                         }
                     }
                 }

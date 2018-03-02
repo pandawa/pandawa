@@ -13,14 +13,13 @@ declare(strict_types=1);
 namespace Pandawa\Component\Transformer;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\Request;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class ArrayableTransformer implements TransformerInterface
 {
-    public function transform(Request $request, $data)
+    public function transform($data)
     {
         if ($data instanceof Arrayable) {
             $data = $data->toArray();
@@ -29,7 +28,7 @@ final class ArrayableTransformer implements TransformerInterface
         return $data;
     }
 
-    public function support(Request $request, $data): bool
+    public function support($data, string $tag = null): bool
     {
         return is_array($data) || $data instanceof Arrayable;
     }

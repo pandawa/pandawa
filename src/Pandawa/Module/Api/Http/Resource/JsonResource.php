@@ -48,7 +48,7 @@ final class JsonResource extends Resource
      * Constructor.
      *
      * @param                              $resource
-     * @param TransformerRegistryInterface $transformer
+     * @param TransformerRegistryInterface $transformerRegistry
      */
     public function __construct($resource, TransformerRegistryInterface $transformerRegistry)
     {
@@ -63,15 +63,17 @@ final class JsonResource extends Resource
 
     public function toArray($request)
     {
+        $tag = array_get($request->route()->defaults, 'transformer');
+
         if (null !== $this->collection) {
             return $this->collection->map(
-                function ($data) use ($request) {
-                    return $this->transformerRegistry->transform($request, $data);
+                function ($data) use ($request, $tag) {
+                    return $this->transformerRegistry->transform($data, $tag);
                 }
             );
         }
 
-        return $this->transformerRegistry->transform($request, $this->resource);
+        return $this->transformerRegistry->transform($this->resource, $tag);
     }
 
     public function toResponse($request)

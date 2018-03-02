@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
-use Illuminate\Http\Request;
-
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 interface TransformerInterface
 {
-    public function transform(Request $request, $data);
+    public function transform($data);
 
-    public function support(Request $request, $data): bool;
+    public function support($data, string $tag = null): bool;
 }

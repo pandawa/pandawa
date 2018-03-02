@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
-use Illuminate\Http\Request;
-
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
@@ -21,5 +19,5 @@ interface TransformerRegistryInterface
 {
     public function add(TransformerInterface $transformer): void;
 
-    public function transform(Request $request, $data);
+    public function transform($data, string $tag = null);
 }
