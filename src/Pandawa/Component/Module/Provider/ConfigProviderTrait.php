@@ -49,7 +49,7 @@ trait ConfigProviderTrait
 
     private function getConfigFiles(): Generator
     {
-        $basePath = $this->getCurrentPath() . '/Resources/config';
+        $basePath = $this->getCurrentPath() . '/Resources/configs';
 
         if (is_dir($basePath)) {
             $finder = new Finder();
