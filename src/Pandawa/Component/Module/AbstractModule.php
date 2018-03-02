@@ -23,6 +23,7 @@ use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
 use Pandawa\Component\Module\Provider\MessageProviderTrait;
 use Pandawa\Component\Module\Provider\ResourceProviderTrait;
 use Pandawa\Component\Module\Provider\RuleProviderTrait;
+use Pandawa\Component\Module\Provider\ServiceProviderTrait;
 use Pandawa\Component\Module\Provider\TransformerProviderTrait;
 use ReflectionClass;
 use SplFileInfo;
@@ -34,7 +35,7 @@ use Symfony\Component\Finder\Finder;
 abstract class AbstractModule extends ServiceProvider
 {
     use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ResourceProviderTrait, MessageProviderTrait;
-    use TransformerProviderTrait;
+    use ServiceProviderTrait, TransformerProviderTrait;
 
     /**
      * @var array
@@ -49,7 +50,7 @@ abstract class AbstractModule extends ServiceProvider
     /**
      * @var array
      */
-    protected $servicePaths = [
+    protected $scanServicePaths = [
         'Repository',
         'Service',
         'Finder',
@@ -93,7 +94,7 @@ abstract class AbstractModule extends ServiceProvider
 
     public final function register(): void
     {
-        foreach ($this->servicePaths as $path) {
+        foreach ($this->scanServicePaths as $path) {
             $servicePath = $this->getCurrentPath() . '/' . trim($path, '/');
 
             if (is_dir($servicePath) && is_readable($servicePath)) {
