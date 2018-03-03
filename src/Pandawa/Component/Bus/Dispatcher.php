@@ -70,11 +70,13 @@ final class Dispatcher extends LaravelDispatcher
     {
         $handlerClass = $this->getHandlerClass($command);
 
-        if (class_exists($handlerClass)) {
+        if (null !== $handlerClass && class_exists($handlerClass)) {
             return $this->container->make($handlerClass);
         }
 
-        return parent::getCommandHandler($command);
+        $handler = parent::getCommandHandler($command);
+
+        return false !== $handler ? $handler : null;
     }
 
     /**
@@ -84,16 +86,20 @@ final class Dispatcher extends LaravelDispatcher
      *
      * @return string
      */
-    private function getHandlerClass(object $message): string
+    private function getHandlerClass(object $message): ?string
     {
         $messageClass = get_class($message);
 
         if (null !== $this->messageRegistry) {
             $name = $message instanceof NameableMessageInterface ? $messageClass::{'name'}() : $messageClass;
 
-            return $this->messageRegistry->get($name)->getHandlerClass();
+            if ($this->messageRegistry->has($name)) {
+                return $this->messageRegistry->get($name)->getHandlerClass();
+            }
         }
 
-        return sprintf('%sHandler', $messageClass);
+        $handlerClass = parent::getCommandHandler($message);
+
+        return false !== $handlerClass ? (string) $handlerClass : null;
     }
 }

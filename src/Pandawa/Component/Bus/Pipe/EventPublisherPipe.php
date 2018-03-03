@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Bus\Pipe;
 
-use Pandawa\Component\Bus\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Pandawa\Component\Event\EventProvider;
 use Pandawa\Component\Message\AbstractMessage;
 
