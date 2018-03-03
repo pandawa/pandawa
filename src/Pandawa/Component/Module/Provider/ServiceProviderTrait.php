@@ -48,22 +48,26 @@ trait ServiceProviderTrait
 
     private function parseService(array $service)
     {
-        $service = $this->parseConfigs($service);
         $arguments = array_get($service, 'arguments', []);
 
         if (null !== $factory = array_get($service, 'factory')) {
             return function () use ($service, $factory, $arguments) {
+                $arguments = $this->parseConfigs($arguments);
+
                 return call_user_func_array($factory, $arguments);
             };
         }
 
         if (null !== $class = array_get($service, 'class')) {
             if (empty($arguments)) {
-                return $class;
+                return function () use ($class) {
+                    return $this->app->make($this->parseConfigValue($class));
+                };
             }
 
             return function () use ($class, $arguments) {
-                $reflection = new ReflectionClass($class);
+                $reflection = new ReflectionClass($this->parseConfigValue($class));
+                $arguments = $this->parseConfigs($arguments);
 
                 return $reflection->newInstanceArgs($arguments);
             };

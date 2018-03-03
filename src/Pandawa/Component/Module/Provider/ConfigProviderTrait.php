@@ -60,7 +60,7 @@ trait ConfigProviderTrait
             $finder = new Finder();
 
             /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath)->name('*.php') as $file) {
+            foreach ($finder->in($basePath) as $file) {
                 yield $file;
             }
         }
