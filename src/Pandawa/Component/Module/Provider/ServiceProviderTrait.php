@@ -83,7 +83,11 @@ trait ServiceProviderTrait
                 $value = $this->parseConfigValue($value);
             }
 
-            $parsed[$this->parseConfigValue($key)] = $value;
+            if (is_string($key)) {
+                $key = $this->parseConfigValue($key);
+            }
+
+            $parsed[$key] = $value;
         }
 
         return $parsed;
