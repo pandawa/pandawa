@@ -54,15 +54,13 @@ trait ServiceProviderTrait
             return function () use ($service, $factory, $arguments) {
                 $arguments = $this->parseConfigs($arguments);
 
-                return call_user_func_array($factory, $arguments);
+                return call_user_func_array($this->parseConfigValue($factory), $arguments);
             };
         }
 
         if (null !== $class = array_get($service, 'class')) {
             if (empty($arguments)) {
-                return function () use ($class) {
-                    return $this->app->make($this->parseConfigValue($class));
-                };
+                return $this->parseConfigValue($class);
             }
 
             return function () use ($class, $arguments) {
