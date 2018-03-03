@@ -24,8 +24,7 @@ trait RequestValidationTrait
         $route = $request->route();
         $data = array_merge(
             $request->all(),
-            $request->files->all(),
-            $request->route()->parameters()
+            $request->files->all()
         );
 
         if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
@@ -35,10 +34,10 @@ trait RequestValidationTrait
                 $filtered = array_merge($filtered, $this->ruleRegistry()->validate($rule, $data));
             }
 
-            return $filtered;
+            $data = $filtered;
         }
 
-        return $data;
+        return array_merge($request->route()->parameters(), $data);
     }
 
     private function ruleRegistry(): ?RuleRegistryInterface
