@@ -19,5 +19,5 @@ interface TransformerRegistryInterface
 {
     public function add(TransformerInterface $transformer): void;
 
-    public function transform($data, string $tag = null);
+    public function transform($data, array $tags = []);
 }

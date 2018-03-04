@@ -37,8 +37,8 @@ final class JsonApiRenderer implements RendererInterface
         $this->transformerRegistry = $transformerRegistry;
     }
 
-    public function render(Request $request, $data): Responsable
+    public function render(Request $request, $data, array $options = []): Responsable
     {
-        return new JsonResource($data, $this->transformerRegistry);
+        return new JsonResource($data, $this->transformerRegistry, $options);
     }
 }

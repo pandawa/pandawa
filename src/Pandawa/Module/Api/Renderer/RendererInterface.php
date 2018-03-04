@@ -20,5 +20,5 @@ use Illuminate\Http\Request;
  */
 interface RendererInterface
 {
-    public function render(Request $request, $data): Responsable;
+    public function render(Request $request, $data, array $options = []): Responsable;
 }

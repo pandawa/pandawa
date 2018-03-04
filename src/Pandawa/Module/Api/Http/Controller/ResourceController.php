@@ -46,7 +46,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     {
         $route = $request->route();
 
-        if (null !== $repository = array_get($route->defaults, 'repository.show')) {
+        if (null !== $repository = array_get($route->defaults, 'repos.show')) {
             $result = $this->callRepository($request, $repository, 'show');
         } else {
             $modelClass = $this->getModelClass($route);
@@ -63,7 +63,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $this->withRelations($result, $route->defaults);
         }
 
-        return $this->render($request, $result);
+        return $this->render($request, $result, (array) array_get($route->defaults, 'trans.show', []));
     }
 
     /**
@@ -75,7 +75,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     {
         $route = $request->route();
 
-        if (null !== $repository = array_get($route->defaults, 'repository.index')) {
+        if (null !== $repository = array_get($route->defaults, 'repos.index')) {
             $results = $this->callRepository($request, $repository, 'index');
         } else {
             $modelClass = $this->getModelClass($route);
@@ -91,7 +91,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $results = $repository->findAll();
         }
 
-        return $this->render($request, $results);
+        return $this->render($request, $results, (array) array_get($route->defaults, 'trans.index', []));
     }
 
     /**
@@ -110,7 +110,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
         $this->persist($model, $data);
 
-        return $this->render($request, $model);
+        return $this->render($request, $model, (array) array_get($request->route()->defaults, 'trans.store', []));
     }
 
     /**
@@ -130,7 +130,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
         $this->persist($model, $data);
 
-        return $this->render($request, $model);
+        return $this->render($request, $model, (array) array_get($route->defaults, 'trans.update', []));
     }
 
     /**
@@ -153,7 +153,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
         $repository->remove($model);
 
-        return $this->render($request, $model);
+        return $this->render($request, $model, (array) array_get($route->defaults, 'trans.destroy', []));
     }
 
     protected function callRepository(Request $request, array $repo, string $action)

@@ -21,8 +21,8 @@ use Pandawa\Module\Api\Renderer\RendererInterface;
  */
 trait InteractsWithRendererTrait
 {
-    protected function render(Request $request, $results): Responsable
+    protected function render(Request $request, $results, array $tags = []): Responsable
     {
-        return app(RendererInterface::class)->render($request, $results);
+        return app(RendererInterface::class)->render($request, $results, ['tags' => $tags]);
     }
 }

@@ -41,17 +41,17 @@ final class TransformerRegistry implements TransformerRegistryInterface
         $this->transformers[] = $transformer;
     }
 
-    public function transform($data, string $tag = null)
+    public function transform($data, array $tags = [])
     {
         /** @var TransformerInterface $transformer */
         foreach (array_reverse($this->transformers) as $transformer) {
-            if ($transformer->support($data, $tag)) {
-                $data = $transformer->transform($data);
+            if ($transformer->support($data, $tags)) {
+                $data = $transformer->transform($data, $tags);
 
                 if (is_array($data) || $data instanceof Collection) {
                     foreach ($data as $key => $value) {
                         if (!is_scalar($value)) {
-                            $data[$key] = $this->transform($value, $tag);
+                            $data[$key] = $this->transform($value, $tags);
                         }
                     }
                 }

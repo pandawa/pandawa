@@ -17,7 +17,7 @@ namespace Pandawa\Component\Transformer;
  */
 interface TransformerInterface
 {
-    public function transform($data);
+    public function transform($data, array $tags = []);
 
-    public function support($data, $tag = null): bool;
+    public function support($data, array $tags = []): bool;
 }

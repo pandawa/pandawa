@@ -19,7 +19,7 @@ use Illuminate\Contracts\Support\Arrayable;
  */
 final class ArrayableTransformer implements TransformerInterface
 {
-    public function transform($data)
+    public function transform($data, array $tags = [])
     {
         if ($data instanceof Arrayable) {
             $data = $data->toArray();
@@ -28,7 +28,7 @@ final class ArrayableTransformer implements TransformerInterface
         return $data;
     }
 
-    public function support($data, $tag = null): bool
+    public function support($data, array $tags = []): bool
     {
         return is_array($data) || $data instanceof Arrayable;
     }

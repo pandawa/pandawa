@@ -51,7 +51,7 @@ final class InvokableController extends Controller implements InvokableControlle
 
         $this->withRelations($result, $route->defaults);
 
-        return $this->render($request, $result);
+        return $this->render($request, $result, (array) array_get($route->defaults, 'trans', []));
     }
 
     private function getMessage(Request $request): string

@@ -45,12 +45,18 @@ final class JsonResource extends Resource
     public $collection;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * Constructor.
      *
      * @param                              $resource
      * @param TransformerRegistryInterface $transformerRegistry
+     * @param array                        $options
      */
-    public function __construct($resource, TransformerRegistryInterface $transformerRegistry)
+    public function __construct($resource, TransformerRegistryInterface $transformerRegistry, array $options = [])
     {
         parent::__construct($resource);
 
@@ -59,21 +65,22 @@ final class JsonResource extends Resource
         }
 
         $this->transformerRegistry = $transformerRegistry;
+        $this->options = $options;
     }
 
     public function toArray($request)
     {
-        $tag = array_get($request->route()->defaults, 'transformer');
+        $tags = array_get($this->options, 'trans', []);
 
         if (null !== $this->collection) {
             return $this->collection->map(
-                function ($data) use ($request, $tag) {
-                    return $this->transformerRegistry->transform($data, $tag);
+                function ($data) use ($request, $tags) {
+                    return $this->transformerRegistry->transform($data, $tags);
                 }
             );
         }
 
-        return $this->transformerRegistry->transform($this->resource, $tag);
+        return $this->transformerRegistry->transform($this->resource, $tags);
     }
 
     public function toResponse($request)
