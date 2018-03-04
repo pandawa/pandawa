@@ -28,7 +28,7 @@ final class ArrayableTransformer implements TransformerInterface
         return $data;
     }
 
-    public function support($data, string $tag = null): bool
+    public function support($data, $tag = null): bool
     {
         return is_array($data) || $data instanceof Arrayable;
     }

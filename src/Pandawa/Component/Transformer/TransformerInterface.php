@@ -19,5 +19,5 @@ interface TransformerInterface
 {
     public function transform($data);
 
-    public function support($data, string $tag = null): bool;
+    public function support($data, $tag = null): bool;
 }
