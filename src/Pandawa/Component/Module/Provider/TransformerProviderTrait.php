@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module\Provider;
 
+use Pandawa\Component\Transformer\TransformerInterface;
 use Pandawa\Component\Transformer\TransformerRegistryInterface;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
@@ -38,9 +39,18 @@ trait TransformerProviderTrait
             foreach ($finder->in($basePath) as $file) {
                 $transformerClass = $this->getClassFromFile($file);
 
-                $this->transformerRegistry()->add(new $transformerClass());
+                $this->transformerRegistry()->add($this->createTransformer($transformerClass));
             }
         }
+    }
+
+    private function createTransformer(string $class): TransformerInterface
+    {
+        if (isset($this->app[$class])) {
+            return $this->app[$class];
+        }
+
+        return $this->app->make($class);
     }
 
     private function transformerRegistry(): ?TransformerRegistryInterface
