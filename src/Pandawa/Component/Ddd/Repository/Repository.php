@@ -10,49 +10,57 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Ddd;
+namespace Pandawa\Component\Ddd\Repository;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Collection;
+use Pandawa\Component\Ddd\LockModes;
+use Pandawa\Component\Ddd\Specification\SpecificationInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
-use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-abstract class AbstractRepository
+class Repository implements RepositoryInterface
 {
     /**
-     * @var ReflectionClass
+     * @var string
      */
-    private $reflection;
+    protected $modelClass;
 
     /**
      * @var AbstractModel[]
      */
-    private $queuing = [];
+    protected $queuing = [];
 
     /**
      * @var int
      */
-    private $pageSize;
+    protected $pageSize;
 
     /**
      * @var array
      */
-    private $relations = [];
+    protected $relations = [];
+
+    /**
+     * @var SpecificationInterface[]
+     */
+    protected $specifications = [];
 
     /**
      * Constructor.
      *
-     * @throws ReflectionException
+     * @param string $modelClass
      */
-    public function __construct()
+    public function __construct(string $modelClass)
     {
-        $this->reflection = new ReflectionClass(get_called_class());
+        $this->modelClass = $modelClass;
     }
 
     /**
@@ -69,6 +77,28 @@ abstract class AbstractRepository
     public function paginate(int $pageSize): void
     {
         $this->pageSize = $pageSize;
+    }
+
+    /**
+     * Match multiple specification.
+     *
+     * @param array $specifications
+     */
+    public function matches(array $specifications): void
+    {
+        foreach ($specifications as $specification) {
+            $this->match($specification);
+        }
+    }
+
+    /**
+     * Match with specification.
+     *
+     * @param SpecificationInterface $specification
+     */
+    public function match(SpecificationInterface $specification): void
+    {
+        $this->specifications[get_class($specification)] = $specification;
     }
 
     /**
@@ -153,37 +183,25 @@ abstract class AbstractRepository
      * Perform remove model.
      *
      * @param AbstractModel $model
+     *
+     * @throws ReflectionException
      */
     public function remove(AbstractModel $model): void
     {
-        $this->remove($model);
+        $this->invokeDeleteModel($model);
     }
 
     /**
+     * @param string|null $modelClass
+     *
      * @return Builder|QueryBuilder
      */
-    protected function createQueryBuilder()
+    protected function createQueryBuilder(string $modelClass = null)
     {
-        $model = $this->createModel();
+        $model = $this->createModel($modelClass ?: $this->modelClass);
         $queryBuilder = $model->newQuery();
 
         return $queryBuilder;
-    }
-
-    /**
-     * Get model class.
-     *
-     * @return string
-     */
-    protected function getModelClass(): string
-    {
-        $fullName = $this->reflection->getName();
-        $className = $this->reflection->getShortName();
-        $className = substr($className, 0, strpos($className, 'Repository'));
-        $namespace = substr($fullName, 0, strrpos($fullName, '\\'));
-        $namespace = str_replace('Repository', 'Model', $namespace);
-
-        return sprintf('%s\\%s', $namespace, $className);
     }
 
     /**
@@ -194,6 +212,7 @@ abstract class AbstractRepository
     protected function execute($query)
     {
         $this->applyRelations($query);
+        $this->applySpecifications($query);
 
         if (null !== $this->pageSize) {
             return $query->paginate($this->pageSize);
@@ -210,6 +229,7 @@ abstract class AbstractRepository
     protected function executeSingle($query): ?AbstractModel
     {
         $this->applyRelations($query);
+        $this->applySpecifications($query);
 
         return $query->first();
     }
@@ -217,7 +237,21 @@ abstract class AbstractRepository
     /**
      * @param Builder|QueryBuilder $query
      */
-    private function applyRelations($query): void
+    protected function applySpecifications($query): void
+    {
+        if (!empty($this->specifications)) {
+            foreach ($this->specifications as $specification) {
+                $specification->match($query);
+            }
+
+            $this->specifications = [];
+        }
+    }
+
+    /**
+     * @param Builder|QueryBuilder $query
+     */
+    protected function applyRelations($query): void
     {
         if (!empty($this->relations)) {
             $query->with($this->relations);
@@ -229,12 +263,12 @@ abstract class AbstractRepository
     /**
      * Create model.
      *
+     * @param string $modelClass
+     *
      * @return AbstractModel
      */
-    private function createModel(): AbstractModel
+    private function createModel(string $modelClass): AbstractModel
     {
-        $modelClass = $this->getModelClass();
-
         return new $modelClass;
     }
 

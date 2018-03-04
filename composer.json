@@ -49,6 +49,7 @@
                 "Pandawa\\Module\\Api\\PandawaApiModule",
                 "Pandawa\\Module\\Bus\\PandawaBusModule",
                 "Pandawa\\Module\\Rule\\PandawaRuleModule",
+                "Pandawa\\Module\\Ddd\\PandawaDddModule",
                 "Pandawa\\Module\\Resource\\PandawaResourceModule"
             ]
         }

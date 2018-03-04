@@ -1,0 +1,6 @@
+Pandawa\Component\Ddd\Repository\EntityManagerInterface:
+    class: "%modules.ddd.entity_manager_class%"
+    arguments: ['@app', "%modules.ddd.default_repository_class%"]
+
+Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface:
+    class: "%modules.ddd.specification_registry_class%"
