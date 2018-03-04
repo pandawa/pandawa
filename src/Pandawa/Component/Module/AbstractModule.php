@@ -53,7 +53,6 @@ abstract class AbstractModule extends ServiceProvider
      * @var array
      */
     protected $scanServicePaths = [
-        'Repository',
         'Service',
         'Finder',
     ];

@@ -62,14 +62,10 @@ class EntityManager implements EntityManagerInterface
 
         $repositoryClass = $modelClass::{'getRepositoryClass'}() ?: $this->defaultRepositoryClass;
 
-        if ($this->app->has($repositoryClass)) {
-            return $this->app->get($repositoryClass);
-        }
-
         if (!class_exists($repositoryClass)) {
-            return $this->app->make($this->defaultRepositoryClass, [$modelClass]);
+            return new $this->defaultRepositoryClass($modelClass);
         }
 
-        return $this->app->make($repositoryClass, [$modelClass]);
+        return new $repositoryClass($modelClass);
     }
 }

@@ -20,6 +20,7 @@ use Illuminate\Support\Collection as LaravelCollection;
 use Pandawa\Component\Serializer\DeserializableInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
 use ReflectionClass;
+use ReflectionException;
 use RuntimeException;
 
 /**
@@ -41,15 +42,17 @@ abstract class AbstractModel extends Eloquent
 
     /**
      * @return string
+     * @throws ReflectionException
      */
     public static function getRepositoryClass(): ?string
     {
         $reflection = new ReflectionClass(get_called_class());
         $modelClass = $reflection->getName();
-        $modelClass = str_replace('Model', 'Repository', $modelClass);
+        $repositoryClass = str_replace('Model', 'Repository', $modelClass);
+        $repositoryClass = sprintf('%sRepository', $repositoryClass);
 
-        if (class_exists($modelClass)) {
-            return $modelClass;
+        if (class_exists($repositoryClass)) {
+            return $repositoryClass;
         }
 
         return null;

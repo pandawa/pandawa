@@ -88,7 +88,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
                 $repository->paginate($request->get('limit', 50));
             }
 
-            return $repository->findAll();
+            $results = $repository->findAll();
         }
 
         return $this->render($request, $results);
