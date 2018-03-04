@@ -12,8 +12,11 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module\Provider;
 
+use Generator;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Repository\EntityManagerInterface;
 use Pandawa\Component\Resource\Metadata;
 use Pandawa\Component\Resource\ResourceRegistryInterface;
 use SplFileInfo;
@@ -35,20 +38,32 @@ trait ResourceProviderTrait
             return;
         }
 
-        $basePath = $this->getCurrentPath() . '/' . $this->modelPathName;
+        foreach ($this->getResourceFiles() as $modelClass) {
+            if (is_subclass_of($modelClass, AbstractModel::class)) {
+                $name = substr($modelClass, (int) strrpos($modelClass, '\\') + 1);
+                $name = Str::snake($name);
 
-        if (is_dir($basePath)) {
-            $finder = new Finder();
+                $this->resourceRegistry()->add($name, new Metadata($modelClass));
+            }
+        }
+    }
 
-            /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath) as $file) {
-                $modelClass = $this->getClassFromFile($file);
+    protected function registerResourceProvider(): void
+    {
+        foreach ($this->getResourceFiles() as $modelClass) {
+            if (is_subclass_of($modelClass, AbstractModel::class)) {
+                $repositoryClass = $modelClass::{'getRepositoryClass'}();
 
-                if (is_subclass_of($modelClass, AbstractModel::class)) {
-                    $name = substr($modelClass, (int) strrpos($modelClass, '\\') + 1);
-                    $name = Str::snake($name);
+                if (null !== $repositoryClass && class_exists($repositoryClass)) {
+                    $this->app->singleton(
+                        $repositoryClass,
+                        function (Application $app) use ($modelClass) {
+                            /** @var EntityManagerInterface $entityManager */
+                            $entityManager = $app->get(EntityManagerInterface::class);
 
-                    $this->resourceRegistry()->add($name, new Metadata($modelClass));
+                            return $entityManager->getRepository($modelClass);
+                        }
+                    );
                 }
             }
         }
@@ -61,5 +76,19 @@ trait ResourceProviderTrait
         }
 
         return null;
+    }
+
+    private function getResourceFiles(): Generator
+    {
+        $basePath = $this->getCurrentPath() . '/' . $this->modelPathName;
+
+        if (is_dir($basePath)) {
+            $finder = new Finder();
+
+            /** @var SplFileInfo $file */
+            foreach ($finder->in($basePath) as $file) {
+                yield $this->getClassFromFile($file);
+            }
+        }
     }
 }

@@ -20,10 +20,12 @@ use Illuminate\Support\Str;
 use Pandawa\Component\Loader\ChainLoader;
 use Pandawa\Component\Module\Provider\ConfigProviderTrait;
 use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
+use Pandawa\Component\Module\Provider\DddProviderTrait;
 use Pandawa\Component\Module\Provider\MessageProviderTrait;
 use Pandawa\Component\Module\Provider\ResourceProviderTrait;
 use Pandawa\Component\Module\Provider\RuleProviderTrait;
 use Pandawa\Component\Module\Provider\ServiceProviderTrait;
+use Pandawa\Component\Module\Provider\SpecificationProviderTrait;
 use Pandawa\Component\Module\Provider\TransformerProviderTrait;
 use ReflectionClass;
 use SplFileInfo;
@@ -34,8 +36,8 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractModule extends ServiceProvider
 {
-    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ResourceProviderTrait, MessageProviderTrait;
-    use ServiceProviderTrait, TransformerProviderTrait;
+    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ServiceProviderTrait;
+    use ResourceProviderTrait, MessageProviderTrait, TransformerProviderTrait, SpecificationProviderTrait;
 
     /**
      * @var array

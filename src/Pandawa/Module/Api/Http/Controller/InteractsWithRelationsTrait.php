@@ -15,6 +15,7 @@ namespace Pandawa\Module\Api\Http\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Repository\RepositoryInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -24,7 +25,9 @@ trait InteractsWithRelationsTrait
     protected function withRelations($stmt, array $options): void
     {
         if (null !== $withs = $this->getRelations($options)) {
-            if ($stmt instanceof Builder) {
+            if ($stmt instanceof RepositoryInterface) {
+                $stmt->with($withs);
+            } else if ($stmt instanceof Builder) {
                 $stmt->with($withs);
             } else if ($stmt instanceof AbstractModel) {
                 $stmt->load($withs);

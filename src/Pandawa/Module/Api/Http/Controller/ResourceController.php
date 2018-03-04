@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Controller;
 
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
@@ -20,10 +22,12 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
-use Pandawa\Component\Ddd\AbstractRepository;
+use Pandawa\Component\Ddd\Repository\EntityManagerInterface;
+use Pandawa\Component\Ddd\Repository\RepositoryInterface;
+use Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface;
 use Pandawa\Component\Resource\ResourceRegistryInterface;
 use Pandawa\Component\Validation\RequestValidationTrait;
-use ReflectionObject;
+use ReflectionException;
 use RuntimeException;
 
 /**
@@ -33,16 +37,28 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 {
     use InteractsWithRelationsTrait, InteractsWithRendererTrait, RequestValidationTrait;
 
-    public function show(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return Responsable
+     */
+    public function show(Request $request): Responsable
     {
         $route = $request->route();
 
         if (null !== $repository = array_get($route->defaults, 'repository.show')) {
-            $result = $this->callRepository($request, $repository);
+            $result = $this->callRepository($request, $repository, 'show');
         } else {
             $modelClass = $this->getModelClass($route);
             $key = $this->getModelKey($modelClass, $route);
-            $result = $modelClass::{'findOrFail'}($route->parameter($key));
+            $id = $route->parameter($key);
+            $repository = $this->getRepository($modelClass);
+
+            $this->applySpecifications($repository, $request, 'show');
+
+            if (null === $result = $repository->find($id)) {
+                throw (new ModelNotFoundException())->setModel($modelClass, [$id]);
+            }
 
             $this->withRelations($result, $route->defaults);
         }
@@ -50,29 +66,41 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return $this->render($request, $result);
     }
 
-    public function index(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return Responsable
+     */
+    public function index(Request $request): Responsable
     {
         $route = $request->route();
 
         if (null !== $repository = array_get($route->defaults, 'repository.index')) {
-            $results = $this->callRepository($request, $repository);
+            $results = $this->callRepository($request, $repository, 'index');
         } else {
             $modelClass = $this->getModelClass($route);
-            $stmt = $this->createQueryBuilder($modelClass);
+            $repository = $this->getRepository($modelClass);
 
-            $this->withRelations($stmt, $route->defaults);
+            $this->withRelations($repository, $route->defaults);
+            $this->applySpecifications($repository, $request, 'index');
 
-            if (true !== array_get($route->defaults, 'paginate')) {
-                $results = $stmt->get();
-            } else {
-                $results = $stmt->paginate($request->get('limit', 50));
+            if (true === array_get($route->defaults, 'paginate')) {
+                $repository->paginate($request->get('limit', 50));
             }
+
+            return $repository->findAll();
         }
 
         return $this->render($request, $results);
     }
 
-    public function store(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return Responsable
+     * @throws ReflectionException
+     */
+    public function store(Request $request): Responsable
     {
         $data = $this->getRequestData($request);
         $modelClass = $this->getModelClass($request->route());
@@ -85,7 +113,13 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return $this->render($request, $model);
     }
 
-    public function update(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return Responsable
+     * @throws ReflectionException
+     */
+    public function update(Request $request): Responsable
     {
         $route = $request->route();
         $data = $this->getRequestData($request);
@@ -99,22 +133,30 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return $this->render($request, $model);
     }
 
-    public function destroy(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return Responsable
+     * @throws ReflectionException
+     */
+    public function destroy(Request $request): Responsable
     {
         $route = $request->route();
         $modelClass = $this->getModelClass($route);
         $key = $this->getModelKey($modelClass, $route);
-        $model = $modelClass::{'findOrFail'}($route->parameter($key));
+        $id = $route->parameter($key);
+        $repository = $this->getRepository($modelClass);
 
-        $reflection = new ReflectionObject($model);
-        $persist = $reflection->getMethod('remove');
-        $persist->setAccessible(true);
-        $persist->invoke($model);
+        if (null === $model = $repository->find($id)) {
+            throw (new ModelNotFoundException())->setModel($modelClass, [$id]);
+        }
+
+        $repository->remove($model);
 
         return $this->render($request, $model);
     }
 
-    protected function callRepository(Request $request, array $repo)
+    protected function callRepository(Request $request, array $repo, string $action)
     {
         $route = $request->route();
         $data = collect(array_merge($request->route()->parameters(), $request->all()));
@@ -126,8 +168,10 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $args = array_values($data->only($repo['arguments'])->all());
         }
 
-        /** @var AbstractRepository $repo */
+        /** @var RepositoryInterface $repo */
         $repo = app($class);
+
+        $this->applySpecifications($repo, $request, $action);
 
         if (null !== $relations = $this->getRelations($route->defaults)) {
             $repo->with($relations);
@@ -156,16 +200,21 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return array_get($route->defaults, 'key', $key);
     }
 
+    /**
+     * @param AbstractModel $model
+     * @param array         $data
+     *
+     * @throws ReflectionException
+     */
     protected function persist(AbstractModel $model, array $data): void
     {
         $this->appendRelations($model, $data);
 
         $model->fill($data);
 
-        $reflection = new ReflectionObject($model);
-        $persist = $reflection->getMethod('persist');
-        $persist->setAccessible(true);
-        $persist->invoke($model);
+        $repository = $this->getRepository(get_class($model));
+
+        $repository->save($model);
     }
 
     protected function getRequestData(Request $request): array
@@ -209,6 +258,34 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return $class::{'findOrFail'}($id);
     }
 
+    protected function applySpecifications(RepositoryInterface $repository, Request $request, string $action)
+    {
+        $options = $request->route()->defaults;
+
+        if ($specs = (array) array_get($options, sprintf('specs.%s', $action))) {
+            foreach ($specs as $spec) {
+                $arguments = [];
+
+                if ($specArgs = array_get($spec, 'arguments')) {
+                    foreach ($specArgs as $key => $value) {
+                        if (is_int($key)) {
+                            $arguments[] = $request->get($value);
+                        } else {
+                            $arguments[] = $request->get($key, $value);
+                        }
+                    }
+                }
+
+                $repository->match($this->specificationRegistry()->get(array_get($spec, 'name'), $arguments));
+            }
+        }
+    }
+
+    protected function getRepository(string $modelClass): RepositoryInterface
+    {
+        return $this->entityManager()->getRepository($modelClass);
+    }
+
     /**
      * @param string $modelClass
      *
@@ -222,5 +299,15 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     protected function resourceRegistry(): ResourceRegistryInterface
     {
         return app(ResourceRegistryInterface::class);
+    }
+
+    protected function entityManager(): EntityManagerInterface
+    {
+        return app(EntityManagerInterface::class);
+    }
+
+    protected function specificationRegistry(): SpecificationRegistryInterface
+    {
+        return app(SpecificationRegistryInterface::class);
     }
 }

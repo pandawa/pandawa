@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as LaravelCollection;
 use Pandawa\Component\Serializer\DeserializableInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
+use ReflectionClass;
 use RuntimeException;
 
 /**
@@ -37,6 +38,22 @@ abstract class AbstractModel extends Eloquent
      * @var array
      */
     protected $hidden = ['pivot'];
+
+    /**
+     * @return string
+     */
+    public static function getRepositoryClass(): ?string
+    {
+        $reflection = new ReflectionClass(get_called_class());
+        $modelClass = $reflection->getName();
+        $modelClass = str_replace('Model', 'Repository', $modelClass);
+
+        if (class_exists($modelClass)) {
+            return $modelClass;
+        }
+
+        return null;
+    }
 
     public function getId()
     {

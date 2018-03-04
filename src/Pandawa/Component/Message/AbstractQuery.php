@@ -30,6 +30,11 @@ abstract class AbstractQuery extends AbstractMessage
     private $relations;
 
     /**
+     * @var array
+     */
+    private $specifications;
+
+    /**
      * @param int $pageSize
      *
      * @return static
@@ -53,6 +58,18 @@ abstract class AbstractQuery extends AbstractMessage
         return $this;
     }
 
+    /**
+     * @param array $specifications
+     *
+     * @return AbstractQuery
+     */
+    final public function withSpecifications(array $specifications): AbstractQuery
+    {
+        $this->specifications = $specifications;
+
+        return $this;
+    }
+
     public function getPageSize(): int
     {
         return $this->pageSize;
@@ -71,5 +88,15 @@ abstract class AbstractQuery extends AbstractMessage
     public function getRelations(): array
     {
         return $this->relations;
+    }
+
+    public function hasSpecifications(): bool
+    {
+        return null !== $this->specifications;
+    }
+
+    public function getSpecifications(): array
+    {
+        return $this->specifications;
     }
 }

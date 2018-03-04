@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Message;
 
-use Pandawa\Component\Ddd\AbstractRepository;
+use Pandawa\Component\Ddd\Repository\Repository;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -29,19 +29,23 @@ trait InteractsWithRepositoryTrait
             $this->repository()->with($query->getRelations());
         }
 
+        if ($query->hasSpecifications()) {
+            $this->repository()->matches($query->getSpecifications());
+        }
+
         return $this->run($this->repository(), $query);
     }
 
     /**
-     * @param AbstractRepository $repository
-     * @param AbstractQuery      $query
+     * @param Repository    $repository
+     * @param AbstractQuery $query
      *
      * @return mixed
      */
     abstract protected function run($repository, $query);
 
     /**
-     * @return AbstractRepository
+     * @return Repository
      */
     abstract protected function repository();
 }

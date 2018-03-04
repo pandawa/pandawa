@@ -18,6 +18,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use InvalidArgumentException;
+use Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface;
 use Pandawa\Component\Message\AbstractQuery;
 use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Component\Validation\RequestValidationTrait;
@@ -74,6 +75,30 @@ final class InvokableController extends Controller implements InvokableControlle
             $query->withRelations($withs);
         }
 
+        if (null !== $this->specificationRegistry()) {
+            if (null !== $specs = array_get($route->defaults, 'specs')) {
+                $specifications = [];
+
+                foreach ($specs as $spec) {
+                    $arguments = [];
+
+                    if ($specArgs = array_get($spec, 'arguments')) {
+                        foreach ($specArgs as $key => $value) {
+                            if (is_int($key)) {
+                                $arguments[] = $request->get($value);
+                            } else {
+                                $arguments[] = $request->get($key, $value);
+                            }
+                        }
+                    }
+
+                    $specifications[] = $this->specificationRegistry()->get(array_get($spec, 'name'), $arguments);
+                }
+
+                $query->withSpecifications($specifications);
+            }
+        }
+
         if (true === array_get($route->defaults, 'paginate', false)) {
             $query->paginate($request->get('limit', 50));
         }
@@ -83,6 +108,15 @@ final class InvokableController extends Controller implements InvokableControlle
     {
         if (app()->has(MessageRegistryInterface::class)) {
             return app(MessageRegistryInterface::class);
+        }
+
+        return null;
+    }
+
+    private function specificationRegistry(): ?SpecificationRegistryInterface
+    {
+        if (app()->has(SpecificationRegistryInterface::class)) {
+            return app(SpecificationRegistryInterface::class);
         }
 
         return null;
