@@ -87,10 +87,6 @@ final class SpecificationRegistry implements SpecificationRegistryInterface
 
         $specificationClass = $this->specifications[$specification];
 
-        if ($this->app->has($specificationClass)) {
-            return $this->app->get($specificationClass);
-        }
-
         return $this->app->make($specificationClass, $arguments);
     }
 }
