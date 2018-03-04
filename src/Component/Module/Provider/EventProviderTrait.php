@@ -19,8 +19,6 @@ use Illuminate\Contracts\Events\Dispatcher;
  */
 trait EventProviderTrait
 {
-    abstract public function listens(): array;
-
     protected function bootEventProvider(): void
     {
         foreach ($this->listens() as $event => $listeners) {
@@ -29,6 +27,8 @@ trait EventProviderTrait
             }
         }
     }
+
+    abstract protected function listens(): array;
 
     protected function eventListener(): Dispatcher
     {
