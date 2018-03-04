@@ -14,13 +14,11 @@ namespace Pandawa\Component\Module;
 
 use Generator;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Pandawa\Component\Loader\ChainLoader;
 use Pandawa\Component\Module\Provider\ConfigProviderTrait;
 use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
-use Pandawa\Component\Module\Provider\DddProviderTrait;
 use Pandawa\Component\Module\Provider\MessageProviderTrait;
 use Pandawa\Component\Module\Provider\ResourceProviderTrait;
 use Pandawa\Component\Module\Provider\RuleProviderTrait;
@@ -28,6 +26,7 @@ use Pandawa\Component\Module\Provider\ServiceProviderTrait;
 use Pandawa\Component\Module\Provider\SpecificationProviderTrait;
 use Pandawa\Component\Module\Provider\TransformerProviderTrait;
 use ReflectionClass;
+use ReflectionException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -38,11 +37,6 @@ abstract class AbstractModule extends ServiceProvider
 {
     use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ServiceProviderTrait;
     use ResourceProviderTrait, MessageProviderTrait, TransformerProviderTrait, SpecificationProviderTrait;
-
-    /**
-     * @var array
-     */
-    protected $listen = [];
 
     /**
      * @var array
@@ -76,12 +70,6 @@ abstract class AbstractModule extends ServiceProvider
 
     public final function boot(): void
     {
-        foreach ($this->listens() as $event => $listeners) {
-            foreach ($listeners as $listener) {
-                Event::listen($event, $listener);
-            }
-        }
-
         foreach ($this->getTraits() as $trait) {
             $method = 'boot' . $trait;
 
@@ -93,6 +81,9 @@ abstract class AbstractModule extends ServiceProvider
         $this->build();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public final function register(): void
     {
         foreach ($this->scanServicePaths as $path) {
@@ -123,11 +114,6 @@ abstract class AbstractModule extends ServiceProvider
         $this->init();
     }
 
-    public function listens(): array
-    {
-        return $this->listen;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -148,6 +134,10 @@ abstract class AbstractModule extends ServiceProvider
         // Override this method for custom build.
     }
 
+    /**
+     * @return string
+     * @throws ReflectionException
+     */
     protected function getCurrentPath(): string
     {
         $reflection = new ReflectionClass(get_class($this));
@@ -155,6 +145,10 @@ abstract class AbstractModule extends ServiceProvider
         return dirname($reflection->getFileName());
     }
 
+    /**
+     * @return string
+     * @throws ReflectionException
+     */
     protected function getNamespace(): string
     {
         $reflection = new ReflectionClass(get_class($this));
@@ -162,6 +156,12 @@ abstract class AbstractModule extends ServiceProvider
         return $reflection->getNamespaceName();
     }
 
+    /**
+     * @param SplFileInfo $file
+     * @param             $configPath
+     *
+     * @return string
+     */
     protected function getNestedDirectory(SplFileInfo $file, $configPath): string
     {
         $directory = $file->getPath();
@@ -173,6 +173,9 @@ abstract class AbstractModule extends ServiceProvider
         return $nested;
     }
 
+    /**
+     * @return Generator
+     */
     protected function getTraits(): Generator
     {
         $class = static::class;
@@ -185,6 +188,12 @@ abstract class AbstractModule extends ServiceProvider
         }
     }
 
+    /**
+     * @param SplFileInfo $file
+     *
+     * @return string
+     * @throws ReflectionException
+     */
     private function getClassFromFile(SplFileInfo $file): string
     {
         $className = $this->getNamespace() . '\\' . str_replace(
