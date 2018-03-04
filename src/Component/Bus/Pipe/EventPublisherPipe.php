@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Bus\Pipe;
 
 use Illuminate\Contracts\Events\Dispatcher;
-use Pandawa\Component\Event\EventProvider;
+use Pandawa\Component\Event\EventProviderInterface;
 use Pandawa\Component\Message\AbstractMessage;
 
 /**
@@ -27,17 +27,17 @@ final class EventPublisherPipe
     private $dispatcher;
 
     /**
-     * @var EventProvider
+     * @var EventProviderInterface
      */
     private $eventProvider;
 
     /**
      * Constructor.
      *
-     * @param Dispatcher    $dispatcher
-     * @param EventProvider $eventProvider
+     * @param Dispatcher             $dispatcher
+     * @param EventProviderInterface $eventProvider
      */
-    public function __construct(Dispatcher $dispatcher, EventProvider $eventProvider)
+    public function __construct(Dispatcher $dispatcher, EventProviderInterface $eventProvider)
     {
         $this->dispatcher = $dispatcher;
         $this->eventProvider = $eventProvider;

@@ -15,7 +15,7 @@ namespace Pandawa\Component\Event;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class EventProvider
+final class EventProvider implements EventProviderInterface
 {
     /**
      * @var array

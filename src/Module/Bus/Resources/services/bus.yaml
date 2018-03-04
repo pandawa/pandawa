@@ -3,3 +3,6 @@ Pandawa\Component\Message\MessageRegistryInterface:
 
 Illuminate\Contracts\Bus\Dispatcher:
     class: "%modules.bus.dispatcher_class%"
+
+Pandawa\Component\Event\EventProviderInterface:
+    class: "%modules.bus.event_provider_class%"
