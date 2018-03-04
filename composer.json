@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "Pandawa\\": "src/"
         }
     },
     "autoload-dev": {
