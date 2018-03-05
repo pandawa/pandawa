@@ -262,7 +262,7 @@ abstract class AbstractModel extends Eloquent
     {
         if ($parent instanceof AbstractModel) {
             return new BelongsToMany(
-                $query, $parent, $table, $foreignPivotKey, $relationName, $parentKey, $relationName
+                $query, $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName
             );
         }
 
@@ -271,8 +271,9 @@ abstract class AbstractModel extends Eloquent
             $parent,
             $table,
             $foreignPivotKey,
-            $relationName,
+            $relatedPivotKey,
             $parentKey,
+            $relatedKey,
             $relationName
         );
     }

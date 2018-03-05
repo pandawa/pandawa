@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd\Repository;
 
+use DB;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -176,7 +177,11 @@ class Repository implements RepositoryInterface
      */
     public function save(AbstractModel $model): void
     {
-        $this->persist($model);
+        DB::transaction(
+            function () use ($model) {
+                $this->persist($model);
+            }
+        );
     }
 
     /**
@@ -188,7 +193,11 @@ class Repository implements RepositoryInterface
      */
     public function remove(AbstractModel $model): void
     {
-        $this->invokeDeleteModel($model);
+        DB::transaction(
+            function () use ($model) {
+                $this->invokeDeleteModel($model);
+            }
+        );
     }
 
     /**
