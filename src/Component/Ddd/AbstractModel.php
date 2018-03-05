@@ -14,9 +14,11 @@ namespace Pandawa\Component\Ddd;
 
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as LaravelCollection;
+use Pandawa\Component\Ddd\Relationship\BelongsToMany;
 use Pandawa\Component\Serializer\DeserializableInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
 use ReflectionClass;
@@ -29,6 +31,11 @@ use RuntimeException;
 abstract class AbstractModel extends Eloquent
 {
     use ModelUuidTrait;
+
+    /**
+     * @var array
+     */
+    protected $uncommittedActions = [];
 
     /**
      * @var array
@@ -58,6 +65,17 @@ abstract class AbstractModel extends Eloquent
         return null;
     }
 
+    /**
+     * @param callable $action
+     */
+    public function addPendingAction(callable $action): void
+    {
+        $this->uncommittedActions[] = $action;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return $this->getKey();
@@ -65,6 +83,7 @@ abstract class AbstractModel extends Eloquent
 
     /**
      * @param array $options
+     *
      * @deprecated
      */
     public function save(array $options = []): void
@@ -137,7 +156,16 @@ abstract class AbstractModel extends Eloquent
      */
     protected function persist(array $options = []): bool
     {
-        return parent::save($options);
+        $model = parent::save($options);
+        $actions = $this->uncommittedActions;
+
+        $this->uncommittedActions = [];
+
+        foreach ($actions as $action) {
+            $action();
+        }
+
+        return $model;
     }
 
     /**
@@ -225,6 +253,28 @@ abstract class AbstractModel extends Eloquent
 
                 return $value;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function newBelongsToMany(Builder $query, Eloquent $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName = null)
+    {
+        if ($parent instanceof AbstractModel) {
+            return new BelongsToMany(
+                $query, $parent, $table, $foreignPivotKey, $relationName, $parentKey, $relationName
+            );
+        }
+
+        return parent::newBelongsToMany(
+            $query,
+            $parent,
+            $table,
+            $foreignPivotKey,
+            $relationName,
+            $parentKey,
+            $relationName
+        );
     }
 
     /**
