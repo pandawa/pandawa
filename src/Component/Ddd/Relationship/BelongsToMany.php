@@ -14,7 +14,6 @@ namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany as LaravelBelongsToMany;
 use Pandawa\Component\Ddd\AbstractModel;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -25,14 +24,6 @@ class BelongsToMany extends LaravelBelongsToMany
      * @var AbstractModel
      */
     protected $parent;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(Builder $query, AbstractModel $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName = null)
-    {
-        parent::__construct($query, $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedPivotKey, $relationName);
-    }
 
     /**
      * {@inheritdoc}
