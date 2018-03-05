@@ -102,15 +102,17 @@ class ResourceController extends Controller implements ResourceControllerInterfa
      */
     public function store(Request $request): Responsable
     {
+        $route = $request->route();
         $data = $this->getRequestData($request);
-        $modelClass = $this->getModelClass($request->route());
+        $modelClass = $this->getModelClass($route);
 
         /** @var AbstractModel $model */
         $model = new $modelClass();
 
         $this->persist($model, $data);
+        $this->withRelations($model, $route->defaults);
 
-        return $this->render($request, $model, (array) array_get($request->route()->defaults, 'trans.store', []));
+        return $this->render($request, $model, (array) array_get($route->defaults, 'trans.store', []));
     }
 
     /**
@@ -129,6 +131,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $model = $modelClass::{'findOrFail'}($route->parameter($key));
 
         $this->persist($model, $data);
+        $this->withRelations($model, $route->defaults);
 
         return $this->render($request, $model, (array) array_get($route->defaults, 'trans.update', []));
     }
