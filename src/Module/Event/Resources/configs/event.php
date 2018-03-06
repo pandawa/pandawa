@@ -9,8 +9,6 @@
  */
 
 return [
-    'enable_event_publisher' => true,
-    'enable_db_transaction'  => true,
-    'registry_class'         => Pandawa\Component\Message\MessageRegistry::class,
-    'dispatcher_class'       => Pandawa\Component\Bus\Dispatcher::class,
+    'registry_class'       => Pandawa\Component\Event\EventRegistry::class,
+    'event_provider_class' => Pandawa\Component\Event\EventProvider::class,
 ];

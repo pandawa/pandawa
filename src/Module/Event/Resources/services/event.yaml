@@ -1,0 +1,5 @@
+Pandawa\Component\Event\EventRegistryInterface:
+    class: "%modules.event.registry_class%"
+
+Pandawa\Component\Event\EventProviderInterface:
+    class: "%modules.event.event_provider_class%"

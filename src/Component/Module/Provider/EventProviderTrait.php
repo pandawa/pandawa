@@ -13,14 +13,34 @@ declare(strict_types=1);
 namespace Pandawa\Component\Module\Provider;
 
 use Illuminate\Contracts\Events\Dispatcher;
+use Pandawa\Component\Event\EventRegistryInterface;
+use Pandawa\Component\Event\NameableEventInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait EventProviderTrait
 {
+    /**
+     * @var string
+     */
+    protected $eventPath = 'Event';
+
     protected function bootEventProvider(): void
     {
+        if (null !== $this->eventRegistry()) {
+            $basePath = $this->getCurrentPath() . '/' . trim($this->eventPath, '/');
+
+            foreach (Finder::create()->in($basePath) as $file) {
+                $eventClass = $this->getClassFromFile($file);
+
+                if (in_array(NameableEventInterface::class, class_implements($eventClass), true)) {
+                    $this->eventRegistry()->add($eventClass::{'name'}(), $eventClass);
+                }
+            }
+        }
+
         foreach ($this->listens() as $event => $listeners) {
             foreach ($listeners as $listener) {
                 $this->eventListener()->listen($event, $listener);
@@ -33,5 +53,14 @@ trait EventProviderTrait
     protected function eventListener(): Dispatcher
     {
         return app(Dispatcher::class);
+    }
+
+    protected function eventRegistry(): ?EventRegistryInterface
+    {
+        if (app()->has(EventRegistryInterface::class)) {
+            return app(EventRegistryInterface::class);
+        }
+
+        return null;
     }
 }

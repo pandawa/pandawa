@@ -10,23 +10,25 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Ddd\Specification;
+namespace Pandawa\Component\Support;
 
-use Pandawa\Component\Support\NameableClassTrait;
+use Illuminate\Support\Str;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-trait NameableSpecificationTrait
+trait NameableClassTrait
 {
-    use NameableClassTrait {
-        NameableClassTrait::name as baseName;
-    }
-
+    /**
+     * @return string
+     * @throws ReflectionException
+     */
     public static function name(): string
     {
-        $name = static::baseName();
+        $class = new ReflectionClass(get_called_class());
 
-        return preg_replace('/-(specification|spec)$/', '', $name);
+        return Str::kebab($class->getShortName());
     }
 }

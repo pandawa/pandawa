@@ -8,9 +8,15 @@
  * file that was distributed with this source code.
  */
 
-return [
-    'enable_event_publisher' => true,
-    'enable_db_transaction'  => true,
-    'registry_class'         => Pandawa\Component\Message\MessageRegistry::class,
-    'dispatcher_class'       => Pandawa\Component\Bus\Dispatcher::class,
-];
+declare(strict_types=1);
+
+namespace Pandawa\Module\Event;
+
+use Pandawa\Component\Module\AbstractModule;
+
+/**
+ * @author  Iqbal Maulana <iq.bluejack@gmail.com>
+ */
+final class PandawaEventModule extends AbstractModule
+{
+}
