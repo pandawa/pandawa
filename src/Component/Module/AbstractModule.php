@@ -194,7 +194,7 @@ abstract class AbstractModule extends ServiceProvider
      * @return string
      * @throws ReflectionException
      */
-    private function getClassFromFile(SplFileInfo $file): string
+    protected function getClassFromFile(SplFileInfo $file): string
     {
         $className = $this->getNamespace() . '\\' . str_replace(
                 ['/', '.php'],
