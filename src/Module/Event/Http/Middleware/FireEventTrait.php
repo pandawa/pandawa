@@ -42,7 +42,7 @@ trait FireEventTrait
 
         $reflection = new ReflectionClass($eventName);
 
-        $this->dispatcher()->dispatch($reflection->newInstanceArgs($data));
+        $this->dispatcher()->dispatch($reflection->newInstance($data));
     }
 
     /**
