@@ -25,13 +25,12 @@ use ReflectionException;
 trait FireEventTrait
 {
     /**
-     * @param Request $request
-     * @param string  $eventName
-     * @param array   $arguments
+     * @param string $eventName
+     * @param array  $data
      *
      * @throws ReflectionException
      */
-    public function fire(Request $request, string $eventName, array $arguments): void
+    public function fire(string $eventName, array $data): void
     {
         if ($this->registry()->has($eventName)) {
             $eventName = $this->registry()->get($eventName);
@@ -41,14 +40,33 @@ trait FireEventTrait
             throw new InvalidArgumentException(sprintf('Event class "%s" not exist.', $eventName));
         }
 
-        $args = [];
-        if (!empty($arguments)) {
-            $data = array_merge($request->all(), $request->route()->parameters());
-            $args = array_only($data,$arguments);
+        $reflection = new ReflectionClass($eventName);
+
+        $this->dispatcher()->dispatch($reflection->newInstanceArgs($data));
+    }
+
+    /**
+     * @param Request $request
+     * @param array   $extra
+     * @param array   $mappers
+     *
+     * @return array
+     */
+    protected function getData(Request $request, array $extra, array $mappers): array
+    {
+        $data = array_merge($request->all(), $request->route()->parameters(), $extra);
+
+        foreach ($mappers as $mapper) {
+            $parts = explode('=', $mapper);
+
+            if (count($parts) != 2) {
+                throw new InvalidArgumentException('Mapper format should be "target=source"');
+            }
+
+            $data[trim($parts[0])] = array_get($data, trim($parts[1]));
         }
 
-        $reflection = new ReflectionClass($eventName);
-        $reflection->newInstanceArgs($args);
+        return $data;
     }
 
     abstract protected function registry(): EventRegistryInterface;

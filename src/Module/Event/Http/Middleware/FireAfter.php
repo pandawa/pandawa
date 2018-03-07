@@ -14,9 +14,11 @@ namespace Pandawa\Module\Event\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Pandawa\Component\Event\EventRegistryInterface;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -51,16 +53,25 @@ class FireAfter
      * @param Request  $request
      * @param Closure  $next
      * @param string   $eventName
-     * @param string[] ...$arguments
+     * @param string[] ...$mappers
      *
      * @return mixed
      * @throws ReflectionException
      */
-    public function handle(Request $request, Closure $next, string $eventName, string ...$arguments)
+    public function handle(Request $request, Closure $next, string $eventName, string ...$mappers)
     {
+        /** @var Response $results */
         $results = $next($request);
 
-        $this->fire($request, $eventName, $arguments);
+        if ($results->isSuccessful()) {
+            $extra = [];
+
+            if ($results instanceof JsonResponse) {
+                $extra['result'] = $results->getData(true);
+            }
+
+            $this->fire($eventName, $this->getData($request, $extra, $mappers));
+        }
 
         return $results;
     }

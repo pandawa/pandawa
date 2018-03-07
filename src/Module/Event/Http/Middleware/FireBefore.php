@@ -51,14 +51,14 @@ class FireBefore
      * @param Request  $request
      * @param Closure  $next
      * @param string   $eventName
-     * @param string[] ...$arguments
+     * @param string[] ...$mappers
      *
      * @return mixed
      * @throws ReflectionException
      */
-    public function handle(Request $request, Closure $next, string $eventName, string ...$arguments)
+    public function handle(Request $request, Closure $next, string $eventName, string ...$mappers)
     {
-        $this->fire($request, $eventName, $arguments);
+        $this->fire($eventName, $this->getData($request, [], $mappers));
 
         return $next($request);
     }
