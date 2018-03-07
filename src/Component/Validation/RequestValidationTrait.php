@@ -23,9 +23,9 @@ trait RequestValidationTrait
     {
         $route = $request->route();
         $data = array_merge(
+            $request->route()->parameters(),
             $request->all(),
-            $request->files->all(),
-            $request->route()->parameters()
+            $request->files->all()
         );
 
         if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
