@@ -13,22 +13,23 @@ declare(strict_types=1);
 namespace Pandawa\Component\Validation;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait RequestValidationTrait
 {
-    public function validateRequest(Request $request): array
+    public function validateRequest(Request $request, string $action): array
     {
         $route = $request->route();
         $data = array_merge(
-            $request->route()->parameters(),
             $request->all(),
-            $request->files->all()
+            $request->files->all(),
+            $this->getRouteParameters($route)
         );
 
-        if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
+        if (!empty($rules = $this->getAllowedRules($route, $action))) {
             $filtered = [];
 
             foreach ($rules as $rule) {
@@ -48,5 +49,49 @@ trait RequestValidationTrait
         }
 
         return null;
+    }
+
+    private function getRouteParameters(Route $route): array
+    {
+        return array_merge(
+            array_except(
+                $route->parameters(),
+                ['type', 'middleware', 'resource', 'message', 'rules', 'defaults']
+            ),
+            $route->parameter('defaults', [])
+        );
+    }
+
+    private function getAllowedRules(Route $route, ?string $action): array
+    {
+        if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
+            if (null !== $action) {
+                $allowed = [];
+
+                foreach ($rules as $rule) {
+                    if (is_array($rule) && null !== $ruleName = array_get($rule, 'name')) {
+                        if (!empty($only = (array) array_get($rule, 'only'))) {
+                            if (in_array($action, $only, true)) {
+                                $allowed[] = $ruleName;
+                            }
+                        } else if (!empty($except = (array) array_get($rule, 'except'))) {
+                            if (!in_array($action, $except, true)) {
+                                $allowed[] = $ruleName;
+                            }
+                        } else {
+                            $allowed[] = $ruleName;
+                        }
+
+                        continue;
+                    }
+
+                    $allowed[] = $rule;
+                }
+
+                return $allowed;
+            }
+        }
+
+        return $rules;
     }
 }

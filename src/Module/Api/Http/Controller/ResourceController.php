@@ -103,7 +103,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     public function store(Request $request): Responsable
     {
         $route = $request->route();
-        $data = $this->getRequestData($request);
+        $data = $this->getRequestData($request, 'store');
         $modelClass = $this->getModelClass($route);
 
         /** @var AbstractModel $model */
@@ -124,7 +124,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     public function update(Request $request): Responsable
     {
         $route = $request->route();
-        $data = $this->getRequestData($request);
+        $data = $this->getRequestData($request, 'update');
         $modelClass = $this->getModelClass($route);
         $key = $this->getModelKey($modelClass, $route);
 
@@ -220,9 +220,9 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $repository->save($model);
     }
 
-    protected function getRequestData(Request $request): array
+    protected function getRequestData(Request $request, string $action): array
     {
-        return $this->validateRequest($request);
+        return $this->validateRequest($request, $action);
     }
 
     protected function appendRelations(AbstractModel $model, array &$data): void
