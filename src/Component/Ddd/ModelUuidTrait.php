@@ -19,18 +19,33 @@ use Illuminate\Support\Str;
  */
 trait ModelUuidTrait
 {
+    /**
+     * @var bool
+     */
+    protected $enableUuid = true;
+
     public static function bootModelUuidTrait(): void
     {
         static::creating(function(AbstractModel $model) {
-            $model->incrementing = false;
-            if (null === $model->{$model->getKeyName()}) {
-                $model->{$model->getKeyName()} = Str::uuid();
+            if ($model->enableUuid) {
+                $model->incrementing = false;
+                if (null === $model->{$model->getKeyName()}) {
+                    $model->{$model->getKeyName()} = Str::uuid();
+                }
             }
         });
     }
 
     public function getCasts(): array
     {
-        return ['id' => 'string'];
+        if ($this->enableUuid) {
+            return ['id' => 'string'];
+        }
+
+        if ($this->getIncrementing()) {
+            return array_merge([$this->getKeyName() => $this->getKeyType()], $this->casts);
+        }
+
+        return $this->casts;
     }
 }
