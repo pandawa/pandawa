@@ -20,7 +20,7 @@ use Illuminate\Routing\Route;
  */
 trait RequestValidationTrait
 {
-    public function validateRequest(Request $request, string $action): array
+    public function validateRequest(Request $request, string $action = null): array
     {
         $route = $request->route();
         $data = array_merge(
