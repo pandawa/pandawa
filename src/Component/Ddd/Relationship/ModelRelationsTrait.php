@@ -43,4 +43,12 @@ trait ModelRelationsTrait
             $relationName
         );
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function newRelatedInstance($class)
+    {
+        return new $class();
+    }
 }
