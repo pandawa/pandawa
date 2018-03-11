@@ -24,6 +24,11 @@ use ReflectionException;
 interface RepositoryInterface
 {
     /**
+     * @return string
+     */
+    public function getModelClass(): string;
+
+    /**
      * @param array $withs
      */
     public function with(array $withs): void;

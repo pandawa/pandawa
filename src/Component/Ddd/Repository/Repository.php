@@ -65,6 +65,14 @@ class Repository implements RepositoryInterface
     }
 
     /**
+     * @return string
+     */
+    public function getModelClass(): string
+    {
+        return $this->modelClass;
+    }
+
+    /**
      * @param array $withs
      */
     public function with(array $withs): void
