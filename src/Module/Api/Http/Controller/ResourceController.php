@@ -24,6 +24,7 @@ use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Repository\EntityManagerInterface;
 use Pandawa\Component\Ddd\Repository\RepositoryInterface;
+use Pandawa\Component\Ddd\Specification\CriteriaSpecification;
 use Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface;
 use Pandawa\Component\Resource\ResourceRegistryInterface;
 use Pandawa\Component\Validation\RequestValidationTrait;
@@ -55,6 +56,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $repository = $this->getRepository($modelClass);
 
             $this->applySpecifications($repository, $request, 'show');
+            $this->applyCriteria($repository, $route);
 
             if (null === $result = $repository->find($id)) {
                 throw (new ModelNotFoundException())->setModel($modelClass, [$id]);
@@ -83,6 +85,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
             $this->withRelations($repository, $route->defaults);
             $this->applySpecifications($repository, $request, 'index');
+            $this->applyCriteria($repository, $route);
 
             if (true === array_get($route->defaults, 'paginate')) {
                 $repository->paginate($request->get('limit', 50));
@@ -127,8 +130,15 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $data = $this->getRequestData($request, 'update');
         $modelClass = $this->getModelClass($route);
         $key = $this->getModelKey($modelClass, $route);
+        $id = $route->parameter($key);
+        $repository = $this->getRepository($modelClass);
 
-        $model = $modelClass::{'findOrFail'}($route->parameter($key));
+        $this->applySpecifications($repository, $request, 'update');
+        $this->applyCriteria($repository, $route);
+
+        if (null === $model = $repository->find($id)) {
+            throw (new ModelNotFoundException())->setModel($modelClass, [$id]);
+        }
 
         $this->persist($model, $data);
         $this->withRelations($model, $route->defaults);
@@ -149,6 +159,9 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $key = $this->getModelKey($modelClass, $route);
         $id = $route->parameter($key);
         $repository = $this->getRepository($modelClass);
+
+        $this->applySpecifications($repository, $request, 'update');
+        $this->applyCriteria($repository, $route);
 
         if (null === $model = $repository->find($id)) {
             throw (new ModelNotFoundException())->setModel($modelClass, [$id]);
@@ -175,6 +188,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $repo = app($class);
 
         $this->applySpecifications($repo, $request, $action);
+        $this->applyCriteria($repo, $route);
 
         if (null !== $relations = $this->getRelations($route->defaults)) {
             $repo->with($relations);
@@ -261,7 +275,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         return $class::{'findOrFail'}($id);
     }
 
-    protected function applySpecifications(RepositoryInterface $repository, Request $request, string $action)
+    protected function applySpecifications(RepositoryInterface $repository, Request $request, string $action): void
     {
         $options = $request->route()->defaults;
 
@@ -281,6 +295,13 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
                 $repository->match($this->specificationRegistry()->get(array_get($spec, 'name'), $arguments));
             }
+        }
+    }
+
+    protected function applyCriteria(RepositoryInterface $repository, Route $route): void
+    {
+        if (!empty($criteria = (array) array_get($route->defaults, 'criteria'))) {
+            $repository->match(new CriteriaSpecification($criteria));
         }
     }
 

@@ -24,6 +24,7 @@ trait RequestValidationTrait
     {
         $route = $request->route();
         $data = array_merge(
+            (array) $route->parameter('defaults', []),
             $request->all(),
             $request->files->all(),
             $this->getRouteParameters($route)
@@ -56,9 +57,9 @@ trait RequestValidationTrait
         return array_merge(
             array_except(
                 $route->parameters(),
-                ['type', 'middleware', 'resource', 'message', 'rules', 'defaults']
+                ['type', 'middleware', 'resource', 'message', 'rules', 'defaults', 'criteria', 'parameters']
             ),
-            $route->parameter('defaults', [])
+            $route->parameter('parameters', [])
         );
     }
 
@@ -74,12 +75,14 @@ trait RequestValidationTrait
                             if (in_array($action, $only, true)) {
                                 $allowed[] = $ruleName;
                             }
-                        } else if (!empty($except = (array) array_get($rule, 'except'))) {
-                            if (!in_array($action, $except, true)) {
+                        } else {
+                            if (!empty($except = (array) array_get($rule, 'except'))) {
+                                if (!in_array($action, $except, true)) {
+                                    $allowed[] = $ruleName;
+                                }
+                            } else {
                                 $allowed[] = $ruleName;
                             }
-                        } else {
-                            $allowed[] = $ruleName;
                         }
 
                         continue;
