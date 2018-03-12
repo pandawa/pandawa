@@ -286,9 +286,9 @@ class ResourceController extends Controller implements ResourceControllerInterfa
                 if ($specArgs = array_get($spec, 'arguments')) {
                     foreach ($specArgs as $key => $value) {
                         if (is_int($key)) {
-                            $arguments[$value] = $request->get($value);
+                            $arguments[Str::camel($value)] = $request->get($value);
                         } else {
-                            $arguments[$key] = $request->get($key, $value);
+                            $arguments[Str::camel($key)] = $request->get($key, $value);
                         }
                     }
                 }

@@ -17,6 +17,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface;
 use Pandawa\Component\Message\AbstractQuery;
@@ -85,9 +86,9 @@ final class InvokableController extends Controller implements InvokableControlle
                     if ($specArgs = array_get($spec, 'arguments')) {
                         foreach ($specArgs as $key => $value) {
                             if (is_int($key)) {
-                                $arguments[$value] = $request->get($value);
+                                $arguments[Str::camel($value)] = $request->get($value);
                             } else {
-                                $arguments[$key] = $request->get($key, $value);
+                                $arguments[Str::camel($key)] = $request->get($key, $value);
                             }
                         }
                     }
