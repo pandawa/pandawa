@@ -21,7 +21,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Str;
-use Ozon\Module\Ticket\Model\Chat;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Repository\EntityManagerInterface;
 use Pandawa\Component\Ddd\Repository\RepositoryInterface;
@@ -176,17 +175,17 @@ class ResourceController extends Controller implements ResourceControllerInterfa
     protected function callRepository(Request $request, array $repo, string $action)
     {
         $route = $request->route();
-        $data = collect(array_merge($request->route()->parameters(), $request->all()));
+        $modelClass = $this->getModelClass($route);
+        $data = collect($this->getAllData($request));
         $args = [];
 
-        list($class, $method) = explode('@', $repo['call']);
+        $method = $repo['call'];
 
         if (isset($repo['arguments']) && is_array($repo['arguments'])) {
             $args = array_values($data->only($repo['arguments'])->all());
         }
 
-        /** @var RepositoryInterface $repo */
-        $repo = app($class);
+        $repo = $this->getRepository($modelClass);
 
         $this->applySpecifications($repo, $request, $action);
         $this->applyCriteria($repo, $request);

@@ -43,6 +43,18 @@ trait RequestValidationTrait
         return $data;
     }
 
+    protected function getAllData(Request $request): array
+    {
+        $route = $request->route();
+
+        return array_merge(
+            (array) $route->parameter('defaults', []),
+            $request->all(),
+            $request->files->all(),
+            $this->getRouteParameters($route)
+        );
+    }
+
     private function ruleRegistry(): ?RuleRegistryInterface
     {
         if (app()->has(RuleRegistryInterface::class)) {
