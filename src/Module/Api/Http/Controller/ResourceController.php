@@ -308,7 +308,12 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $filters = [];
 
             foreach ($criterias as $criteria) {
-                $key = $criteria;
+                if (is_array($criteria)) {
+                    $key = array_get($criteria, 'target');
+                    $criteria = array_get($criteria, 'source');
+                } else {
+                    $key = $criteria;
+                }
 
                 if (method_exists($model, $criteria)) {
                     $relation = $model->{$criteria}();
