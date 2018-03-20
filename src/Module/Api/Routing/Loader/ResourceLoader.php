@@ -226,6 +226,6 @@ final class ResourceLoader extends AbstractLoader
         $resource = substr($path, (int) strrpos($path, '/'));
         $resource = str_replace('-', '_', $resource);
 
-        return Str::singular($resource);
+        return trim(Str::singular($resource), '/');
     }
 }
