@@ -93,7 +93,6 @@ final class ResourceLoader extends AbstractLoader
             $targetPath = $path;
 
             if (in_array($type, self::NEED_ID)) {
-                $resource = $this->getResourceNameFromPath($path);
                 $targetPath = sprintf('%s/{%s}', $path, $resource);
             }
 
