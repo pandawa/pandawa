@@ -70,7 +70,7 @@ final class JsonResource extends Resource
 
     public function toArray($request)
     {
-        $tags = array_get($this->options, 'trans', []);
+        $tags = array_get($this->options, 'tags', []);
 
         if (null !== $this->collection) {
             return $this->collection->map(
