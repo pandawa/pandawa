@@ -101,7 +101,7 @@ final class InvokableController extends Controller implements InvokableControlle
         }
 
         if (true === array_get($route->defaults, 'paginate', false)) {
-            $query->paginate($request->get('limit', 50));
+            $query->paginate((int) $request->get('limit', 50));
         }
     }
 

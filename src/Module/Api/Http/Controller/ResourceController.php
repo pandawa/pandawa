@@ -88,7 +88,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $this->applyCriteria($repository, $request);
 
             if (true === array_get($route->defaults, 'paginate')) {
-                $repository->paginate($request->get('limit', 50));
+                $repository->paginate((int) $request->get('limit', 50));
             }
 
             $results = $repository->findAll();
@@ -195,7 +195,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         }
 
         if (true === array_get($route->defaults, 'paginate')) {
-            $repo->paginate($request->get('limit', 50));
+            $repo->paginate((int) $request->get('limit', 50));
         }
 
         return $repo->{$method}(...$args);
