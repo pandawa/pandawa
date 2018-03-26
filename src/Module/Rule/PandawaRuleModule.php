@@ -12,11 +12,37 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Rule;
 
+use Illuminate\Validation\Factory;
 use Pandawa\Component\Module\AbstractModule;
+use Pandawa\Module\Rule\Validator\Validator;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class PandawaRuleModule extends AbstractModule
 {
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function build(): void
+    {
+        $this->validatorFactory()->resolver(
+            function ($translator, $data, $rules, $messages, $customAttributes) {
+                return new Validator($translator, $data, $rules, $messages, $customAttributes);
+            }
+        );
+    }
+
+    /**
+     * @return Factory
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function validatorFactory(): Factory
+    {
+        return $this->app->get(Factory::class);
+    }
 }
