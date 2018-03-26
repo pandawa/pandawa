@@ -54,7 +54,7 @@ final class JwtAuthenticator implements AuthenticatorInterface
     {
         $claims = array_merge($user->getSignPayload(), $payload);
 
-        if (null !== $this->ttl) {
+        if (!empty($this->ttl)) {
             $claims['exp'] = date('Y-m-d H:i:s', strtotime(sprintf('+%d seconds', $this->ttl)));
         }
 
