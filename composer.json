@@ -4,7 +4,6 @@
     "keywords": ["laravel", "pandawa"],
     "license": "MIT",
     "type": "library",
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Iqbal Maulana",
@@ -13,12 +12,12 @@
     ],
     "require": {
         "php": ">=7.2",
-        "borobudur/dci": "~0.1",
-        "borobudur/exception": "~0.1",
-        "borobudur/parameter": "~0.1",
+        "borobudur/dci": "~0.1@dev",
+        "borobudur/exception": "~0.1@dev",
+        "borobudur/parameter": "~0.1@dev",
         "fideloper/proxy": "~4.0",
         "laravel/framework": "^5.6",
-        "lcobucci/jwt": "^4.0",
+        "lcobucci/jwt": "^4.0@dev",
         "ramsey/uuid": "^3.7",
         "symfony/yaml": "^4.0"
     },
