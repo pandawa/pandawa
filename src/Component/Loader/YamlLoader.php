@@ -21,8 +21,6 @@ class YamlLoader implements LoaderInterface
 {
     public function load(string $file): array
     {
-        chdir(dirname($file));
-
         return Yaml::parseFile($file);
     }
 

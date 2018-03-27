@@ -34,6 +34,11 @@ final class RouteLoader implements RouteLoaderInterface
     private $fileLoader;
 
     /**
+     * @var string
+     */
+    private $dirname;
+
+    /**
      * Constructor.
      *
      * @param array $loaders
@@ -70,7 +75,7 @@ final class RouteLoader implements RouteLoaderInterface
      */
     public function loadFile(string $file): void
     {
-        if (!file_exists($file)) {
+        if (!file_exists($file = $this->getFile($file))) {
             throw new RuntimeException(sprintf('File "%s" not found.', $file));
         }
 
@@ -121,5 +126,24 @@ final class RouteLoader implements RouteLoaderInterface
         }
 
         throw new RuntimeException(sprintf('There are load loader support for route type "%s".', $type));
+    }
+
+    /**
+     * @param string $file
+     *
+     * @return string
+     */
+    private function getFile(string $file): string
+    {
+        $dirname = dirname($file);
+        if ($this->dirname !== $dirname && '.' !== $dirname) {
+            $this->dirname = $dirname;
+        }
+
+        if ('.' === $dirname) {
+            return sprintf('%s/%s', $this->dirname, $file);
+        }
+
+        return $file;
     }
 }
