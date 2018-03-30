@@ -234,11 +234,23 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $repository->save($model);
     }
 
+    /**
+     * @param Request $request
+     * @param string  $action
+     *
+     * @return array
+     */
     protected function getRequestData(Request $request, string $action): array
     {
         return $this->validateRequest($request, $action);
     }
 
+    /**
+     * @param AbstractModel $model
+     * @param array         $data
+     *
+     * @throws ReflectionException
+     */
     protected function appendRelations(AbstractModel $model, array &$data): void
     {
         foreach ($data as $attribute => $value) {
@@ -268,11 +280,32 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         }
     }
 
-    protected function findRelatedModel(Relation $relation, string $id): AbstractModel
+    /**
+     * @param Relation $relation
+     * @param mixed    $value
+     *
+     * @return AbstractModel
+     * @throws ReflectionException
+     */
+    protected function findRelatedModel(Relation $relation, $value): AbstractModel
     {
         $class = get_class($relation->getModel());
 
-        return $class::{'findOrFail'}($id);
+        if (is_array($value)) {
+            $key = $relation->getModel()->getKeyName();
+
+            if (null !== $id = array_get($value, $key)) {
+                $model = $class::{'findOrFail'}($id);
+                $this->persist($model, array_except($value, $key));
+            } else {
+                $model = new $class();
+                $this->persist($model, $value);
+            }
+        } else {
+            $model = $class::{'findOrFail'}($value);
+        }
+
+        return $model;
     }
 
     protected function applySpecifications(RepositoryInterface $repository, Request $request, string $action): void
