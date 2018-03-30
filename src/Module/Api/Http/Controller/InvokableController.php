@@ -20,8 +20,10 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface;
+use Pandawa\Component\Message\AbstractCommand;
 use Pandawa\Component\Message\AbstractQuery;
 use Pandawa\Component\Message\MessageRegistryInterface;
+use Pandawa\Component\Message\QueueEnvelope;
 use Pandawa\Component\Validation\RequestValidationTrait;
 
 /**
@@ -46,6 +48,10 @@ final class InvokableController extends Controller implements InvokableControlle
 
         if ($message instanceof AbstractQuery) {
             $this->modifyQuery($message, $request);
+        }
+
+        if ($message instanceof AbstractCommand && $queue = array_get($route->defaults, 'queue')) {
+            $message = new QueueEnvelope($message, is_string($queue) ? $queue : null);
         }
 
         $result = $this->dispatch($message);
