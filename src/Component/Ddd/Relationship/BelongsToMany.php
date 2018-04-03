@@ -30,7 +30,7 @@ class BelongsToMany extends LaravelBelongsToMany
      */
     public function attach($id, array $attributes = [], $touch = true)
     {
-        $this->parent->addPendingAction(
+        $this->parent->addAfterAction(
             function () use ($id, $attributes, $touch) {
                 parent::attach($id, $attributes, $touch);
             }
@@ -39,7 +39,7 @@ class BelongsToMany extends LaravelBelongsToMany
 
     public function syncWithoutDetaching($ids)
     {
-        $this->parent->addPendingAction(
+        $this->parent->addAfterAction(
             function () use ($ids) {
                 parent::syncWithoutDetaching($ids);
             }
@@ -48,7 +48,7 @@ class BelongsToMany extends LaravelBelongsToMany
 
     public function sync($ids, $detaching = true)
     {
-        $this->parent->addPendingAction(
+        $this->parent->addAfterAction(
             function () use ($ids, $detaching) {
                 parent::sync($ids, $detaching);
             }
@@ -57,7 +57,7 @@ class BelongsToMany extends LaravelBelongsToMany
 
     public function detach($ids = null, $touch = true)
     {
-        $this->parent->addPendingAction(
+        $this->parent->addAfterAction(
             function () use ($ids, $touch) {
                 parent::detach($ids, $touch);
             }

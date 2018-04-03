@@ -32,7 +32,10 @@ abstract class AbstractModel extends Eloquent
     /**
      * @var array
      */
-    protected $uncommittedActions = [];
+    protected $uncommittedActions = [
+        'before' => [],
+        'after'  => [],
+    ];
 
     /**
      * @var array
@@ -65,9 +68,17 @@ abstract class AbstractModel extends Eloquent
     /**
      * @param callable $action
      */
-    public function addPendingAction(callable $action): void
+    public function addAfterAction(callable $action): void
     {
-        $this->uncommittedActions[] = $action;
+        $this->uncommittedActions['after'][] = $action;
+    }
+
+    /**
+     * @param callable $action
+     */
+    public function addBeforeAction(callable $action): void
+    {
+        $this->uncommittedActions['before'][] = $action;
     }
 
     /**
@@ -125,14 +136,11 @@ abstract class AbstractModel extends Eloquent
      */
     protected function persist(array $options = []): bool
     {
+        $this->executeActions('before');
+
         $model = parent::save($options);
-        $actions = $this->uncommittedActions;
 
-        $this->uncommittedActions = [];
-
-        foreach ($actions as $action) {
-            $action();
-        }
+        $this->executeActions('after');
 
         return $model;
     }
@@ -144,5 +152,19 @@ abstract class AbstractModel extends Eloquent
     protected function remove(): bool
     {
         return parent::delete();
+    }
+
+    /**
+     * @param string $type
+     */
+    private function executeActions(string $type): void
+    {
+        $actions = $this->uncommittedActions[$type];
+
+        $this->uncommittedActions[$type] = [];
+
+        foreach ($actions as $action) {
+            $action();
+        }
     }
 }
