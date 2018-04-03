@@ -33,12 +33,11 @@ class BelongsTo extends LaravelBelongsTo
         if ($model instanceof AbstractModel) {
             $this->parent->addBeforeAction(
                 function () use ($model) {
-                    $ownerKey = $model->getAttribute($this->ownerKey);
-
-                    $this->child->setAttribute($this->foreignKey, $ownerKey);
-                    $this->child->setRelation($this->relation, $model);
+                    $this->child->setAttribute($this->foreignKey, $model->getAttribute($this->ownerKey));
                 }
             );
+
+            $this->child->setRelation($this->relation, $model);
 
             return $this->child;
         }
