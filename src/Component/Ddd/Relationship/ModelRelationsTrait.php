@@ -47,6 +47,18 @@ trait ModelRelationsTrait
     /**
      * {@inheritdoc}
      */
+    protected function newHasOne(Builder $query, Eloquent $parent, $foreignKey, $localKey)
+    {
+        if ($parent instanceof AbstractModel) {
+            return new HasOne($query, $parent, $foreignKey, $localKey);
+        }
+
+        return parent::newHasOne($query, $parent, $foreignKey, $localKey);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function newRelatedInstance($class)
     {
         return new $class();
