@@ -204,4 +204,15 @@ abstract class AbstractModule extends ServiceProvider
 
         return preg_replace('/\\+/', '\\', $className);
     }
+
+    /**
+     * @return string
+     * @throws ReflectionException
+     */
+    protected function getModuleName(): string
+    {
+        $reflection = new ReflectionClass(get_class($this));
+
+        return Str::kebab(preg_replace('/Module$/', '', $reflection->getShortName()));
+    }
 }
