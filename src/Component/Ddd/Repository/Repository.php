@@ -305,21 +305,13 @@ class Repository implements RepositoryInterface
             $this->queuing = [];
         }
 
-        $saved = false;
-        if (empty($model->getKey())) {
-            if (!$this->invokeSaveModel($model)) {
-                return false;
-            }
-
-            $saved = true;
-        }
-
         $this->queuing[$walker][spl_object_hash($model)] = true;
         foreach ($model->getRelations() as $entities) {
             $entities = $entities instanceof Collection ? $entities->all() : [$entities];
 
+            /** @var AbstractModel $item */
             foreach (array_filter($entities) as $item) {
-                if (isset($this->queuing[$walker][spl_object_hash($item)])) {
+                if (isset($this->queuing[$walker][spl_object_hash($item)]) && $item->isDirty()) {
                     $this->invokeSaveModel($item);
 
                     continue;
@@ -335,7 +327,7 @@ class Repository implements RepositoryInterface
             unset($this->queuing[$walker]);
         }
 
-        if (!$saved && !$this->invokeSaveModel($model)) {
+        if ($model->isDirty() && !$this->invokeSaveModel($model)) {
             return false;
         }
 

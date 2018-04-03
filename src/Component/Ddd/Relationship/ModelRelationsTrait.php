@@ -56,6 +56,15 @@ trait ModelRelationsTrait
         return parent::newHasOne($query, $parent, $foreignKey, $localKey);
     }
 
+    protected function newBelongsTo(Builder $query, Eloquent $child, $foreignKey, $ownerKey, $relation)
+    {
+        if ($child instanceof AbstractModel) {
+            return new BelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
+        }
+
+        return parent::newBelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
+    }
+
     /**
      * {@inheritdoc}
      */
