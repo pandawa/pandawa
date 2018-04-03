@@ -16,6 +16,7 @@ use Pandawa\Component\Message\AbstractMessage;
 use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Component\Message\Metadata;
 use Pandawa\Component\Message\NameableMessageInterface;
+use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -41,8 +42,9 @@ trait MessageProviderTrait
                 /** @var SplFileInfo $file */
                 foreach ($finder->in($basePath)->notName('*Handler.php') as $file) {
                     $messageClass = $this->getClassFromFile($file);
+                    $reflection = new ReflectionClass($messageClass);
 
-                    if (is_subclass_of($messageClass, AbstractMessage::class)) {
+                    if (!$reflection->isAbstract() && $reflection->isSubclassOf(AbstractMessage::class)) {
                         $name = $this->getMessageName($messageClass);
 
                         $this->messageRegistry()->add(
