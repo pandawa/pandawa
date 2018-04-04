@@ -39,7 +39,7 @@ trait ModelUuidTrait
     public function getCasts(): array
     {
         if ($this->enableUuid) {
-            return ['id' => 'string'];
+            $this->casts['id'] = 'string';
         }
 
         if ($this->getIncrementing()) {
