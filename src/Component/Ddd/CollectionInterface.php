@@ -12,11 +12,18 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class Collection extends EloquentCollection implements CollectionInterface
+interface CollectionInterface
 {
+    public function find($key, $default = null);
+
+    public function add($item);
+
+    public function only($keys);
+
+    public function except($keys);
+
+    public function keys();
 }

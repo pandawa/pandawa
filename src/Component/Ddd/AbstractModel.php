@@ -110,9 +110,9 @@ abstract class AbstractModel extends Eloquent
     /**
      * @param array $entities
      *
-     * @return Collection
+     * @return CollectionInterface
      */
-    public function newCollection(array $entities = []): Collection
+    public function newCollection(array $entities = []): CollectionInterface
     {
         return new Collection($entities);
     }
