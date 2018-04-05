@@ -32,6 +32,8 @@ trait ModelAttributeTrait
      */
     public function setAttribute($key, $value)
     {
+        $key = snake_case($key);
+
         parent::setAttribute($key, $value);
 
         if ($this->hasCast($key)) {
@@ -48,6 +50,18 @@ trait ModelAttributeTrait
         }
 
         return $this;
+    }
+
+    /**
+     * Get attribute from model.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        return parent::getAttribute(snake_case($key));
     }
 
     /**
