@@ -14,6 +14,7 @@ namespace Pandawa\Module\Rule\Validator;
 
 use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\Validator as LaravelValidator;
+use Pandawa\Module\Rule\Validation\RuleValidation;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -56,5 +57,13 @@ class Validator extends LaravelValidator
         }
 
         return $verifier->getCount($table, $column, $value, $id, $idColumn, $extra) == 0;
+    }
+
+    public function validateRule($attribute, $value, $parameters)
+    {
+        /** @var RuleValidation $validation */
+        $validation = $this->container->make(RuleValidation::class);
+
+        return $validation->validate($attribute, $value, $parameters, $this);
     }
 }
