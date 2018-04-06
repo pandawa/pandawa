@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Builder;
-use Pandawa\Component\Ddd\AbstractModel;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Pandawa\Component\Ddd\AbstractModel;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -56,6 +56,9 @@ trait ModelRelationsTrait
         return parent::newHasOne($query, $parent, $foreignKey, $localKey);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function newBelongsTo(Builder $query, Eloquent $child, $foreignKey, $ownerKey, $relation)
     {
         if ($child instanceof AbstractModel) {
@@ -63,6 +66,18 @@ trait ModelRelationsTrait
         }
 
         return parent::newBelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function newHasMany(Builder $query, Eloquent $parent, $foreignKey, $localKey)
+    {
+        if ($parent instanceof AbstractModel) {
+            return new HasMany($query, $parent, $foreignKey, $localKey);
+        }
+
+        return parent::newHasMany($query, $parent, $foreignKey, $localKey);
     }
 
     /**

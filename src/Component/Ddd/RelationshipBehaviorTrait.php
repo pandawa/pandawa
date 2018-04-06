@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Pandawa\Component\Ddd\Relationship\BelongsTo;
 use Pandawa\Component\Ddd\Relationship\BelongsToMany;
+use Pandawa\Component\Ddd\Relationship\HasMany;
 use Pandawa\Component\Ddd\Relationship\HasOne;
 
 /**
