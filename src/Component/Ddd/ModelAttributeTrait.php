@@ -65,6 +65,18 @@ trait ModelAttributeTrait
     }
 
     /**
+     * Get relation value.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        return parent::getRelationValue(camel_case($key));
+    }
+
+    /**
      * Add cast attributes.
      *
      * @param array $attributes
