@@ -36,5 +36,6 @@ return [
     'renderer' => Pandawa\Module\Api\Renderer\JsonApiRenderer::class,
     'default_transformers' => [
         Pandawa\Component\Transformer\ArrayableTransformer::class,
+        Pandawa\Component\Transformer\ModelTransformer::class,
     ]
 ];
