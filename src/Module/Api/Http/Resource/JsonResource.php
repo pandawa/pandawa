@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Resource;
 
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Resources\CollectsResources;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use Pandawa\Component\Transformer\TransformerRegistryInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -85,6 +87,14 @@ final class JsonResource extends Resource
 
     public function toResponse($request)
     {
+        if ($this->resource instanceof Responsable) {
+            return $this->resource->toResponse($request);
+        }
+
+        if ($this->resource instanceof Response) {
+            return $this->resource;
+        }
+
         return $this->resource instanceof AbstractPaginator
             ? (new PaginateResource($this))->toResponse($request)
             : parent::toResponse($request);
