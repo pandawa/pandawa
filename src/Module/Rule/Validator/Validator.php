@@ -15,6 +15,7 @@ namespace Pandawa\Module\Rule\Validator;
 use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\Validator as LaravelValidator;
 use Pandawa\Module\Rule\Validation\RuleValidation;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -59,11 +60,30 @@ class Validator extends LaravelValidator
         return $verifier->getCount($table, $column, $value, $id, $idColumn, $extra) == 0;
     }
 
-    public function validateRule($attribute, $value, $parameters)
+    /**
+     * @param string $attribute
+     * @param mixed  $value
+     * @param array  $parameters
+     *
+     * @return bool
+     */
+    public function validateRule(string $attribute, $value, array $parameters): bool
     {
         /** @var RuleValidation $validation */
         $validation = $this->container->make(RuleValidation::class);
 
         return $validation->validate($attribute, $value, $parameters, $this);
+    }
+
+    /**
+     * @param string $attribute
+     * @param mixed  $value
+     * @param array  $parameters
+     *
+     * @return bool
+     */
+    public function validateUuid(string $attribute, $value, array $parameters): bool
+    {
+        return Uuid::isValid($value);
     }
 }
