@@ -56,9 +56,15 @@ final class RuleValidation
      */
     public function validate(string $attribute, array $data, array $rules, Validator $validator): bool
     {
+        if (!$this->isMultiple($data)) {
+            $data = [$data];
+        }
+
         foreach ($rules as $rule) {
-            if (false === $this->passes($data, $rule)) {
-                $this->fails($attribute, $validator);
+            foreach ($data as $datum) {
+                if (false === $this->passes($datum, $rule)) {
+                    $this->fails($attribute, $validator);
+                }
             }
         }
 
@@ -108,5 +114,15 @@ final class RuleValidation
     private function messages(string $rule): array
     {
         return array_get(array_get($this->registry->getAllRules(), $rule), 'messages', []);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    private function isMultiple(array $data): bool
+    {
+        return is_array($data[0] ?? null);
     }
 }
