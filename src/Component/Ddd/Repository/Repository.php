@@ -313,12 +313,10 @@ class Repository implements RepositoryInterface
             foreach (array_filter($entities) as $item) {
                 if (isset($this->queuing[$walker][spl_object_hash($item)]) && $item->isDirty()) {
                     $this->invokeSaveModel($item);
-
-                    continue;
                 }
 
-                if ($item instanceof AbstractModel && !$this->persist($item, $walker)) {
-                    return false;
+                if ($item instanceof AbstractModel) {
+                    $this->persist($item, $walker);
                 }
             }
         }
