@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Rule;
 
-use Illuminate\Translation\Translator;
 use Illuminate\Validation\Factory;
 use Pandawa\Component\Module\AbstractModule;
 use Pandawa\Component\Module\Provider\LanguageProviderTrait;
@@ -38,27 +37,6 @@ final class PandawaRuleModule extends AbstractModule
                 return new Validator($translator, $data, $rules, $messages, $customAttributes);
             }
         );
-
-        $this->loadTranslationsValidation($this->getModuleName());
-    }
-
-    protected function init(): void
-    {
-        Translator::macro('addTranslationValidation', function (string $module) {
-            $group = 'validation';
-            foreach ($this->localeArray($this->locale) as $locale) {
-                $lines = $this->loader->load($locale, $group, $module);
-                $this->addLines(array_dot($lines, "{$group}."), $locale);
-            }
-        });
-    }
-
-    /**
-     * @param string $module
-     */
-    protected function loadTranslationsValidation(string $module): void
-    {
-        $this->app['translator']->addTranslationValidation($module);
     }
 
     /**
