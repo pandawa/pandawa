@@ -83,6 +83,30 @@ trait ModelRelationsTrait
     /**
      * {@inheritdoc}
      */
+    protected function newMorphOne(Builder $query, Eloquent $parent, $type, $id, $localKey)
+    {
+        if ($parent instanceof AbstractModel) {
+            return new MorphOne($query, $parent, $type, $id, $localKey);
+        }
+
+        return parent::newMorphOne($query, $parent, $type, $id, $localKey);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function newMorphMany(Builder $query, Eloquent $parent, $type, $id, $localKey)
+    {
+        if ($parent instanceof AbstractModel) {
+            return new MorphMany($query, $parent, $type, $id, $localKey);
+        }
+
+        return parent::newMorphMany($query, $parent, $type, $id, $localKey);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function newRelatedInstance($class)
     {
         return new $class();
