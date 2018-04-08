@@ -60,15 +60,17 @@ final class RuleValidation
             $data = [$data];
         }
 
+        $passes = true;
         foreach ($rules as $rule) {
             foreach ($data as $datum) {
                 if (false === $this->passes($datum, $rule)) {
                     $this->fails($attribute, $validator);
+                    $passes = false;
                 }
             }
         }
 
-        return true;
+        return $passes;
     }
 
     /**

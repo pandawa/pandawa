@@ -12,10 +12,11 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Rule\Validator;
 
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\Validator as LaravelValidator;
 use Pandawa\Module\Rule\Validation\RuleValidation;
-use Ramsey\Uuid\Uuid;
+use Pandawa\Module\Rule\Validation\UuidValidation;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -71,8 +72,11 @@ class Validator extends LaravelValidator
     {
         /** @var RuleValidation $validation */
         $validation = $this->container->make(RuleValidation::class);
+        if (false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
+            $this->failure($attribute, $validation, $parameters);
+        }
 
-        return $validation->validate($attribute, $value, $parameters, $this);
+        return true;
     }
 
     /**
@@ -84,6 +88,27 @@ class Validator extends LaravelValidator
      */
     public function validateUuid(string $attribute, $value, array $parameters): bool
     {
-        return Uuid::isValid($value);
+        /** @var UuidValidation $validation */
+        $validation = $this->container->make(UuidValidation::class);
+        if (false === $passes = $validation->passes($attribute, $value)) {
+            $this->failure($attribute, $validation, $parameters);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $attribute
+     * @param mixed  $rule
+     * @param array  $parameters
+     */
+    protected function failure(string $attribute, $rule, array $parameters): void
+    {
+        $this->failedRules[$attribute][get_class($rule)] = $parameters;
+        if ($rule instanceof Rule) {
+            $this->messages->add($attribute, $this->makeReplacements(
+                $rule->message(), $attribute, get_class($rule), $parameters
+            ));
+        }
     }
 }
