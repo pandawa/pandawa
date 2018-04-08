@@ -16,6 +16,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\Validator as LaravelValidator;
 use Pandawa\Module\Rule\Validation\RuleValidation;
+use Pandawa\Module\Rule\Validation\TreeRuleValidation;
 use Pandawa\Module\Rule\Validation\UuidValidation;
 
 /**
@@ -72,6 +73,24 @@ class Validator extends LaravelValidator
     {
         /** @var RuleValidation $validation */
         $validation = $this->container->make(RuleValidation::class);
+        if (false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
+            $this->failure($attribute, $validation, $parameters);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $attribute
+     * @param mixed  $value
+     * @param array  $parameters
+     *
+     * @return bool
+     */
+    public function validateTreeRule(string $attribute, $value, array $parameters): bool
+    {
+        /** @var TreeRuleValidation $validation */
+        $validation = $this->container->make(TreeRuleValidation::class);
         if (false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
             $this->failure($attribute, $validation, $parameters);
         }
