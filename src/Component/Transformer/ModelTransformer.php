@@ -28,8 +28,8 @@ final class ModelTransformer implements TransformerInterface
     public function transform($data, array $tags = [])
     {
         return array_merge(
-            $data->attributesToArray(),
-            $data->getRelations()
+            $data->getRelations(),
+            $data->attributesToArray()
         );
     }
 
