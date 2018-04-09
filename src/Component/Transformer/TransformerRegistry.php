@@ -25,6 +25,16 @@ final class TransformerRegistry implements TransformerRegistryInterface
     private $transformers = [];
 
     /**
+     * @var array
+     */
+    private $transformed = [];
+
+    /**
+     * @var string
+     */
+    private $trx;
+
+    /**
      * Constructor.
      *
      * @param TransformerInterface[] $transformers
@@ -43,34 +53,86 @@ final class TransformerRegistry implements TransformerRegistryInterface
 
     public function transform($data, array $tags = [])
     {
-        // Return the data if scalar
-        if (is_scalar($data)) {
-            return $data;
-        }
+        $trx = $this->begin();
 
-        // Check if given data is array or instance of collection, loop the data and transform it
         if (is_array($data) || $data instanceof Collection) {
+            $transformed = [];
             foreach ($data as $key => $value) {
-                if (!is_scalar($value)) {
-                    $data[$key] = $this->transform($value, $tags);
-                }
+                $transformed[$key] = $this->transform($value, $tags);
             }
-
-            return $data;
-        }
-
-        /** @var TransformerInterface $transformer */
-        foreach (array_reverse($this->transformers) as $transformer) {
-            if ($transformer->support($data, $tags)) {
-                $data = $transformer->transform($data, $tags);
-
-                // Check if data is array or instance of collection, still need to be transformed
-                if (is_array($data) || $data instanceof Collection) {
-                    return $this->transform($data);
+        } else if (!is_scalar($data)) {
+            /** @var TransformerInterface $transformer */
+            foreach (array_reverse($this->transformers) as $transformer) {
+                if ($transformer->support($data, $tags)) {
+                    $transformed = $this->transformData($transformer, $data, $tags);
                 }
             }
         }
 
-        return $data;
+        $this->end($trx);
+
+        return $transformed ?? $data;
+    }
+
+    private function transformData(TransformerInterface $transformer, $data, array $tags)
+    {
+        if (is_object($data)) {
+            if ($this->isCircularDependency($data)) {
+                if ($transformer instanceof HandleCircularDependencyInterface) {
+                    return $transformer->handleCircular($data, $tags);
+                }
+
+                return null;
+            }
+        }
+
+        $transformed = $transformer->transform($data, $tags);
+
+        if (is_array($data) || $data instanceof Collection) {
+            $transformed = $this->transform($transformed);
+        }
+
+        return $transformed;
+    }
+
+    private function isCircularDependency(object $data): bool
+    {
+        $hash = spl_object_hash($data);
+
+        if (isset($this->transformed[$hash])) {
+            return true;
+        }
+
+        $this->transformed[$hash] = true;
+
+        return false;
+    }
+
+    /**
+     * Begin transaction.
+     *
+     * @return string
+     */
+    private function begin(): string
+    {
+        $trx = uniqid();
+
+        if (null === $this->trx) {
+            $this->trx = $trx;
+        }
+
+        return $trx;
+    }
+
+    /**
+     * End transaction.
+     *
+     * @param string $trx
+     */
+    private function end(string $trx): void
+    {
+        if ($trx === $this->trx) {
+            $this->trx = null;
+        }
     }
 }
