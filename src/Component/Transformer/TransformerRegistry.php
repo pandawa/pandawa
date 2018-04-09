@@ -43,17 +43,30 @@ final class TransformerRegistry implements TransformerRegistryInterface
 
     public function transform($data, array $tags = [])
     {
+        // Return the data if scalar
+        if (is_scalar($data)) {
+            return $data;
+        }
+
+        // Check if given data is array or instance of collection, loop the data and transform it
+        if (is_array($data) || $data instanceof Collection) {
+            foreach ($data as $key => $value) {
+                if (!is_scalar($value)) {
+                    $data[$key] = $this->transform($value, $tags);
+                }
+            }
+
+            return $data;
+        }
+
         /** @var TransformerInterface $transformer */
         foreach (array_reverse($this->transformers) as $transformer) {
             if ($transformer->support($data, $tags)) {
                 $data = $transformer->transform($data, $tags);
 
+                // Check if data is array or instance of collection, still need to be transformed
                 if (is_array($data) || $data instanceof Collection) {
-                    foreach ($data as $key => $value) {
-                        if (!is_scalar($value)) {
-                            $data[$key] = $this->transform($value, $tags);
-                        }
-                    }
+                    return $this->transform($data);
                 }
             }
         }
