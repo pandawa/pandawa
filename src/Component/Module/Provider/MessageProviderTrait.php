@@ -40,7 +40,7 @@ trait MessageProviderTrait
                 $finder = new Finder();
 
                 /** @var SplFileInfo $file */
-                foreach ($finder->in($basePath)->notName('*Handler.php') as $file) {
+                foreach ($finder->in($basePath)->notName('*Handler.php')->files() as $file) {
                     $messageClass = $this->getClassFromFile($file);
                     $reflection = new ReflectionClass($messageClass);
 
