@@ -62,7 +62,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
                 throw (new ModelNotFoundException())->setModel($modelClass, [$id]);
             }
 
-            $this->withRelations($result, $route->defaults);
+            $this->withRelations($result, $route->defaults, 'show');
         }
 
         return $this->render($request, $result, (array) array_get($route->defaults, 'trans.show', []));
@@ -83,7 +83,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $modelClass = $this->getModelClass($route);
             $repository = $this->getRepository($modelClass);
 
-            $this->withRelations($repository, $route->defaults);
+            $this->withRelations($repository, $route->defaults, 'index');
             $this->applySpecifications($repository, $request, 'index');
             $this->applyCriteria($repository, $request);
 
@@ -113,7 +113,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $model = new $modelClass();
 
         $this->persist($model, $data);
-        $this->withRelations($model, $route->defaults);
+        $this->withRelations($model, $route->defaults, 'store');
 
         return $this->render($request, $model, (array) array_get($route->defaults, 'trans.store', []));
     }
@@ -141,7 +141,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         }
 
         $this->persist($model, $data);
-        $this->withRelations($model, $route->defaults);
+        $this->withRelations($model, $route->defaults, 'update');
 
         return $this->render($request, $model, (array) array_get($route->defaults, 'trans.update', []));
     }
@@ -189,10 +189,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
         $this->applySpecifications($repo, $request, $action);
         $this->applyCriteria($repo, $request);
-
-        if (null !== $relations = $this->getRelations($route->defaults)) {
-            $repo->with($relations);
-        }
+        $this->withRelations($repo, $route->defaults, $action);
 
         if (true === array_get($route->defaults, 'paginate')) {
             $repo->paginate((int) $request->get('limit', 50));

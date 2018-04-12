@@ -22,9 +22,9 @@ use Pandawa\Component\Ddd\Repository\RepositoryInterface;
  */
 trait InteractsWithRelationsTrait
 {
-    protected function withRelations($stmt, array $options): void
+    protected function withRelations($stmt, array $options, string $scope = null): void
     {
-        if (null !== $withs = $this->getRelations($options)) {
+        if (null !== $withs = $this->getRelations($options, $scope)) {
             if ($stmt instanceof RepositoryInterface) {
                 $stmt->with($withs);
             } else if ($stmt instanceof Builder) {
@@ -35,9 +35,17 @@ trait InteractsWithRelationsTrait
         }
     }
 
-    protected function getRelations(array $options): ?array
+    protected function getRelations(array $options, ?string $scope): ?array
     {
-        if (null !== $withs = array_get($options, 'withs')) {
+        if (null !== $scope) {
+            $key = sprintf('withs.%s', $scope);
+            $withs = array_get($options, $key, array_get($options, 'withs'));
+            $withs = $withs ? array_except($withs, ['index', 'show', 'destroy', 'store', 'update']) : null;
+        } else {
+            $withs = array_get($options, 'withs');
+        }
+
+        if (null !== $withs) {
             return array_map(
                 function (string $rel) {
                     return Str::camel($rel);
