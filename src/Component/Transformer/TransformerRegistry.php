@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Transformer;
 
 use Illuminate\Support\Collection;
+use Pandawa\Component\Ddd\AbstractModel;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -81,6 +82,10 @@ final class TransformerRegistry implements TransformerRegistryInterface
             if ($this->isCircularDependency($data)) {
                 if ($transformer instanceof HandleCircularDependencyInterface) {
                     return $transformer->handleCircular($data, $tags);
+                }
+
+                if ($data instanceof AbstractModel) {
+                    return $data->attributesToArray();
                 }
 
                 return null;
