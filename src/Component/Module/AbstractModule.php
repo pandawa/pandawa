@@ -199,7 +199,7 @@ abstract class AbstractModule extends ServiceProvider
         $className = $this->getNamespace() . '\\' . str_replace(
                 ['/', '.php'],
                 ['\\', ''],
-                Str::after($file->getPathname(), $this->getCurrentPath() . DIRECTORY_SEPARATOR)
+                Str::after($file->getPathname(), $this->getCurrentPath() . '/')
             );
 
         return preg_replace('/\\+/', '\\', $className);
