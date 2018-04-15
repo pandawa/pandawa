@@ -51,7 +51,7 @@ final class TransformerRegistry implements TransformerRegistryInterface
         $this->transformers[] = $transformer;
     }
 
-    public function transform($data, array $tags = [])
+    public function transform($data, array $tags = [], object $parent = null)
     {
         $trx = $this->begin();
         $transformed = $data;
@@ -59,13 +59,13 @@ final class TransformerRegistry implements TransformerRegistryInterface
         if (is_array($data) || $data instanceof Collection) {
             $transformed = [];
             foreach ($data as $key => $value) {
-                $transformed[$key] = $this->transform($value, $tags);
+                $transformed[$key] = $this->transform($value, $tags, $parent);
             }
         } else if (!is_scalar($data)) {
             /** @var TransformerInterface $transformer */
             foreach (array_reverse($this->transformers) as $transformer) {
                 if ($transformer->support($transformed, $tags)) {
-                    $transformed = $this->transformData($transformer, $transformed, $tags);
+                    $transformed = $this->transformData($transformer, $transformed, $tags, $parent);
                 }
             }
         }
@@ -75,10 +75,10 @@ final class TransformerRegistry implements TransformerRegistryInterface
         return $transformed;
     }
 
-    private function transformData(TransformerInterface $transformer, $data, array $tags)
+    private function transformData(TransformerInterface $transformer, $data, array $tags, object $parent = null)
     {
-        if (is_object($data)) {
-            if ($this->isCircularDependency($data)) {
+        if (is_object($data) && $parent) {
+            if ($this->isCircularDependency($data, $parent)) {
                 if ($transformer instanceof HandleCircularDependencyInterface) {
                     return $transformer->handleCircular($data, $tags);
                 }
@@ -87,24 +87,29 @@ final class TransformerRegistry implements TransformerRegistryInterface
             }
         }
 
-        $transformed = $transformer->transform($data, $tags);
+        $transformed = $transformer->transform($data, $tags, $this);
 
         if (is_array($data) || $data instanceof Collection) {
-            $transformed = $this->transform($transformed);
+            $transformed = $this->transform($transformed, $tags, $this);
         }
 
         return $transformed;
     }
 
-    private function isCircularDependency(object $data): bool
+    private function isCircularDependency($data, object $parent): bool
     {
-        $hash = spl_object_hash($data);
+        if (is_array($data) || $data instanceof Collection) {
+            return false;
+        }
 
-        if (isset($this->transformed[$hash])) {
+        $parentHash = spl_object_hash($parent);
+        $dataHash = spl_object_hash($data);
+
+        if (isset($this->transformed[$parentHash][$dataHash])) {
             return true;
         }
 
-        $this->transformed[$hash] = true;
+        $this->transformed[$parentHash][$dataHash] = true;
 
         return false;
     }
@@ -134,6 +139,7 @@ final class TransformerRegistry implements TransformerRegistryInterface
     {
         if ($trx === $this->trx) {
             $this->trx = null;
+            $this->transformed = [];
         }
     }
 }
