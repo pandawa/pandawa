@@ -311,7 +311,7 @@ class Repository implements RepositoryInterface
 
             /** @var AbstractModel $item */
             foreach (array_filter($entities) as $item) {
-                if (isset($this->queuing[$walker][spl_object_hash($item)]) && $item->isDirty()) {
+                if (isset($this->queuing[$walker][spl_object_hash($item)])) {
                     $this->invokeSaveModel($item);
                 }
 
@@ -325,7 +325,7 @@ class Repository implements RepositoryInterface
             unset($this->queuing[$walker]);
         }
 
-        if ($model->isDirty() && !$this->invokeSaveModel($model)) {
+        if (!$this->invokeSaveModel($model)) {
             return false;
         }
 

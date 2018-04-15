@@ -14,13 +14,14 @@ namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Relations\HasMany as LaravelHasMany;
 use Pandawa\Component\Ddd\AbstractModel;
-use ReflectionMethod;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 class HasMany extends LaravelHasMany
 {
+    use EntityManagerPersistentTrait;
+
     /**
      * @var AbstractModel
      */
@@ -34,10 +35,7 @@ class HasMany extends LaravelHasMany
         $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-                $method = new ReflectionMethod(get_class($model), 'persist');
-
-                $method->setAccessible(true);
-                $method->invoke($model);
+                $this->save($model);
             }
         );
     }

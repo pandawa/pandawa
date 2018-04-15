@@ -14,13 +14,14 @@ namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Relations\HasOne as LaravelHasOne;
 use Pandawa\Component\Ddd\AbstractModel;
-use Pandawa\Component\Ddd\Repository\Repository;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 class HasOne extends LaravelHasOne
 {
+    use EntityManagerPersistentTrait;
+
     /**
      * @var AbstractModel
      */
@@ -34,9 +35,7 @@ class HasOne extends LaravelHasOne
         $this->parent->addBeforeAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-
-                $repository = new Repository(get_class($model));
-                $repository->save($model);
+                $this->save($model);
             }
         );
     }

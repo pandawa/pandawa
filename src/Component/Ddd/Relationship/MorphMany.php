@@ -21,6 +21,8 @@ use Pandawa\Component\Ddd\Repository\Repository;
  */
 class MorphMany extends LaravelMorphMany
 {
+    use EntityManagerPersistentTrait;
+
     /**
      * @var AbstractModel
      */
@@ -34,10 +36,10 @@ class MorphMany extends LaravelMorphMany
         $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-
-                $repository = new Repository(get_class($model));
-                $repository->save($model);
+                $this->save($model);
             }
         );
     }
+
+
 }

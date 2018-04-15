@@ -21,6 +21,8 @@ use Pandawa\Component\Ddd\Repository\Repository;
  */
 class MorphOne extends LaravelMorphOne
 {
+    use EntityManagerPersistentTrait;
+
     /**
      * @var AbstractModel
      */
@@ -34,9 +36,7 @@ class MorphOne extends LaravelMorphOne
         $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-
-                $repository = new Repository(get_class($model));
-                $repository->save($model);
+                $this->save($model);
             }
         );
     }
