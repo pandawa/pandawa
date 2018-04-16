@@ -55,6 +55,11 @@ class Repository implements RepositoryInterface
     protected $specifications = [];
 
     /**
+     * @var int
+     */
+    protected $locking;
+
+    /**
      * Constructor.
      *
      * @param string $modelClass
@@ -70,6 +75,14 @@ class Repository implements RepositoryInterface
     public function getModelClass(): string
     {
         return $this->modelClass;
+    }
+
+    /**
+     * @param int $lockMode
+     */
+    public function lock(int $lockMode): void
+    {
+        $this->locking = $lockMode;
     }
 
     /**
@@ -230,6 +243,7 @@ class Repository implements RepositoryInterface
     {
         $this->applyRelations($query);
         $this->applySpecifications($query);
+        $this->applyLocking($query);
 
         if (null !== $this->pageSize) {
             return $query->paginate($this->pageSize);
@@ -247,6 +261,7 @@ class Repository implements RepositoryInterface
     {
         $this->applyRelations($query);
         $this->applySpecifications($query);
+        $this->applyLocking($query);
 
         return $query->first();
     }
@@ -275,6 +290,23 @@ class Repository implements RepositoryInterface
 
             $this->relations = [];
         }
+    }
+
+    /**
+     * @param Builder|QueryBuilder $query
+     */
+    protected function applyLocking($query): void
+    {
+        switch ($this->locking) {
+            case LockModes::PESSIMISTIC_WRITE:
+                $query->lockForUpdate();
+                break;
+            case LockModes::PESSIMISTIC_READ:
+                $query->sharedLock();
+                break;
+        }
+
+        $this->locking = null;
     }
 
     /**

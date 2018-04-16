@@ -14,7 +14,6 @@ namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany as LaravelMorphMany;
 use Pandawa\Component\Ddd\AbstractModel;
-use Pandawa\Component\Ddd\Repository\Repository;
 
 /**
  * @author  Johan Tanaka <tanaka.johan@gmail.com>
