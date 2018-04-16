@@ -20,7 +20,9 @@ use Pandawa\Component\Ddd\AbstractModel;
  */
 class MorphMany extends LaravelMorphMany
 {
-    use EntityManagerPersistentTrait;
+    use EntityManagerPersistentTrait {
+        save as protected saveModel;
+    }
 
     /**
      * @var AbstractModel
@@ -35,10 +37,8 @@ class MorphMany extends LaravelMorphMany
         $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-                $this->save($model);
+                $this->saveModel($model);
             }
         );
     }
-
-
 }
