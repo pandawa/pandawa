@@ -73,7 +73,7 @@ class Validator extends LaravelValidator
     {
         /** @var RuleValidation $validation */
         $validation = $this->container->make(RuleValidation::class);
-        if (false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
+        if (!empty($value) && false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
             $this->failure($attribute, $validation, $parameters);
         }
 
@@ -91,7 +91,7 @@ class Validator extends LaravelValidator
     {
         /** @var TreeRuleValidation $validation */
         $validation = $this->container->make(TreeRuleValidation::class);
-        if (false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
+        if (!empty($value) && false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
             $this->failure($attribute, $validation, $parameters);
         }
 
