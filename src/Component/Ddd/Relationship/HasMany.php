@@ -35,7 +35,7 @@ class HasMany extends LaravelHasMany
         $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-                $this->save($model);
+                $this->persist($model);
             }
         );
     }

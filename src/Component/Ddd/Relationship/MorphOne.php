@@ -14,16 +14,13 @@ namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne as LaravelMorphOne;
 use Pandawa\Component\Ddd\AbstractModel;
-use Pandawa\Component\Ddd\Repository\Repository;
 
 /**
  * @author  Johan Tanaka <tanaka.johan@gmail.com>
  */
 class MorphOne extends LaravelMorphOne
 {
-    use EntityManagerPersistentTrait {
-        save as protected saveModel;
-    }
+    use EntityManagerPersistentTrait;
 
     /**
      * @var AbstractModel
@@ -38,7 +35,7 @@ class MorphOne extends LaravelMorphOne
         $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-                $this->saveModel($model);
+                $this->persist($model);
             }
         );
     }
