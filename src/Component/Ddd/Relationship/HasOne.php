@@ -35,7 +35,7 @@ class HasOne extends LaravelHasOne
         $this->parent->addBeforeAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
-                $this->save($model);
+                $this->persist($model);
             }
         );
     }

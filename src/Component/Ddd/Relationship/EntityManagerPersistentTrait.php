@@ -26,7 +26,7 @@ trait EntityManagerPersistentTrait
      *
      * @throws ReflectionException
      */
-    protected function save(AbstractModel $model): void
+    protected function persist(AbstractModel $model): void
     {
         $this->em()->getRepository(get_class($model))->save($model);
     }
