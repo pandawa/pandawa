@@ -95,6 +95,18 @@ trait ModelRelationsTrait
     /**
      * {@inheritdoc}
      */
+    protected function newMorphTo(Builder $query, Eloquent $parent, $foreignKey, $ownerKey, $type, $relation)
+    {
+        if ($parent instanceof AbstractModel) {
+            return new MorphTo($query, $parent, $foreignKey, $ownerKey, $type, $relation);
+        }
+
+        return parent::newMorphTo($query, $parent, $foreignKey, $ownerKey, $type, $relation);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function newMorphMany(Builder $query, Eloquent $parent, $type, $id, $localKey)
     {
         if ($parent instanceof AbstractModel) {
