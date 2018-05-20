@@ -25,16 +25,6 @@ final class TransformerRegistry implements TransformerRegistryInterface
     private $transformers = [];
 
     /**
-     * @var array
-     */
-    private $transformed = [];
-
-    /**
-     * @var string
-     */
-    private $trx;
-
-    /**
      * Constructor.
      *
      * @param TransformerInterface[] $transformers
@@ -51,95 +41,50 @@ final class TransformerRegistry implements TransformerRegistryInterface
         $this->transformers[] = $transformer;
     }
 
-    public function transform($data, array $tags = [], object $parent = null)
+    public function transform($data, array $tags = [], array $context = [])
     {
-        $trx = $this->begin();
-        $transformed = $data;
+        if (is_object($data) && $this->isCircularReference($data, $context)) {
+            return null;
+        }
+
+        if (null === $data || is_scalar($data)) {
+            return $data;
+        }
 
         if (is_array($data) || $data instanceof Collection) {
-            $transformed = [];
-            foreach ($data as $key => $value) {
-                $transformed[$key] = $this->transform($value, $tags, $parent);
+            foreach ($data as $key => $datum) {
+                $data[$key] = $this->transform($datum, $tags, $context);
             }
-        } else if (!is_scalar($data)) {
-            /** @var TransformerInterface $transformer */
-            foreach (array_reverse($this->transformers) as $transformer) {
-                if ($transformer->support($transformed, $tags)) {
-                    $transformed = $this->transformData($transformer, $transformed, $tags, $parent);
-                }
+
+            return $data;
+        }
+
+        /** @var TransformerInterface $transformer */
+        foreach (array_reverse($this->transformers) as $transformer) {
+            if ($transformer->support($data, $tags)) {
+                $data = $transformer->transform($data, $tags);
             }
         }
 
-        $this->end($trx);
-
-        return $transformed;
+        return $this->transform($data, $tags, $context);
     }
 
-    private function transformData(TransformerInterface $transformer, $data, array $tags, object $parent = null)
+    private function isCircularReference($data, &$context)
     {
-        if (is_object($data) && $parent) {
-            if ($this->isCircularDependency($data, $parent)) {
-                if ($transformer instanceof HandleCircularDependencyInterface) {
-                    return $transformer->handleCircular($data, $tags);
-                }
+        $objectHash = spl_object_hash($data);
 
-                return null;
+        if (isset($context['circular_reference_limit'][$objectHash])) {
+            if ($context['circular_reference_limit'][$objectHash] >= 1) {
+                unset($context['circular_reference_limit'][$objectHash]);
+
+                return true;
             }
+
+            ++$context['circular_reference_limit'][$objectHash];
+        } else {
+            $context['circular_reference_limit'][$objectHash] = 1;
         }
-
-        $transformed = $transformer->transform($data, $tags, $this);
-
-        if (is_array($data) || $data instanceof Collection) {
-            $transformed = $this->transform($transformed, $tags, $this);
-        }
-
-        return $transformed;
-    }
-
-    private function isCircularDependency($data, object $parent): bool
-    {
-        if (is_array($data) || $data instanceof Collection) {
-            return false;
-        }
-
-        $parentHash = spl_object_hash($parent);
-        $dataHash = spl_object_hash($data);
-
-        if (isset($this->transformed[$parentHash][$dataHash])) {
-            return true;
-        }
-
-        $this->transformed[$parentHash][$dataHash] = true;
 
         return false;
-    }
-
-    /**
-     * Begin transaction.
-     *
-     * @return string
-     */
-    private function begin(): string
-    {
-        $trx = uniqid();
-
-        if (null === $this->trx) {
-            $this->trx = $trx;
-        }
-
-        return $trx;
-    }
-
-    /**
-     * End transaction.
-     *
-     * @param string $trx
-     */
-    private function end(string $trx): void
-    {
-        if ($trx === $this->trx) {
-            $this->trx = null;
-            $this->transformed = [];
-        }
     }
 }
