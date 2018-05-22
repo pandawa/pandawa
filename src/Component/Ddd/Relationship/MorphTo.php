@@ -49,4 +49,11 @@ class MorphTo extends LaravelMorphTo
 
         return parent::associate($model);
     }
+
+    public function createModelByType($type)
+    {
+        $class = call_user_func_array([$this->parent, 'getActualClassNameForMorph'], [$type]);
+
+        return new $class;
+    }
 }
