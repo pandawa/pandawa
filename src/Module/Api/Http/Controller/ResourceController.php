@@ -310,15 +310,16 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $options = $request->route()->defaults;
 
         if ($specs = (array) array_get($options, sprintf('specs.%s', $action))) {
+            $data = collect($this->getAllData($request));
             foreach ($specs as $spec) {
                 $arguments = [];
 
                 if ($specArgs = array_get($spec, 'arguments')) {
                     foreach ($specArgs as $key => $value) {
                         if (is_int($key)) {
-                            $arguments[Str::camel($value)] = $request->get($value);
+                            $arguments[Str::camel($value)] = array_get($data, $value);
                         } else {
-                            $arguments[Str::camel($key)] = $request->get($key, $value);
+                            $arguments[Str::camel($key)] = array_get($data, $key, $value);
                         }
                     }
                 }
