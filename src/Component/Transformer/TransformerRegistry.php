@@ -56,7 +56,7 @@ final class TransformerRegistry implements TransformerRegistryInterface
                 $data[$key] = $this->transform($datum, $tags, $context);
             }
 
-            return $data;
+            return $data instanceof Collection ? $data->all() : $data;
         }
 
         /** @var TransformerInterface $transformer */
