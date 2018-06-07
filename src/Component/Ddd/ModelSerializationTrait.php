@@ -64,14 +64,20 @@ trait ModelSerializationTrait
             if ($value instanceof LaravelCollection) {
                 $temp = [];
                 $value->each(
-                    function (AbstractModel $model) use (&$temp, $parents, $value) {
+                    function ($model) use (&$temp, $parents, $value) {
                         if ($model instanceof AbstractModel) {
                             $temp[] = $model->serialize(array_merge($parents, [spl_object_hash($value) => true]));
 
                             return;
                         }
 
-                        $temp[] = $model->toArray();
+                        if ($model instanceof Arrayable) {
+                            $temp[] = $model->toArray();
+
+                            return;
+                        }
+
+                        $temp[] = $model;
                     }
                 );
             } else {
