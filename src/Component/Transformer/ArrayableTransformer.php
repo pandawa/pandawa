@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Transformer;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Str;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -25,7 +26,13 @@ final class ArrayableTransformer implements TransformerInterface
             $data = $data->toArray();
         }
 
-        return $data;
+        $transformed = [];
+
+        foreach ((array) $data as $key => $value) {
+            $transformed[Str::snake($key)] = $value;
+        }
+
+        return $transformed;
     }
 
     public function support($data, array $tags = []): bool
