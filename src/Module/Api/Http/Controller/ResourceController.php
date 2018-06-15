@@ -346,8 +346,10 @@ class ResourceController extends Controller implements ResourceControllerInterfa
                     $key = $criteria;
                 }
 
-                if (method_exists($model, $criteria)) {
-                    $relation = $model->{$criteria}();
+                $relation = Str::camel($criteria);
+
+                if (method_exists($model, $relation)) {
+                    $relation = $model->{$relation}();
 
                     if (method_exists($relation, 'getForeignKey')) {
                         $key = $relation->getForeignKey();
