@@ -44,6 +44,10 @@ trait ServiceProviderTrait
         if (null !== $alias = array_get($service, 'alias')) {
             $this->app->alias($name, $alias);
         }
+
+        if (null !== $tag = array_get($service, 'tag')) {
+            $this->app->tag([$name], $tag);
+        }
     }
 
     private function parseService(array $service)
