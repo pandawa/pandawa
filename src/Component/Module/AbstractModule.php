@@ -20,6 +20,7 @@ use Pandawa\Component\Loader\ChainLoader;
 use Pandawa\Component\Module\Provider\ConfigProviderTrait;
 use Pandawa\Component\Module\Provider\ConsoleProviderTrait;
 use Pandawa\Component\Module\Provider\MessageProviderTrait;
+use Pandawa\Component\Module\Provider\PresenterProviderTrait;
 use Pandawa\Component\Module\Provider\ResourceProviderTrait;
 use Pandawa\Component\Module\Provider\RuleProviderTrait;
 use Pandawa\Component\Module\Provider\ServiceProviderTrait;
@@ -35,7 +36,7 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractModule extends ServiceProvider
 {
-    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ServiceProviderTrait;
+    use ConfigProviderTrait, ConsoleProviderTrait, RuleProviderTrait, ServiceProviderTrait, PresenterProviderTrait;
     use ResourceProviderTrait, MessageProviderTrait, TransformerProviderTrait, SpecificationProviderTrait;
 
     /**

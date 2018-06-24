@@ -12,6 +12,7 @@ return [
     'controllers'     => [
         'invokable' => env('API_INVOKABLE_CONTROLLER', Pandawa\Module\Api\Http\Controller\InvokableController::class),
         'resource'  => env('API_RESOURCE_CONTROLLER', Pandawa\Module\Api\Http\Controller\ResourceController::class),
+        'presenter' => env('API_PRESENTER_HANDLER', Pandawa\Module\Api\Http\Controller\PresenterHandler::class),
     ],
     'show_hostname'   => env('API_SHOW_HOSTNAME', true),
     'default_version' => env('API_DEFAULT_VERSION'),

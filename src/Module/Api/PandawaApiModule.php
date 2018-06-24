@@ -20,6 +20,7 @@ use Lcobucci\JWT\Signer\Rsa\Sha256 as Rsa256;
 use Lcobucci\JWT\Signer\Rsa\Sha512 as Rsa512;
 use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Component\Module\AbstractModule;
+use Pandawa\Component\Presenter\PresenterRegistryInterface;
 use Pandawa\Component\Resource\ResourceRegistryInterface;
 use Pandawa\Component\Transformer\TransformerRegistry;
 use Pandawa\Component\Transformer\TransformerRegistryInterface;
@@ -27,6 +28,7 @@ use Pandawa\Module\Api\Renderer\RendererInterface;
 use Pandawa\Module\Api\Routing\Loader\BasicLoader;
 use Pandawa\Module\Api\Routing\Loader\GroupLoader;
 use Pandawa\Module\Api\Routing\Loader\MessageLoader;
+use Pandawa\Module\Api\Routing\Loader\PresenterLoader;
 use Pandawa\Module\Api\Routing\Loader\ResourceLoader;
 use Pandawa\Module\Api\Routing\RouteLoader;
 use Pandawa\Module\Api\Routing\RouteLoaderInterface;
@@ -89,6 +91,13 @@ final class PandawaApiModule extends AbstractModule
                             'loader'   => new MessageLoader(
                                 (string) config('modules.api.controllers.invokable'),
                                 app(MessageRegistryInterface::class)
+                            ),
+                            'priority' => 0,
+                        ],
+                        [
+                            'loader'   => new PresenterLoader(
+                                (string) config('modules.api.controllers.presenter'),
+                                app(PresenterRegistryInterface::class)
                             ),
                             'priority' => 0,
                         ],
