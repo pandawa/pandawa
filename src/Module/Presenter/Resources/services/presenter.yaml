@@ -1,0 +1,2 @@
+Pandawa\Component\Presenter\PresenterRegistryInterface:
+    class: "%modules.presenter.registry_class%"
