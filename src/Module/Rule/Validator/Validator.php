@@ -55,8 +55,12 @@ class Validator extends LaravelValidator
             $extra = array_merge($extra, $this->currentRule->queryCallbacks());
         }
 
-        if (preg_match('/^req\((\w+)\)$/', $id, $matches)) {
+        if (null !== $id && preg_match('/^req\((\w+)\)$/', $id, $matches)) {
             $id = request(trim($matches[1]));
+        } else if (preg_match('/^auth\((\w+)\)$/', $id, $matches)) {
+            if (null !== $user = request()->user()) {
+                $id = $user->{trim($matches[1])};
+            }
         }
 
         return $verifier->getCount($table, $column, $value, $id, $idColumn, $extra) == 0;
