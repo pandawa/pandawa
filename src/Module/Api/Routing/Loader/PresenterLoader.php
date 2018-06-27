@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Routing\Loader;
 
+use InvalidArgumentException;
 use Pandawa\Component\Presenter\PresenterRegistryInterface;
 use Pandawa\Module\Api\Http\Controller\PresenterHandlerInterface;
 use Route;
@@ -41,7 +42,7 @@ final class PresenterLoader extends AbstractLoader
             );
         }
 
-        $this->presenterHandler = $presenterHandlerClass;
+        $this->presenterHandlerClass = $presenterHandlerClass;
         $this->presenterRegistry = $presenterRegistry;
     }
 
@@ -70,7 +71,7 @@ final class PresenterLoader extends AbstractLoader
             throw new RuntimeException(sprintf('Presenter "%s" is not registered.', $presenter));
         }
 
-        return [Route::match(['GET'], $path, $controller)];
+        return [Route::match((array) array_get($route, 'methods', 'get'), $path, $controller)];
     }
 
     /**
@@ -86,6 +87,6 @@ final class PresenterLoader extends AbstractLoader
      */
     protected function getController(array $route): string
     {
-        return $this->presenterHandler;
+        return $this->presenterHandlerClass;
     }
 }
