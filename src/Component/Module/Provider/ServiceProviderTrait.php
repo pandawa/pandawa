@@ -105,6 +105,10 @@ trait ServiceProviderTrait
             return $this->app[substr($value, 1)];
         }
 
+        if (0 === $index = strpos($value, '#')) {
+            return $this->app->tagged(substr($value, 1));
+        }
+
         if (preg_match('/^\%([a-zA-Z0-9\.\-\_]+)\%$/', $value, $matches)) {
             return config($matches[1]);
         }
