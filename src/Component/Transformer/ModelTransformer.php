@@ -28,8 +28,8 @@ final class ModelTransformer implements TransformerInterface
     public function transform($data, array $tags = [])
     {
         return array_merge(
-            $data->getRelations(),
-            $data->attributesToArray()
+            $this->getRelations($data),
+            $this->getAttributes($data)
         );
     }
 
@@ -42,5 +42,27 @@ final class ModelTransformer implements TransformerInterface
     public function support($data, array $tags = []): bool
     {
         return $data instanceof Model;
+    }
+
+    /**
+     * @param Model $data
+     *
+     * @return array
+     */
+    private function getAttributes(Model $data): array
+    {
+        return $data->attributesToArray();
+    }
+
+    /**
+     * @param Model $data
+     *
+     * @return array
+     */
+    private function getRelations(Model $data): array
+    {
+        return \Closure::bind(function (object $data) {
+            return $data->getArrayableRelations();
+        }, $data, $data)->__invoke($data);
     }
 }
