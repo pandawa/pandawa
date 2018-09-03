@@ -41,7 +41,7 @@ final class GroupLoader implements LoaderTypeInterface, LoaderAwareInterface
         }
 
         $config = [];
-        foreach (['middleware', 'namespace', 'prefix'] as $index) {
+        foreach (['middleware', 'namespace', 'prefix', 'where'] as $index) {
             if (isset($route[$index]) && $route[$index]) {
                 $config[$index] = $route[$index];
             }
