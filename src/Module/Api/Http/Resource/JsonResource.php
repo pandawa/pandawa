@@ -14,7 +14,6 @@ namespace Pandawa\Module\Api\Http\Resource;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Resources\CollectsResources;
-use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use Pandawa\Component\Transformer\TransformerRegistryInterface;
@@ -23,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class JsonResource extends Resource
+final class JsonResource extends AbstractResource
 {
     use CollectsResources;
 
