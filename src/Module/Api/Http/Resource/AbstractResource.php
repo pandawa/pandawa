@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Http\Resource;
 
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Support\Collection;
+use JsonSerializable;
 use Pandawa\Module\Api\Http\Response\ResourceResponse;
 
 /**
