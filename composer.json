@@ -19,6 +19,7 @@
         "laravel/framework": "^5.6",
         "lcobucci/jwt": "^4.0@dev",
         "ramsey/uuid": "^3.7",
+        "reactivex/rxphp": "^2.0",
         "symfony/yaml": "^4.0"
     },
     "require-dev": {
@@ -27,7 +28,11 @@
     "autoload": {
         "psr-4": {
             "Pandawa\\": "src/"
-        }
+        },
+        "files": [
+            "src/Module/Reactive/Resources/functions/observables.php",
+            "src/Module/Reactive/Resources/functions/operators.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -51,7 +56,8 @@
                 "Pandawa\\Module\\Rule\\PandawaRuleModule",
                 "Pandawa\\Module\\Ddd\\PandawaDddModule",
                 "Pandawa\\Module\\Resource\\PandawaResourceModule",
-                "Pandawa\\Module\\Presenter\\PandawaPresenterModule"
+                "Pandawa\\Module\\Presenter\\PandawaPresenterModule",
+                "Pandawa\\Module\\Reactive\\PandawaReactiveModule"
             ]
         }
     }
