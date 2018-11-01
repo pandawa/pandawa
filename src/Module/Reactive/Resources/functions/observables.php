@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Reactive;
 
+use Illuminate\Support\Collection;
 use Iterator;
 use Pandawa\Module\Reactive\Observable\AnonymousObservable;
 use Pandawa\Module\Reactive\Observable\ArrayObservable;
@@ -38,6 +39,10 @@ function forkJoin(array $observables = [], callable $resultSelector = null): For
 function fromIterator(Iterator $values, SchedulerInterface $scheduler = null): IteratorObservable
 {
     return ObservableFactory::fromIterator($values, $scheduler);
+}
+
+function fromCollection(Collection $collection, SchedulerInterface $scheduler = null): IteratorObservable {
+    return ObservableFactory::fromIterator($collection->getIterator(), $scheduler);
 }
 
 function create(callable $subscribeAction): AnonymousObservable
