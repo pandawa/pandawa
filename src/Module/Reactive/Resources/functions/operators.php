@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Pandawa\Reactive;
 
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Support\Arrayable;
 use Psr\Http\Message\ResponseInterface;
 use Rx\AsyncSchedulerInterface;
@@ -506,7 +505,7 @@ function jsonDecode($asoc = false)
 
 function throwHttpError()
 {
-    return catchError(function (GuzzleException $exception) {
+    return catchError(function (Exception $exception) {
         $obj = json_decode($exception->getMessage());
         $message = $obj ? $obj->message : $exception->getMessage();
 
