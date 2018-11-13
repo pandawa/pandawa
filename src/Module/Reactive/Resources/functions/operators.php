@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Reactive;
 
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Contracts\Support\Arrayable;
+use Psr\Http\Message\ResponseInterface;
 use Rx\AsyncSchedulerInterface;
 use Rx\Observable;
 use Rx\ObservableInterface;
@@ -414,19 +418,22 @@ function timestamp(SchedulerInterface $scheduler = null)
     };
 }
 
-function sum() {
+function sum()
+{
     return function (Observable $source) {
         return $source->sum();
     };
 }
 
-function average() {
+function average()
+{
     return function (Observable $source) {
         return $source->average();
     };
 }
 
-function pluck($property) {
+function pluck($property)
+{
     return function (Observable $source) use ($property) {
         return $source->pluck($property);
     };
@@ -458,4 +465,51 @@ function compose(callable $compose)
     return function (Observable $source) use ($compose) {
         return $source->compose($compose);
     };
+}
+
+function debug($message)
+{
+    return tap(function ($value) use ($message) {
+        if (false === config('app.debug')) {
+            return;
+        }
+
+        if (is_callable($message)) {
+            logger($message($value));
+        } else {
+            if (is_array($value)) {
+                $value = json_encode($value);
+            } else if ($value instanceof Arrayable) {
+                $value = json_encode($value->toArray());
+            } else if (is_object($value)) {
+                $value = serialize($value);
+            }
+
+            logger(str_replace(':value', $value, $message));
+        }
+    });
+}
+
+function responseBody()
+{
+    return map(function (ResponseInterface $response) {
+        return $response->getBody()->getContents();
+    });
+}
+
+function jsonDecode($asoc = false)
+{
+    return map(function ($value) use ($asoc) {
+        return json_decode($value, $asoc);
+    });
+}
+
+function throwHttpError()
+{
+    return catchError(function (GuzzleException $exception) {
+        $obj = json_decode($exception->getMessage());
+        $message = $obj ? $obj->message : $exception->getMessage();
+
+        throw new Exception($message, $exception->getCode(), $exception);
+    });
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Reactive;
 
+use function foo\func;
 use Illuminate\Support\Collection;
 use Iterator;
 use Pandawa\Module\Reactive\Observable\AnonymousObservable;
@@ -10,6 +11,7 @@ use Pandawa\Module\Reactive\Observable\ArrayObservable;
 use Pandawa\Module\Reactive\Observable\EmptyObservable;
 use Pandawa\Module\Reactive\Observable\ErrorObservable;
 use Pandawa\Module\Reactive\Observable\ForkJoinObservable;
+use Pandawa\Module\Reactive\Observable\HttpClientObservable;
 use Pandawa\Module\Reactive\Observable\IntervalObservable;
 use Pandawa\Module\Reactive\Observable\IteratorObservable;
 use Pandawa\Module\Reactive\Observable\NeverObservable;
@@ -82,7 +84,6 @@ function defer(callable $factory, SchedulerInterface $scheduler = null)
     return ObservableFactory::defer($factory, $scheduler);
 }
 
-
 function range(int $start, int $count, SchedulerInterface $scheduler = null): RangeObservable
 {
     return ObservableFactory::range($start, $count, $scheduler);
@@ -91,4 +92,9 @@ function range(int $start, int $count, SchedulerInterface $scheduler = null): Ra
 function fromPromise(PromiseInterface $promise)
 {
     return ObservableFactory::fromPromise($promise);
+}
+
+function httpRequest(string $uri, string $method = 'GET', array $options = [], SchedulerInterface $scheduler = null): HttpClientObservable
+{
+    return ObservableFactory::httpRequest($uri, $method, $options, $scheduler);
 }

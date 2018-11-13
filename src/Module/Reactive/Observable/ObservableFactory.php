@@ -11,7 +11,6 @@ use Rx\Disposable\CallbackDisposable;
 use Rx\Observable;
 use Rx\ObservableFactoryWrapper;
 use Rx\Operator\DeferOperator;
-use Rx\React\Promise;
 use Rx\React\RejectedPromiseException;
 use Rx\Scheduler;
 use Rx\SchedulerInterface;
@@ -190,5 +189,19 @@ class ObservableFactory
                 }
             });
         });
+    }
+
+    /**
+     * @param string                  $uri
+     * @param string                  $method
+     * @param array                   $options
+     * @param SchedulerInterface|null $scheduler
+     *
+     * @return HttpClientObservable
+     * @throws \Exception
+     */
+    public static function httpRequest(string $uri, string $method, array $options = [], SchedulerInterface $scheduler = null): HttpClientObservable
+    {
+        return new HttpClientObservable($uri, $method, $options, $scheduler ?: Scheduler::getDefault());
     }
 }
