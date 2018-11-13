@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Pandawa\Reactive;
 
 use Exception;
+use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Contracts\Support\Arrayable;
 use Psr\Http\Message\ResponseInterface;
 use Rx\AsyncSchedulerInterface;
@@ -506,8 +507,12 @@ function jsonDecode($asoc = false)
 function throwHttpError()
 {
     return catchError(function (Exception $exception) {
-        $obj = json_decode($exception->getMessage());
-        $message = $obj ? $obj->message : $exception->getMessage();
+        if ($exception instanceof BadResponseException) {
+            $obj = json_decode($exception->getResponse()->getBody()->getContents());
+            $message = $obj ? $obj->message : $exception->getMessage();
+        } else {
+            $message = $exception->getMessage();
+        }
 
         throw new Exception($message, $exception->getCode(), $exception);
     });
