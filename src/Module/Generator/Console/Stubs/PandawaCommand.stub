@@ -1,0 +1,16 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Message\AbstractCommand;
+use Pandawa\Component\Message\NameableMessageInterface;
+use Pandawa\Component\Support\NameableClassTrait;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} extends AbstractCommand implements NameableMessageInterface
+{
+    use NameableClassTrait;
+}
