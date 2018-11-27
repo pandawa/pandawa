@@ -1,0 +1,25 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use {{eventNamespace}};
+
+/**
+ * @author {{author}}
+ */
+class {{className}} implements ShouldQueue
+{
+    public function __construct()
+    {
+    }
+
+    /**
+     * @param {{eventClassName}} $event
+     */
+    public function handle({{eventClassName}} $event): void
+    {
+    }
+}
+

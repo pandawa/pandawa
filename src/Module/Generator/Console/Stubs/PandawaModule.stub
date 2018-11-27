@@ -1,0 +1,33 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Module\AbstractModule;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} extends AbstractModule
+{
+    /**
+     * @return array
+     */
+    protected function policies(): array
+    {
+        return [
+
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function listens(): array
+    {
+        return [
+
+        ];
+    }
+}
+

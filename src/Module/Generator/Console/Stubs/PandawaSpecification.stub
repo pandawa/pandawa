@@ -1,0 +1,28 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Ddd\Specification\NameableSpecificationInterface;
+use Pandawa\Component\Ddd\Specification\NameableSpecificationTrait;
+use Pandawa\Component\Ddd\Specification\SpecificationInterface;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} implements SpecificationInterface, NameableSpecificationInterface
+{
+    use NameableSpecificationTrait;
+
+    public function __construct()
+    {
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
+     */
+    public function match($query): void
+    {
+    }
+}
+

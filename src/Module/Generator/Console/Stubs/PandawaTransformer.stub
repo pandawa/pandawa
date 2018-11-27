@@ -1,0 +1,33 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Transformer\TransformerInterface;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} implements TransformerInterface
+{
+    /**
+     * @param $data
+     * @param array $tags
+     * @return mixed
+     */
+    public function transform($data, array $tags = [])
+    {
+        return $data;
+    }
+
+    /**
+     * @param $data
+     * @param array $tags
+     * @return bool
+     */
+    public function support($data, array $tags = []): bool
+    {
+        return true;
+    }
+}
+

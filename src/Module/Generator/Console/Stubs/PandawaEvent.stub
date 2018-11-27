@@ -1,0 +1,16 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Event\NameableEventInterface;
+use Pandawa\Component\Message\AbstractMessage;
+use Pandawa\Component\Support\NameableClassTrait;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} extends AbstractMessage implements NameableEventInterface
+{
+    use NameableClassTrait;
+}
