@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Resource;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -22,7 +23,17 @@ final class ResourceRegistry implements ResourceRegistryInterface
     /**
      * @var Metadata[]
      */
-    private $resources = [];
+    private $resources;
+
+    /**
+     * Constructor.
+     *
+     * @param array|null $resources
+     */
+    public function __construct(array $resources = null)
+    {
+        $this->resources = $resources ?? [];
+    }
 
     public function add(string $resource, Metadata $metadata): void
     {
@@ -49,7 +60,17 @@ final class ResourceRegistry implements ResourceRegistryInterface
     {
         $this->assertExists($resource);
 
-        return $this->resources[$resource];
+        $metadata = $this->resources[$resource];
+
+        if ($metadata instanceof Metadata) {
+            return $metadata;
+        }
+
+        if (!array_key_exists('model_class', $metadata)) {
+            throw new InvalidArgumentException(sprintf('Invalid metadata for resource "%s".', $resource));
+        }
+
+        return $this->resources[$resource] = new Metadata($metadata['model_class']);
     }
 
     private function assertExists(string $resource): void

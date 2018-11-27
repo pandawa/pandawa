@@ -161,14 +161,16 @@ final class PandawaApiModule extends AbstractModule
     {
         $this->app->singleton(
             TransformerRegistryInterface::class,
-            function () {
+            function ($app) {
                 $transformers = [];
 
                 foreach ((array) config('modules.api.default_transformers') as $transformerClass) {
                     $transformers[] = new $transformerClass();
                 }
 
-                return new TransformerRegistry($transformers);
+                $transformers = $transformers + (config('pandawa_transformers') ?? []);
+
+                return new TransformerRegistry($app, $transformers);
             }
         );
 

@@ -22,7 +22,7 @@ final class PresenterRegistry implements PresenterRegistryInterface
     /**
      * @var string
      */
-    private $presenters = [];
+    private $presenters;
 
     /**
      * @var Application
@@ -33,10 +33,15 @@ final class PresenterRegistry implements PresenterRegistryInterface
      * Constructor.
      *
      * @param Application $app
+     * @param array|null  $presenters
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, array $presenters = null)
     {
         $this->app = $app;
+
+        foreach (array_values(($presenters ?? [])) as $presenter) {
+            $this->add($presenter);
+        }
     }
 
     /**

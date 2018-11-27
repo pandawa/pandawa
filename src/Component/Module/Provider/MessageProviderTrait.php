@@ -12,24 +12,25 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module\Provider;
 
+use Illuminate\Foundation\Application;
 use Pandawa\Component\Message\AbstractMessage;
-use Pandawa\Component\Message\MessageRegistryInterface;
-use Pandawa\Component\Message\Metadata;
 use Pandawa\Component\Message\NameableMessageInterface;
 use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 /**
+ * @property Application $app
+ *
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait MessageProviderTrait
 {
     protected $messagePathNames = ['Command', 'Query'];
 
-    public function bootMessageProvider(): void
+    public function registerMessageProvider(): void
     {
-        if (null === $this->messageRegistry()) {
+        if (file_exists($this->app->getCachedConfigPath())) {
             return;
         }
 
@@ -47,9 +48,14 @@ trait MessageProviderTrait
                     if (!$reflection->isAbstract() && $reflection->isSubclassOf(AbstractMessage::class)) {
                         $name = $this->getMessageName($messageClass);
 
-                        $this->messageRegistry()->add(
-                            $name,
-                            new Metadata($messageClass, $this->getHandlerClass($messageClass))
+                        $this->mergeConfig(
+                            'pandawa_messages',
+                            [
+                                $name => [
+                                    'messageClass' => $messageClass,
+                                    'handlerClass' => $this->getHandlerClass($messageClass),
+                                ],
+                            ]
                         );
                     }
                 }
@@ -75,14 +81,5 @@ trait MessageProviderTrait
         }
 
         return $messageClass;
-    }
-
-    private function messageRegistry(): ?MessageRegistryInterface
-    {
-        if (isset($this->app[MessageRegistryInterface::class])) {
-            return $this->app[MessageRegistryInterface::class];
-        }
-
-        return null;
     }
 }

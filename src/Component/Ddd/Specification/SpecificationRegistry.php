@@ -26,7 +26,7 @@ final class SpecificationRegistry implements SpecificationRegistryInterface
     /**
      * @var string[]
      */
-    private $specifications = [];
+    private $specifications;
 
     /**
      * @var Application
@@ -36,11 +36,13 @@ final class SpecificationRegistry implements SpecificationRegistryInterface
     /**
      * Constructor.
      *
-     * @param Application $app
+     * @param Application   $app
+     * @param string[]|null $specs
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, array $specs = null)
     {
         $this->app = $app;
+        $this->specifications = $specs ?? [];
     }
 
     public function add(string $specificationClass): void

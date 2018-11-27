@@ -13,22 +13,38 @@ declare(strict_types=1);
 namespace Pandawa\Component\Module\Provider;
 
 use Illuminate\Console\Command;
-use Illuminate\Console\Application as Artisan;
+use Illuminate\Foundation\Application;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Finder\Finder;
 
 /**
+ * @property Application $app
+ *
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait ConsoleProviderTrait
 {
+    public function bootConsoleProvider(): void
+    {
+        $this->commands(
+            array_values(
+                config(sprintf('pandawa_consoles.%s', $this->getModuleName())) ?? []
+            )
+        );
+    }
+
     /**
      * @throws ReflectionException
      */
-    protected function bootConsoleProvider(): void
+    protected function registerConsoleProvider(): void
     {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            return;
+        }
+
         $consolePath = $this->getCurrentPath() . '/Console';
+        $key = sprintf('pandawa_consoles.%s', $this->getModuleName());
 
         if (!is_dir($consolePath)) {
             return;
@@ -39,11 +55,11 @@ trait ConsoleProviderTrait
 
             if (is_subclass_of($console, Command::class)
                 && !(new ReflectionClass($console))->isAbstract()) {
-                Artisan::starting(
-                    function ($artisan) use ($console) {
-                        $artisan->resolve($console);
-                    }
-                );
+
+                $consoles = $this->app['config']->get($key) ?? [];
+                $consoles[md5($console)] = $console;
+
+                $this->mergeConfig($key, $consoles);
             }
         }
     }

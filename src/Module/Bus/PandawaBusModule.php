@@ -15,6 +15,7 @@ namespace Pandawa\Module\Bus;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Pandawa\Component\Bus\Pipe\DatabaseTransactionPipe;
 use Pandawa\Component\Bus\Pipe\EventPublisherPipe;
+use Pandawa\Component\Message\MessageRegistryInterface;
 use Pandawa\Component\Module\AbstractModule;
 
 /**
@@ -37,6 +38,15 @@ final class PandawaBusModule extends AbstractModule
         if (!empty($pipes)) {
             $this->dispatcher()->pipeThrough($pipes);
         }
+    }
+
+    protected function init(): void
+    {
+        $this->app->singleton(MessageRegistryInterface::class, function () {
+            $registerClass = config('modules.bus.registry_class');
+
+            return new $registerClass(config('pandawa_messages') ?? []);
+        });
     }
 
     private function dispatcher(): Dispatcher

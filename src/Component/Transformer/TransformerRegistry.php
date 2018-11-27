@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,20 +21,25 @@ use Illuminate\Support\Collection;
 final class TransformerRegistry implements TransformerRegistryInterface
 {
     /**
-     * @var TransformerInterface[]
+     * @var Application
      */
-    private $transformers = [];
+    private $app;
+
+    /**
+     * @var TransformerInterface[]|array[]
+     */
+    private $transformers;
 
     /**
      * Constructor.
      *
-     * @param TransformerInterface[] $transformers
+     * @param Application $app
+     * @param array       $transformers
      */
-    public function __construct(array $transformers = [])
+    public function __construct(Application $app, array $transformers = [])
     {
-        foreach ($transformers as $transformer) {
-            $this->add($transformer);
-        }
+        $this->app = $app;
+        $this->transformers = $transformers;
     }
 
     public function add(TransformerInterface $transformer): void
@@ -59,14 +65,31 @@ final class TransformerRegistry implements TransformerRegistryInterface
             return $data instanceof Collection ? $data->all() : $data;
         }
 
-        /** @var TransformerInterface $transformer */
-        foreach (array_reverse($this->transformers) as $transformer) {
+        foreach (array_reverse($this->transformers) as $key => $transformer) {
+            if (is_string($transformer)) {
+                $transformer = $this->transformers[$key] = $this->getTransformer($transformer);
+            }
+
             if ($transformer->support($data, $tags)) {
                 $data = $transformer->transform($data, $tags);
             }
         }
 
         return $this->transform($data, $tags, $context);
+    }
+
+    /**
+     * @param string $transformer
+     *
+     * @return TransformerInterface
+     */
+    private function getTransformer(string $transformer): TransformerInterface
+    {
+        if ($this->app[$transformer]) {
+            return $this->app[$transformer];
+        }
+
+        return $this->app->make($transformer);
     }
 
     private function isCircularReference($data, &$context)

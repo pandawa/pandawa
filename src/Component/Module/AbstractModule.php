@@ -120,9 +120,20 @@ abstract class AbstractModule extends ServiceProvider
      */
     protected function mergeConfigFrom($path, $key)
     {
+        $this->mergeConfig($key, $this->loader->load($path));
+    }
+
+    /**
+     * Merge config to given key.
+     *
+     * @param string $key
+     * @param array  $configs
+     */
+    protected function mergeConfig(string $key, array $configs): void
+    {
         $config = $this->app['config']->get($key, []);
 
-        $this->app['config']->set($key, array_merge($this->loader->load($path), $config));
+        $this->app['config']->set($key, array_merge($configs, $config));
     }
 
     protected function init(): void

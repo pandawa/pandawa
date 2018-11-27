@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Pandawa\Component\Module\Provider;
 
 use Pandawa\Component\Presenter\PresenterInterface;
-use Pandawa\Component\Presenter\PresenterRegistryInterface;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 
@@ -18,11 +17,15 @@ trait PresenterProviderTrait
      */
     protected $presenterPath = 'Presenter';
 
-    protected function bootPresenterProvider(): void
+    protected function registerPresenterProvider(): void
     {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            return;
+        }
+
         $basePath = $this->getCurrentPath() . '/' . trim($this->presenterPath, '/');
 
-        if (!is_dir($basePath) || null === $this->presenterRegistry()) {
+        if (!is_dir($basePath)) {
             return;
         }
 
@@ -32,17 +35,8 @@ trait PresenterProviderTrait
             if (in_array(PresenterInterface::class, class_implements($presenterClass), true)
                 && !(new ReflectionClass($presenterClass))->isAbstract()) {
 
-                $this->presenterRegistry()->add($presenterClass);
+                $this->mergeConfig('pandawa_presenters', [md5($presenterClass) => $presenterClass]);
             }
         }
-    }
-
-    private function presenterRegistry(): ?PresenterRegistryInterface
-    {
-        if (isset($this->app[PresenterRegistryInterface::class])) {
-            return $this->app[PresenterRegistryInterface::class];
-        }
-
-        return null;
     }
 }

@@ -29,16 +29,18 @@ final class RuleRegistry implements RuleRegistryInterface
     /**
      * @var array
      */
-    private $rules = [];
+    private $rules;
 
     /**
      * Constructor.
      *
      * @param Factory $validationFactory
+     * @param array   $rules
      */
-    public function __construct(Factory $validationFactory)
+    public function __construct(Factory $validationFactory, array $rules = null)
     {
         $this->validationFactory = $validationFactory;
+        $this->rules = $rules ?? [];
     }
 
     public function getAllRules(): array

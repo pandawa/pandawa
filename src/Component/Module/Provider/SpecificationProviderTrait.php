@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module\Provider;
 
+use Pandawa\Component\Ddd\Specification\NameableSpecificationInterface;
 use Pandawa\Component\Ddd\Specification\SpecificationInterface;
-use Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface;
 use ReflectionClass;
 use Symfony\Component\Finder\Finder;
 
@@ -29,29 +29,30 @@ trait SpecificationProviderTrait
 
     protected function bootSpecificationProvider(): void
     {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            return;
+        }
+
         $basePath = $this->getCurrentPath() . '/' . trim($this->specificationPath, '/');
 
-        if (!is_dir($basePath) || null === $this->specificationRegistry()) {
+        if (!is_dir($basePath)) {
             return;
         }
 
         foreach (Finder::create()->in($basePath)->files() as $specification) {
             $specificationClass = $this->getClassFromFile($specification);
+            $implements = class_implements($specificationClass);
 
-            if (in_array(SpecificationInterface::class, class_implements($specificationClass), true)
+            if (in_array(SpecificationInterface::class, $implements, true)
                 && !(new ReflectionClass($specificationClass))->isAbstract()) {
 
-                $this->specificationRegistry()->add($specificationClass);
+                $name = $specificationClass;
+                if (in_array(NameableSpecificationInterface::class, $implements, true)) {
+                    $name = $specificationClass::{'name'}();
+                }
+
+                $this->mergeConfig('pandawa_specs', [$name => $specificationClass]);
             }
         }
-    }
-
-    private function specificationRegistry(): ?SpecificationRegistryInterface
-    {
-        if (isset($this->app[SpecificationRegistryInterface::class])) {
-            return $this->app[SpecificationRegistryInterface::class];
-        }
-
-        return null;
     }
 }

@@ -4,3 +4,6 @@ Pandawa\Component\Ddd\Repository\EntityManagerInterface:
 
 Pandawa\Component\Ddd\Specification\SpecificationRegistryInterface:
     class: "%modules.ddd.specification_registry_class%"
+    arguments:
+        - '@app'
+        - "%pandawa_specs%"

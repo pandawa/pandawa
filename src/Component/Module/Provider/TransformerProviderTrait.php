@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Module\Provider;
 
-use Pandawa\Component\Transformer\TransformerInterface;
-use Pandawa\Component\Transformer\TransformerRegistryInterface;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
@@ -24,9 +22,9 @@ trait TransformerProviderTrait
 {
     protected $transformerPath = 'Transformer';
 
-    public function bootTransformerProvider(): void
+    public function registerTransformerProvider(): void
     {
-        if (null === $this->transformerRegistry()) {
+        if (file_exists($this->app->getCachedConfigPath())) {
             return;
         }
 
@@ -39,26 +37,10 @@ trait TransformerProviderTrait
             foreach ($finder->in($basePath) as $file) {
                 $transformerClass = $this->getClassFromFile($file);
 
-                $this->transformerRegistry()->add($this->createTransformer($transformerClass));
+                $this->mergeConfig('pandawa_transformers', [
+                    md5($transformerClass) => $transformerClass,
+                ]);
             }
         }
-    }
-
-    private function createTransformer(string $class): TransformerInterface
-    {
-        if (isset($this->app[$class])) {
-            return $this->app[$class];
-        }
-
-        return $this->app->make($class);
-    }
-
-    private function transformerRegistry(): ?TransformerRegistryInterface
-    {
-        if (isset($this->app[TransformerRegistryInterface::class])) {
-            return $this->app[TransformerRegistryInterface::class];
-        }
-
-        return null;
     }
 }

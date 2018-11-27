@@ -32,6 +32,13 @@ trait RuleProviderTrait
         if (null === $this->ruleRegistry()) {
             return;
         }
+    }
+
+    protected function registerRuleProvider(): void
+    {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            return;
+        }
 
         $basePath = $this->getCurrentPath() . '/' . trim($this->rulePath, '/');
         $loader = ChainLoader::create();
@@ -41,7 +48,7 @@ trait RuleProviderTrait
 
             /** @var SplFileInfo $file */
             foreach ($finder->in($basePath) as $file) {
-                $this->ruleRegistry()->load($loader->load((string) $file));
+                $this->mergeConfig('pandawa_rules', $loader->load((string)$file));
             }
         }
     }

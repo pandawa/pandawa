@@ -1,2 +1,5 @@
 Pandawa\Component\Validation\RuleRegistryInterface:
     class: "%modules.rule.registry%"
+    arguments:
+        - '@Illuminate\Contracts\Validation\Factory'
+        - "%pandawa_rules%"

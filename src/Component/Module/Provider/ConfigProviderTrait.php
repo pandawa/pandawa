@@ -13,10 +13,13 @@ declare(strict_types=1);
 namespace Pandawa\Component\Module\Provider;
 
 use Generator;
+use Illuminate\Foundation\Application;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 /**
+ * @property Application $app
+ *
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait ConfigProviderTrait
@@ -28,6 +31,10 @@ trait ConfigProviderTrait
 
     protected function bootConfigProvider(): void
     {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            return;
+        }
+
         $basePath = $this->getCurrentPath() . '/' . trim($this->configPath, '/');
 
         if (is_dir($basePath)) {
@@ -44,6 +51,10 @@ trait ConfigProviderTrait
 
     protected function registerConfigProvider(): void
     {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            return;
+        }
+
         foreach ($this->getConfigFiles() as $file) {
             $this->mergeConfigFrom(
                 (string) $file,

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Message;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -23,6 +24,16 @@ final class MessageRegistry implements MessageRegistryInterface
      * @var Metadata[]
      */
     private $messages = [];
+
+    /**
+     * Constructor.
+     *
+     * @param array $messages
+     */
+    public function __construct(array $messages = [])
+    {
+        $this->messages = $messages;
+    }
 
     public function add(string $message, Metadata $metadata): void
     {
@@ -49,7 +60,17 @@ final class MessageRegistry implements MessageRegistryInterface
     {
         $this->assertExists($message);
 
-        return $this->messages[$message];
+        $metadata = $this->messages[$message];
+
+        if ($metadata instanceof Metadata) {
+            return $metadata;
+        }
+
+        if (!array_key_exists('messageClass', $metadata) || !array_key_exists('handlerClass', $metadata)) {
+            throw new InvalidArgumentException(sprintf('Invalid metadata for message "%s"', $message));
+        }
+
+        return $this->messages[$message] = new Metadata($metadata['messageClass'], $metadata['handlerClass']);
     }
 
     private function assertExists(string $message): void
