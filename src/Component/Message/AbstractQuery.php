@@ -87,7 +87,7 @@ abstract class AbstractQuery extends AbstractMessage
 
     public function getRelations(): array
     {
-        return $this->relations;
+        return $this->relations ?: [];
     }
 
     public function hasSpecifications(): bool
@@ -97,6 +97,6 @@ abstract class AbstractQuery extends AbstractMessage
 
     public function getSpecifications(): array
     {
-        return $this->specifications;
+        return $this->specifications ?: [];
     }
 }
