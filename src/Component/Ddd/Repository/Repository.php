@@ -136,6 +136,7 @@ class Repository implements RepositoryInterface
         }
 
         $qb = $this->createQueryBuilder();
+        $qb->whereKey($id);
 
         switch ($lockMode) {
             case LockModes::PESSIMISTIC_WRITE:
@@ -146,7 +147,7 @@ class Repository implements RepositoryInterface
                 break;
         }
 
-        return $qb->find($id);
+        return $this->executeSingle($qb);
     }
 
     /**
