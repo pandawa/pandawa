@@ -1,0 +1,29 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Presenter\NameablePresenterTrait;
+use Pandawa\Component\Presenter\NameablePresenterInterface;
+use Pandawa\Component\Presenter\PresenterInterface;
+use Illuminate\Http\Request;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} implements PresenterInterface, NameablePresenterInterface
+{
+    use NameablePresenterTrait;
+
+    public function __construct()
+    {
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function render(Request $request)
+    {
+    }
+}
+

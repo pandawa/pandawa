@@ -1,0 +1,37 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Notifications\Notification;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}} extends Notification implements ShouldQueue
+{
+    use Queueable;
+
+    public function __construct()
+    {
+    }
+
+    /**
+     * @return array
+     */
+    public function via(): array
+    {
+        return ['mail'];
+    }
+
+    /**
+     * @return Mailable
+     */
+    public function toMail(): Mailable
+    {
+    }
+}
+

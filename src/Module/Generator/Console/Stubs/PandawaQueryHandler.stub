@@ -1,0 +1,45 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Pandawa\Component\Message\InteractsWithRepositoryTrait;
+use Pandawa\Component\Ddd\Repository\Repository;
+
+/**
+ * @author {{author}}
+ */
+final class {{className}}
+{
+    use InteractsWithRepositoryTrait;
+
+    private $repository;
+
+    /**
+     * @param Repository $repository
+     */
+    public function __construct(Repository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
+     * @param Repository $repository
+     * @param {{queryClassName}} $query
+     *
+     * @return mixed
+     */
+    protected function run(Repository $repository, {{queryClassName}} $query)
+    {
+
+    }
+
+    /**
+     * @return Repository
+     */
+    protected function repository()
+    {
+        return $this->repository;
+    }
+}
+

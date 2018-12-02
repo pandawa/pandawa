@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+/**
+ * @author {{author}}
+ */
+final class {{className}}
+{
+    /**
+     * @var mixed|null
+     */
+    private $result;
+
+    public function __construct()
+    {
+    }
+
+    /**
+     * @param {{commandClassName}} $message
+     *
+     * @return mixed
+     */
+    public function handle({{commandClassName}} $message)
+    {
+
+        return $this->result;
+    }
+}
+
