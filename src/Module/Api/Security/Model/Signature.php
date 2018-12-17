@@ -12,10 +12,12 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Security\Model;
 
+use Illuminate\Contracts\Support\Arrayable;
+
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class Signature
+class Signature implements Arrayable
 {
     /**
      * @var string
@@ -43,8 +45,16 @@ class Signature
         return $this->attributes;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array_merge($this->getAttributes(), ['signature' => $this->getCredentials()]);
+    }
+
     public function __toString(): string
     {
-        return http_build_query(array_merge($this->getAttributes(), ['signature' => $this->getCredentials()]));
+        return http_build_query($this->toArray());
     }
 }
