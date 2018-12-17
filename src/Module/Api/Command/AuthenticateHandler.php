@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Api\Command;
 
-use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Auth\AuthManager;
 use Pandawa\Module\Api\Security\Authentication\AuthenticationManager;
+use Pandawa\Module\Api\Security\Model\Signature;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -12,42 +13,43 @@ use Pandawa\Module\Api\Security\Authentication\AuthenticationManager;
 final class AuthenticateHandler
 {
     /**
-     * @var UserProvider
-     */
-    private $provider;
-
-    /**
      * @var AuthenticationManager
      */
     private $authManager;
 
     /**
+     * @var AuthManager
+     */
+    private $laravelAuth;
+
+    /**
      * Constructor.
      *
-     * @param UserProvider          $provider
      * @param AuthenticationManager $authManager
+     * @param AuthManager           $laravelAuth
      */
-    public function __construct(UserProvider $provider, AuthenticationManager $authManager)
+    public function __construct(AuthenticationManager $authManager, AuthManager $laravelAuth)
     {
-        $this->provider = $provider;
         $this->authManager = $authManager;
+        $this->laravelAuth = $laravelAuth;
     }
 
+    /**
+     * @param Authenticate $authenticate
+     *
+     * @return Signature
+     */
     public function handle(Authenticate $authenticate)
     {
         $credentials = $authenticate->origin()->all();
-        $user = $this->provider->retrieveByCredentials($credentials);
+        $guard = $this->laravelAuth->guard('api');
 
-        if (null === $user) {
-            abort(401, 'There is no user found with given credentials.');
-        }
-
-        if (false === $this->provider->validateCredentials($user, $credentials)) {
+        if (false === $guard->validate($credentials)) {
             abort(401, 'The given credentials is invalid.');
         }
 
         $authenticator = (string)config('modules.api.auth.default');
 
-        return $this->authManager->sign($authenticator, $user);
+        return $this->authManager->sign($authenticator, $guard->user());
     }
 }
