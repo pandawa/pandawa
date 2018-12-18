@@ -247,7 +247,10 @@ class Repository implements RepositoryInterface
         $this->applyLocking($query);
 
         if (null !== $this->pageSize) {
-            return $query->paginate($this->pageSize);
+            $pageSize = $this->pageSize;
+            $this->pageSize = null;
+
+            return $query->paginate($pageSize);
         }
 
         return $query->get();
