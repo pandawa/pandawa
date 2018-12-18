@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Pandawa\Module\Api;
 
 use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Signer\Hmac\Sha256 as Hs256;
 use Lcobucci\JWT\Signer\Hmac\Sha512 as Hs512;
@@ -74,7 +73,6 @@ final class PandawaApiModule extends AbstractModule
                 return new AuthenticationGuard(
                     Auth::createUserProvider($config['provider']),
                     app(AuthenticationManager::class),
-                    app(Request::class),
                     (string) config('modules.api.auth.default')
                 );
             }

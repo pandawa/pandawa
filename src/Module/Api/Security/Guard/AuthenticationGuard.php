@@ -15,7 +15,6 @@ namespace Pandawa\Module\Api\Security\Guard;
 use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Http\Request;
 use Pandawa\Module\Api\Security\Authentication\AuthenticationManager;
 
 /**
@@ -31,11 +30,6 @@ final class AuthenticationGuard implements Guard
     private $authenticationManager;
 
     /**
-     * @var Request
-     */
-    private $request;
-
-    /**
      * @var string
      */
     private $defaultAuthenticator;
@@ -45,14 +39,12 @@ final class AuthenticationGuard implements Guard
      *
      * @param UserProvider          $userProvider
      * @param AuthenticationManager $authenticationManager
-     * @param Request               $request
      * @param string                $defaultAuthenticator
      */
-    public function __construct(UserProvider $userProvider, AuthenticationManager $authenticationManager, Request $request, string $defaultAuthenticator)
+    public function __construct(UserProvider $userProvider, AuthenticationManager $authenticationManager, string $defaultAuthenticator)
     {
         $this->provider = $userProvider;
         $this->authenticationManager = $authenticationManager;
-        $this->request = $request;
         $this->defaultAuthenticator = $defaultAuthenticator;
     }
 
@@ -65,7 +57,7 @@ final class AuthenticationGuard implements Guard
             return $this->user;
         }
 
-        if (null !== $preUser = $this->authenticationManager->verify($this->getAuthenticator(), $this->request)) {
+        if (null !== $preUser = $this->authenticationManager->verify($this->getAuthenticator(), request())) {
             return $this->provider->retrieveById($preUser->getAuthIdentifier());
         }
 
@@ -102,6 +94,6 @@ final class AuthenticationGuard implements Guard
 
     private function getAuthenticator(): string
     {
-        return $this->request->query('authenticator', $this->defaultAuthenticator);
+        return request()->query('authenticator', $this->defaultAuthenticator);
     }
 }
