@@ -58,7 +58,7 @@ final class AuthenticationGuard implements Guard
         }
 
         if (null !== $preUser = $this->authenticationManager->verify($this->getAuthenticator(), request())) {
-            return $this->provider->retrieveById($preUser->getAuthIdentifier());
+            return $this->user = $this->provider->retrieveById($preUser->getAuthIdentifier());
         }
 
         return null;
