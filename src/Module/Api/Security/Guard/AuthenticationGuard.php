@@ -77,6 +77,14 @@ final class AuthenticationGuard implements Guard
     }
 
     /**
+     * Clear memorized user.
+     */
+    public function logout(): void
+    {
+        $this->user = null;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function validate(array $credentials = [])
