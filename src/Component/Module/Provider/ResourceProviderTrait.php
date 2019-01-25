@@ -66,7 +66,7 @@ trait ResourceProviderTrait
             $finder = new Finder();
 
             /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath) as $file) {
+            foreach ($finder->in($basePath)->files() as $file) {
                 $modelClass = $this->getClassFromFile($file);
 
                 if (is_subclass_of($modelClass, AbstractModel::class)) {

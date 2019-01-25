@@ -47,7 +47,7 @@ trait RuleProviderTrait
             $finder = new Finder();
 
             /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath) as $file) {
+            foreach ($finder->in($basePath)->files() as $file) {
                 $this->mergeConfig('pandawa_rules', $loader->load((string)$file));
             }
         }

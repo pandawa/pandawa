@@ -122,7 +122,7 @@ trait ServiceProviderTrait
 
         if (is_dir($basePath)) {
             /** @var SplFileInfo $file */
-            foreach (Finder::create()->in($basePath) as $file) {
+            foreach (Finder::create()->in($basePath)->files() as $file) {
                 yield $file;
             }
         }

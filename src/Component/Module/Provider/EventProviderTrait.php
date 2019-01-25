@@ -33,7 +33,7 @@ trait EventProviderTrait
             $basePath = $this->getCurrentPath() . '/' . trim($this->eventPath, '/');
 
             if (is_dir($basePath)) {
-                foreach (Finder::create()->in($basePath) as $file) {
+                foreach (Finder::create()->in($basePath)->files() as $file) {
                     $eventClass = $this->getClassFromFile($file);
 
                     if (in_array(NameableEventInterface::class, class_implements($eventClass), true)) {

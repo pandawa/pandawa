@@ -34,7 +34,7 @@ trait TransformerProviderTrait
             $finder = new Finder();
 
             /** @var SplFileInfo $file */
-            foreach ($finder->in($basePath) as $file) {
+            foreach ($finder->in($basePath)->files() as $file) {
                 $transformerClass = $this->getClassFromFile($file);
 
                 $this->mergeConfig('pandawa_transformers', [
