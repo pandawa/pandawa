@@ -94,9 +94,11 @@ abstract class AbstractModule extends ServiceProvider
                 foreach (Finder::create()->in($servicePath)->files() as $serviceFile) {
                     $serviceClass = $this->getClassFromFile($serviceFile);
                     $reflectionClass = new ReflectionClass($serviceClass);
+                    $interfaces = $reflectionClass->getInterfaces();
 
-                    if (count($reflectionClass->getInterfaces())) {
-                        $this->app->singleton($reflectionClass->getInterfaces()[0], $serviceClass);
+                    if (1 === count($interfaces)) {
+                        $interface = array_first($interfaces);
+                        $this->app->singleton($interface->getName(), $serviceClass);
                     } else {
                         $this->app->singleton($serviceClass);
                     }
