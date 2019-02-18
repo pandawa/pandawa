@@ -21,19 +21,21 @@ trait InteractsWithRepositoryTrait
 {
     final public function handle(AbstractQuery $query)
     {
+        $repository = clone $this->repository();
+
         if ($query->isPaginated()) {
-            $this->repository()->paginate($query->getPageSize());
+            $repository->paginate($query->getPageSize());
         }
 
         if ($query->hasRelations()) {
-            $this->repository()->with($query->getRelations());
+            $repository->with($query->getRelations());
         }
 
         if ($query->hasSpecifications()) {
-            $this->repository()->matches($query->getSpecifications());
+            $repository->matches($query->getSpecifications());
         }
 
-        return $this->run($this->repository(), $query);
+        return $this->run($repository, $query);
     }
 
     /**
