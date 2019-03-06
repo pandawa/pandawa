@@ -17,7 +17,7 @@
         "borobudur/parameter": "~0.1@dev",
         "fideloper/proxy": "~4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "laravel/framework": "^5.6",
+        "laravel/framework": "^5.8",
         "lcobucci/jwt": "^4.0@dev",
         "ramsey/uuid": "^3.7",
         "reactivex/rxphp": "^2.0",
@@ -47,7 +47,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1-dev"
+            "dev-master": "1.0-dev"
         },
         "laravel": {
             "providers": [
@@ -62,5 +62,7 @@
                 "Pandawa\\Module\\Reactive\\PandawaReactiveModule"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
