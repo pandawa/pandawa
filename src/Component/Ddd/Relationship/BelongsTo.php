@@ -37,7 +37,7 @@ class BelongsTo extends LaravelBelongsTo
                 }
             );
 
-            $this->child->setRelation($this->relation, $model);
+            $this->child->setRelation($this->getRelationName(), $model);
 
             return $this->child;
         }

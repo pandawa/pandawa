@@ -17,7 +17,6 @@ use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\Validator as LaravelValidator;
 use Pandawa\Module\Rule\Validation\RuleValidation;
 use Pandawa\Module\Rule\Validation\TreeRuleValidation;
-use Pandawa\Module\Rule\Validation\UuidValidation;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -98,24 +97,6 @@ class Validator extends LaravelValidator
         /** @var TreeRuleValidation $validation */
         $validation = $this->container->make(TreeRuleValidation::class);
         if (!empty($value) && false === $passes = $validation->validate($attribute, $value, $parameters, $this)) {
-            $this->failure($attribute, $validation, $parameters);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $attribute
-     * @param mixed  $value
-     * @param array  $parameters
-     *
-     * @return bool
-     */
-    public function validateUuid(string $attribute, $value, array $parameters): bool
-    {
-        /** @var UuidValidation $validation */
-        $validation = $this->container->make(UuidValidation::class);
-        if (false === $passes = $validation->passes($attribute, $value)) {
             $this->failure($attribute, $validation, $parameters);
         }
 

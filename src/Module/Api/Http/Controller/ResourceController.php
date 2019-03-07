@@ -351,8 +351,8 @@ class ResourceController extends Controller implements ResourceControllerInterfa
                 if (method_exists($model, $relation)) {
                     $relation = $model->{$relation}();
 
-                    if (method_exists($relation, 'getForeignKey')) {
-                        $key = $relation->getForeignKey();
+                    if (method_exists($relation, 'getForeignKeyName')) {
+                        $key = $relation->getForeignKeyName();
                     }
                 }
 

@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Pandawa\Component\Ddd\AbstractModel;
 
 /**
+ * @mixin AbstractModel
+ *
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait ModelRelationsTrait

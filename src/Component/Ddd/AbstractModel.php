@@ -48,6 +48,20 @@ abstract class AbstractModel extends Eloquent
     protected $hidden = ['pivot'];
 
     /**
+     * Constructor.
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        if (true === $this->enableUuid) {
+            $this->keyType = 'string';
+        }
+
+        parent::__construct($attributes);
+    }
+
+    /**
      * @return string
      * @throws ReflectionException
      */
