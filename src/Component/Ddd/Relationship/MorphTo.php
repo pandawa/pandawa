@@ -44,7 +44,7 @@ class MorphTo extends LaravelMorphTo
                 }
             );
 
-            return $this->parent->setRelation($this->relation, $model);
+            return $this->parent->setRelation($this->getRelationName(), $model);
         }
 
         return parent::associate($model);
