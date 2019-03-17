@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace Pandawa\Module\Bus;
 
-use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Contracts\Bus\Dispatcher as DispatcherContract;
+use Illuminate\Contracts\Queue\Factory as QueueFactoryContract;
 use Pandawa\Component\Bus\Pipe\DatabaseTransactionPipe;
 use Pandawa\Component\Bus\Pipe\EventPublisherPipe;
 use Pandawa\Component\Message\MessageRegistryInterface;
@@ -47,10 +48,22 @@ final class PandawaBusModule extends AbstractModule
 
             return new $registerClass(config('pandawa_messages') ?? []);
         });
+
+        $this->app->singleton(DispatcherContract::class, function ($app) {
+            $className = config('modules.bus.dispatcher_class');
+
+            return new $className(
+                $app,
+                $app[MessageRegistryInterface::class],
+                function ($connection = null) use ($app) {
+                    return $app[QueueFactoryContract::class]->connection($connection);
+                }
+            );
+        });
     }
 
-    private function dispatcher(): Dispatcher
+    private function dispatcher(): DispatcherContract
     {
-        return $this->app[Dispatcher::class];
+        return $this->app[DispatcherContract::class];
     }
 }
