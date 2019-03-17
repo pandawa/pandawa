@@ -44,6 +44,11 @@ final class QueueEnvelope
         return new QueueEnvelope($command);
     }
 
+    public function displayName(): string
+    {
+        return get_class($this->getCommand());
+    }
+
     public function getCommand(): AbstractCommand
     {
         return $this->command;
