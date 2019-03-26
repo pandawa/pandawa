@@ -63,4 +63,13 @@ class BelongsToMany extends LaravelBelongsToMany
             }
         );
     }
+
+    public function updateExistingPivot($id, array $attributes, $touch = true)
+    {
+        $this->parent->addAfterAction(
+            function () use ($id, $attributes) {
+                parent::updateExistingPivot($id, $attributes, $touch);
+            }
+        );
+    }
 }
