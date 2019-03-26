@@ -37,15 +37,6 @@ class BelongsToMany extends LaravelBelongsToMany
         );
     }
 
-    public function syncWithoutDetaching($ids)
-    {
-        $this->parent->addAfterAction(
-            function () use ($ids) {
-                parent::syncWithoutDetaching($ids);
-            }
-        );
-    }
-
     public function sync($ids, $detaching = true)
     {
         $this->parent->addAfterAction(
