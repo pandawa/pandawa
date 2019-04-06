@@ -37,15 +37,6 @@ class BelongsToMany extends LaravelBelongsToMany
         );
     }
 
-    public function syncWithoutDetaching($ids)
-    {
-        $this->parent->addAfterAction(
-            function () use ($ids) {
-                parent::syncWithoutDetaching($ids);
-            }
-        );
-    }
-
     public function sync($ids, $detaching = true)
     {
         $this->parent->addAfterAction(
@@ -60,6 +51,15 @@ class BelongsToMany extends LaravelBelongsToMany
         $this->parent->addAfterAction(
             function () use ($ids, $touch) {
                 parent::detach($ids, $touch);
+            }
+        );
+    }
+
+    public function updateExistingPivot($id, array $attributes, $touch = true)
+    {
+        $this->parent->addAfterAction(
+            function () use ($id, $attributes) {
+                parent::updateExistingPivot($id, $attributes, $touch);
             }
         );
     }
