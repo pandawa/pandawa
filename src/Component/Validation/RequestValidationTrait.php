@@ -26,7 +26,6 @@ trait RequestValidationTrait
         $data = array_merge(
             (array) $route->parameter('defaults', []),
             $request->all(),
-            $request->files->all(),
             $this->getRouteParameters($route)
         );
 
