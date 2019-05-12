@@ -32,7 +32,7 @@ class HasOne extends LaravelHasOne
      */
     public function associate(AbstractModel $model): void
     {
-        $this->parent->addBeforeAction(
+        $this->parent->addAfterAction(
             function () use ($model) {
                 $this->setForeignAttributesForCreate($model);
                 $this->persist($model);
