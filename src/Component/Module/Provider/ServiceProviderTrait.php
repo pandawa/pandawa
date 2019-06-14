@@ -30,11 +30,26 @@ trait ServiceProviderTrait
 
     protected function registerServiceProvider(): void
     {
+        if (file_exists($this->app->getCachedConfigPath())) {
+            if (false !== $services = config(sprintf('pandawa_services.%s', $this->getModuleName()), false)) {
+                foreach ($services as $name => $service) {
+                    $this->loadService($name, $service);
+                }
+
+                return;
+            }
+        }
+
+        $services = [];
         foreach ($this->getServiceFiles() as $file) {
             foreach ($this->loader->load((string) $file) as $name => $service) {
+                $services[$name] = $service;
+
                 $this->loadService($name, $service);
             }
         }
+
+        $this->mergeConfig('pandawa_services', [$this->getModuleName() => $services]);
     }
 
     protected function loadService(string $name, array $service): void
