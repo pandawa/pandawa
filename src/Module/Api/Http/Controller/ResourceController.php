@@ -182,7 +182,11 @@ class ResourceController extends Controller implements ResourceControllerInterfa
         $method = $repo['call'];
 
         if (isset($repo['arguments']) && is_array($repo['arguments'])) {
-            $args = array_values($data->only($repo['arguments'])->all());
+            foreach ($repo['arguments'] as $argument) {
+                $args[$argument] = $data->get($argument);
+            }
+
+            $args = array_values($args);
         }
 
         $repo = $this->getRepository($modelClass);
