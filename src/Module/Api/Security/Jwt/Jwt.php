@@ -55,6 +55,9 @@ final class Jwt
                 case 'exp':
                     $tokenBuilder->expiresAt(new DateTimeImmutable($value));
                     break;
+                case 'aud':
+                    call_user_func_array([$tokenBuilder, 'permittedFor'], (array)$value);
+                    break;
                 default:
                     $tokenBuilder->withClaim($key, $value);
             }
