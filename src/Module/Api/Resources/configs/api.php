@@ -38,5 +38,6 @@ return [
     'default_transformers' => [
         Pandawa\Component\Transformer\ArrayableTransformer::class,
         Pandawa\Component\Transformer\ModelTransformer::class,
+        Pandawa\Component\Transformer\CollectionTransformer::class,
     ]
 ];

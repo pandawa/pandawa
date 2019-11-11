@@ -73,15 +73,7 @@ final class JsonResource extends AbstractResource
     {
         $tags = array_get($this->options, 'tags', []);
 
-        if (null !== $this->collection) {
-            return $this->collection->map(
-                function ($data) use ($request, $tags) {
-                    return $this->transformerRegistry->transform($data, $tags);
-                }
-            );
-        }
-
-        return $this->transformerRegistry->transform($this->resource, $tags);
+        return $this->transformerRegistry->transform($this->collection ?? $this->resource, $tags);
     }
 
     public function toResponse($request)
