@@ -20,7 +20,7 @@ use RuntimeException;
  */
 abstract class AbstractLoader implements LoaderTypeInterface
 {
-    final public function load(array $route): void
+    final public function load(array $route, array $parent = []): void
     {
         $options = ['defaults' => array_get($route, 'options', [])];
         $path = array_get($route, 'path');
@@ -39,8 +39,9 @@ abstract class AbstractLoader implements LoaderTypeInterface
         unset($route['controller']);
         unset($route['rules']);
 
-        foreach ($this->createRoutes($type, $path, $controller, $route) as $routeObject) {
+        foreach ($this->createRoutes($type, $path, $controller, $route, $parent) as $routeObject) {
             $routeObject->defaults = array_merge(
+                $parent['options'] ?? [],
                 (array) $routeObject->defaults,
                 $options['defaults'],
                 $this->getRouteDefaultParameters($route)
@@ -94,8 +95,9 @@ abstract class AbstractLoader implements LoaderTypeInterface
      * @param string $path
      * @param string $controller
      * @param array  $route
+     * @param array  $parent
      *
      * @return Route[]|mixed
      */
-    abstract protected function createRoutes(string $type, string $path, string $controller, array $route): array;
+    abstract protected function createRoutes(string $type, string $path, string $controller, array $route, array $parent = []): array;
 }

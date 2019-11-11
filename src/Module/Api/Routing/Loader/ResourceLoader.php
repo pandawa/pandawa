@@ -70,7 +70,7 @@ final class ResourceLoader extends AbstractLoader
     /**
      * {@inheritdoc}
      */
-    protected function createRoutes(string $type, string $path, string $controller, array $route): array
+    protected function createRoutes(string $type, string $path, string $controller, array $route, array $parent = []): array
     {
         if (null === $this->registry) {
             throw new RuntimeException('There are not registry class registered. Please enable PandawaResourceModule');
@@ -98,6 +98,11 @@ final class ResourceLoader extends AbstractLoader
 
             /** @var Route $route */
             $route = Route::match($methods, $targetPath, $resourceController);
+
+            if ($parentName = $parent['name'] ?? null) {
+                $route->name($parentName);
+            }
+
             $route->name($this->fixRouteName($path, $type));
             $route->defaults = array_merge($route->defaults, ['type' => $type]);
 

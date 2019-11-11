@@ -30,6 +30,7 @@ interface LoaderTypeInterface
      * Load route.
      *
      * @param array $route
+     * @param array $parent
      */
-    public function load(array $route): void;
+    public function load(array $route, array $parent = []): void;
 }

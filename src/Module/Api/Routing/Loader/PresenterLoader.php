@@ -57,7 +57,7 @@ final class PresenterLoader extends AbstractLoader
     /**
      * {@inheritdoc}
      */
-    protected function createRoutes(string $type, string $path, string $controller, array $route): array
+    protected function createRoutes(string $type, string $path, string $controller, array $route, array $parent = []): array
     {
         if (null === $presenter = array_get($route, 'presenter')) {
             throw new InvalidArgumentException('Route with type "presenter" should has presenter class.');
@@ -71,7 +71,13 @@ final class PresenterLoader extends AbstractLoader
             throw new RuntimeException(sprintf('Presenter "%s" is not registered.', $presenter));
         }
 
-        return [Route::match((array) array_get($route, 'methods', 'get'), $path, $controller)];
+        $routeObject = Route::match((array)array_get($route, 'methods', 'get'), $path, $controller);
+
+        if ($parentRouteName = $parent['name'] ?? null) {
+            $routeObject->name($parentRouteName);
+        }
+
+        return [$routeObject];
     }
 
     /**
@@ -79,7 +85,10 @@ final class PresenterLoader extends AbstractLoader
      */
     protected function getRouteDefaultParameters(array $route): array
     {
-        return ['presenter' => array_get($route, 'presenter')];
+        return [
+            'presenter' => array_get($route, 'presenter'),
+            'name'      => $this->getName($route),
+        ];
     }
 
     /**
@@ -88,5 +97,21 @@ final class PresenterLoader extends AbstractLoader
     protected function getController(array $route): string
     {
         return $this->presenterHandlerClass;
+    }
+
+    /**
+     * @param array $route
+     *
+     * @return string
+     */
+    private function getName(array $route): string
+    {
+        if ($routeName = $route['name'] ?? null) {
+            return (string)$routeName;
+        }
+
+        $presenter = $route['presenter'] ?? '';
+
+        return substr($presenter, strrpos($presenter, ':') + 1);
     }
 }

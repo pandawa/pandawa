@@ -72,8 +72,9 @@ final class RouteLoader implements RouteLoaderInterface
      * Load route from file.
      *
      * @param string $file
+     * @param array  $parent
      */
-    public function loadFile(string $file): void
+    public function loadFile(string $file, array $parent = []): void
     {
         if (!file_exists($file = $this->getFile($file))) {
             throw new RuntimeException(sprintf('File "%s" not found.', $file));
@@ -81,7 +82,7 @@ final class RouteLoader implements RouteLoaderInterface
 
         $routes = $this->fileLoader->load($file);
         if ($routes && is_array($routes)) {
-            $this->load($routes);
+            $this->load($routes, $parent);
         }
     }
 
@@ -89,8 +90,9 @@ final class RouteLoader implements RouteLoaderInterface
      * Load routes.
      *
      * @param array $routes
+     * @param array $parent
      */
-    public function load(array $routes): void
+    public function load(array $routes, array $parent = []): void
     {
         foreach ($routes as $route) {
             if (!is_array($route) || empty(array_get($route, 'type'))) {
@@ -103,7 +105,7 @@ final class RouteLoader implements RouteLoaderInterface
                 $loader->setLoader($this);
             }
 
-            $loader->load($route);
+            $loader->load($route, $parent);
         }
     }
 

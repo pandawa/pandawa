@@ -21,7 +21,7 @@ interface RouteLoaderInterface
 {
     public function add(LoaderTypeInterface $loader, int $priority = 0): void;
 
-    public function loadFile(string $file): void;
+    public function loadFile(string $file, array $parent = []): void;
 
-    public function load(array $routes): void;
+    public function load(array $routes, array $parent = []): void;
 }

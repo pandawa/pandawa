@@ -58,7 +58,7 @@ final class MessageLoader extends AbstractLoader
     /**
      * {@inheritdoc}
      */
-    protected function createRoutes(string $type, string $path, string $controller, array $route): array
+    protected function createRoutes(string $type, string $path, string $controller, array $route, array $parent = []): array
     {
         if (null === $message = array_get($route, 'message')) {
             throw new InvalidArgumentException('Route with type "message" should has message class.');
@@ -76,12 +76,21 @@ final class MessageLoader extends AbstractLoader
             throw new RuntimeException(sprintf('Message "%s" is not registered.', $message));
         }
 
-        return [Route::match($methods, $path, sprintf('%s@handle', $controller))];
+        $routeObject = Route::match($methods, $path, sprintf('%s@handle', $controller));
+
+        if ($parentRouteName = $parent['name'] ?? null) {
+            $routeObject->name($parentRouteName);
+        }
+
+        return [$routeObject];
     }
 
     protected function getRouteDefaultParameters(array $route): array
     {
-        return ['message' => array_get($route, 'message')];
+        return [
+            'message' => array_get($route, 'message'),
+            'name'    => $this->getName($route),
+        ];
     }
 
     /**
@@ -98,5 +107,21 @@ final class MessageLoader extends AbstractLoader
     protected function getController(array $route): string
     {
         return $this->invokableController;
+    }
+
+    /**
+     * @param array $route
+     *
+     * @return string
+     */
+    private function getName(array $route): string
+    {
+        if ($routeName = $route['name'] ?? null) {
+            return (string)$routeName;
+        }
+
+        $message = $route['message'] ?? '';
+
+        return substr($message, strrpos($message, ':') + 1);
     }
 }

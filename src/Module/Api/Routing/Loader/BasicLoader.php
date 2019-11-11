@@ -22,9 +22,17 @@ final class BasicLoader extends AbstractLoader
     /**
      * {@inheritdoc}
      */
-    protected function createRoutes(string $type, string $path, string $controller, array $route): array
+    protected function createRoutes(string $type, string $path, string $controller, array $route, array $parent = []): array
     {
-        return [Route::{$type}($path, $controller)];
+        $routeObject = Route::{$type}($path, $controller);
+
+        if (method_exists($routeObject, 'name')) {
+            if ($parentRouteName = $parent['name'] ?? null) {
+                $routeObject->name($parentRouteName);
+            }
+        }
+
+        return [$routeObject];
     }
 
     /**

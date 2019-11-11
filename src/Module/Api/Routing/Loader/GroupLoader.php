@@ -34,18 +34,24 @@ final class GroupLoader implements LoaderTypeInterface, LoaderAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function load(array $route): void
+    public function load(array $route, array $parent = []): void
     {
         if (!isset($route['children']) || empty($route['children'])) {
             throw new RuntimeException('Index "children" should be defined and cannot be empty.');
         }
 
         $config = [];
-        foreach (['middleware', 'namespace', 'prefix', 'where'] as $index) {
+        foreach (['middleware', 'namespace', 'prefix', 'where', 'options'] as $index) {
             if (isset($route[$index]) && $route[$index]) {
                 $config[$index] = $route[$index];
             }
         }
+
+        if ($parentRouteName = $parent['name'] ?? null) {
+            $route['name'] = $parentRouteName . ($route['name'] ?? '');
+        }
+
+        $route['options'] = array_merge($parent['options'] ?? [], $route['options'] ?? []);
 
         Route::group($config, $this->loadChildren($route));
     }
@@ -63,13 +69,13 @@ final class GroupLoader implements LoaderTypeInterface, LoaderAwareInterface
             $children = array_get($route, 'children');
 
             if (is_string($children)) {
-                $this->loader->loadFile($children);
+                $this->loader->loadFile($children, $route);
 
                 return;
             }
 
             if (is_array($children)) {
-                $this->loader->load($children);
+                $this->loader->load($children, $route);
 
                 return;
             }
