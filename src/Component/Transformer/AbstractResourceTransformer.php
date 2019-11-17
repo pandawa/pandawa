@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Collection as PandawaCollection;
-use Pandawa\Component\Serializer\SerializableInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -48,15 +46,10 @@ abstract class AbstractResourceTransformer implements TransformerInterface
             return $data;
         }
 
-        $serialized = [];
+        $serialized = $this->filterFields($data);
 
         if ($data instanceof AbstractModel) {
-            $serialized = array_merge($serialized, $this->filterFields($data->attributesToArray()));
             $serialized = array_merge($serialized, $this->serializeRelations($data));
-        } else if ($data instanceof Arrayable) {
-            $serialized = array_merge($serialized, $data->toArray());
-        } else if ($data instanceof SerializableInterface) {
-            $serialized = array_merge($serialized, $data->serialize());
         }
 
         return $this->transformSerialized($serialized, $tags);
@@ -105,11 +98,11 @@ abstract class AbstractResourceTransformer implements TransformerInterface
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      *
      * @return array
      */
-    protected function filterFields(array $data): array
+    protected function filterFields($data): array
     {
         if (empty($this->fields())) {
             return $data;
@@ -142,22 +135,41 @@ abstract class AbstractResourceTransformer implements TransformerInterface
     }
 
     /**
-     * @param array $data
+     * @param mixed $data
      * @param array $fields
      *
      * @return array
      */
-    protected function serializeFields(array $data, array $fields): array
+    protected function serializeFields($data, array $fields): array
     {
         $serialized = [];
 
         foreach ($fields as $field) {
             $key = $this->fields()[$field] ?? $field;
 
-            $serialized[$field] = $data[$key];
+            $serialized[$field] = $this->getValue($data, $key);
         }
 
         return $serialized;
+    }
+
+    /**
+     * @param mixed  $data
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    protected function getValue($data, string $key)
+    {
+        if (is_array($data)) {
+            return $data[$key] ?? null;
+        }
+
+        if (is_object($data)) {
+            return $data->{$key} ?? null;
+        }
+
+        return null;
     }
 
     /**
