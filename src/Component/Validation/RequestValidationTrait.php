@@ -24,7 +24,7 @@ trait RequestValidationTrait
     {
         $route = $request->route();
         $data = array_merge(
-            (array) $route->parameter('defaults', []),
+            (array)$route->parameter('defaults', []),
             $request->all(),
             $this->getRouteParameters($route)
         );
@@ -47,7 +47,7 @@ trait RequestValidationTrait
         $route = $request->route();
 
         return array_merge(
-            (array) $route->parameter('defaults', []),
+            (array)$route->parameter('defaults', []),
             $request->all(),
             $request->files->all(),
             $this->getRouteParameters($route)
@@ -68,7 +68,18 @@ trait RequestValidationTrait
         return array_merge(
             array_except(
                 $route->parameters(),
-                ['type', 'middleware', 'resource', 'message', 'rules', 'defaults', 'criteria', 'parameters']
+                [
+                    'type',
+                    'middleware',
+                    'resource',
+                    'message',
+                    'rules',
+                    'defaults',
+                    'criteria',
+                    'parameters',
+                    'name',
+                    'version',
+                ]
             ),
             $route->parameter('parameters', [])
         );
@@ -76,18 +87,18 @@ trait RequestValidationTrait
 
     private function getAllowedRules(Route $route, ?string $action): array
     {
-        if (!empty($rules = (array) array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
+        if (!empty($rules = (array)array_get($route->defaults, 'rules')) && null !== $this->ruleRegistry()) {
             if (null !== $action) {
                 $allowed = [];
 
                 foreach ($rules as $rule) {
                     if (is_array($rule) && null !== $ruleName = array_get($rule, 'name')) {
-                        if (!empty($only = (array) array_get($rule, 'only'))) {
+                        if (!empty($only = (array)array_get($rule, 'only'))) {
                             if (in_array($action, $only, true)) {
                                 $allowed[] = $ruleName;
                             }
                         } else {
-                            if (!empty($except = (array) array_get($rule, 'except'))) {
+                            if (!empty($except = (array)array_get($rule, 'except'))) {
                                 if (!in_array($action, $except, true)) {
                                     $allowed[] = $ruleName;
                                 }
