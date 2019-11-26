@@ -30,7 +30,7 @@ trait ModelUuidTrait
             if ($model->enableUuid) {
                 $model->incrementing = false;
                 if (null === $model->{$model->getKeyName()}) {
-                    $model->{$model->getKeyName()} = Str::uuid();
+                    $model->{$model->getKeyName()} = (string)Str::uuid();
                 }
             }
         });
