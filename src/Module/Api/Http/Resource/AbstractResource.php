@@ -5,7 +5,7 @@ namespace Pandawa\Module\Api\Http\Resource;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource as LaravelJsonResource;
 use Illuminate\Support\Collection;
 use JsonSerializable;
 use Pandawa\Module\Api\Http\Response\ResourceResponse;
@@ -13,7 +13,7 @@ use Pandawa\Module\Api\Http\Response\ResourceResponse;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-abstract class AbstractResource extends Resource
+abstract class AbstractResource extends LaravelJsonResource
 {
     /**
      * {@inheritdoc}

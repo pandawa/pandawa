@@ -9,14 +9,15 @@
  */
 
 return [
-    'controllers'     => [
+    'controllers'          => [
         'invokable' => env('API_INVOKABLE_CONTROLLER', Pandawa\Module\Api\Http\Controller\InvokableController::class),
         'resource'  => env('API_RESOURCE_CONTROLLER', Pandawa\Module\Api\Http\Controller\ResourceController::class),
         'presenter' => env('API_PRESENTER_HANDLER', Pandawa\Module\Api\Http\Controller\PresenterHandler::class),
     ],
-    'show_hostname'   => env('API_SHOW_HOSTNAME', true),
-    'default_version' => env('API_DEFAULT_VERSION'),
-    'auth'            => [
+    'show_hostname'        => env('API_SHOW_HOSTNAME', true),
+    'show_client_ip'       => env('API_SHOW_CLIENT_IP', true),
+    'default_version'      => env('API_DEFAULT_VERSION'),
+    'auth'                 => [
         'default' => 'jwt',
 
         'jwt' => [
@@ -34,10 +35,10 @@ return [
             'ttl'  => env('AUTH_API_JWT_TTL'),
         ],
     ],
-    'renderer' => Pandawa\Module\Api\Renderer\JsonApiRenderer::class,
+    'renderer'             => Pandawa\Module\Api\Renderer\JsonApiRenderer::class,
     'default_transformers' => [
         Pandawa\Component\Transformer\ArrayableTransformer::class,
         Pandawa\Component\Transformer\ModelTransformer::class,
         Pandawa\Component\Transformer\CollectionTransformer::class,
-    ]
+    ],
 ];

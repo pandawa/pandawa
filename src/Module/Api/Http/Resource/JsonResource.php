@@ -94,15 +94,17 @@ final class JsonResource extends AbstractResource
     public function with($request)
     {
         $meta = [];
-        $version = $this->version($request);
-        $hostname = $this->hostname();
 
-        if ($version) {
+        if ($version = $this->version($request)) {
             $meta['version'] = $version;
         }
 
-        if ($hostname) {
+        if ($hostname = $this->hostname()) {
             $meta['hostname'] = $hostname;
+        }
+
+        if ($clientIp = $this->clientIp()) {
+            $meta['client_ip'] = $clientIp;
         }
 
         if ($meta) {
@@ -120,13 +122,22 @@ final class JsonResource extends AbstractResource
             $version = config('modules.api.default_version');
         }
 
-        return (string) $version;
+        return (string)$version;
     }
 
     protected function hostname(): ?string
     {
         if (true === config('modules.api.show_hostname')) {
             return gethostname();
+        }
+
+        return null;
+    }
+
+    protected function clientIp(): ?string
+    {
+        if (true === config('modules.api.show_client_ip')) {
+            return request()->ip();
         }
 
         return null;
