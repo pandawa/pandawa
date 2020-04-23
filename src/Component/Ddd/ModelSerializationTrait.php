@@ -43,6 +43,11 @@ trait ModelSerializationTrait
         return $attributes;
     }
 
+    public function attributesToArray()
+    {
+        return $this->attributes;
+    }
+
     /**
      * Perform serialize relationships.
      *

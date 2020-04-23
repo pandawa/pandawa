@@ -12,10 +12,9 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
+use Illuminate\Support\Carbon;
 use Pandawa\Component\Serializer\DeserializableInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection as LaravelCollection;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -34,22 +33,13 @@ trait ModelAttributeTrait
     {
         $key = snake_case($key);
 
-        parent::setAttribute($key, $value);
-
-        if ($this->hasCast($key)) {
-            $value = $this->castToValue($this->getCasts()[$key], $this->getAttribute($key));
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-
-            $this->attributes[$key] = $value;
-        }
-
         if ($value instanceof SerializableInterface) {
             $this->attributes[$key] = $value->serialize();
+
+            return $this;
         }
 
-        return $this;
+        return parent::setAttribute($key, $value);
     }
 
     /**
@@ -113,45 +103,13 @@ trait ModelAttributeTrait
      */
     protected function castAttribute($key, $value)
     {
-        if (is_null($value)) {
-            return $value;
+        if (null !== $value && $this->hasCast($key) && !is_object($value)) {
+            if (in_array(DeserializableInterface::class, class_implements($this->getCasts()[$key]))) {
+                return $this->getCasts()[$key]::{'deserialize'}($value);
+            }
         }
 
-        switch ($this->getCastType($key)) {
-            case 'int':
-            case 'integer':
-                return (int) $value;
-            case 'real':
-            case 'float':
-            case 'double':
-                return (float) $value;
-            case 'string':
-                return (string) $value;
-            case 'bool':
-            case 'boolean':
-                return (bool) $value;
-            case 'object':
-                return $this->fromJson($value, true);
-            case 'array':
-            case 'json':
-                return $this->fromJson($value);
-            case 'collection':
-                return new LaravelCollection($this->fromJson($value));
-            case 'date':
-                return $this->asDate($value);
-            case 'datetime':
-                return $this->asDateTime($value);
-            case 'timestamp':
-                return $this->asTimestamp($value);
-            default:
-                if (null !== $value && $this->hasCast($key) && !is_object($value)) {
-                    if (in_array(DeserializableInterface::class, class_implements($this->getCasts()[$key]))) {
-                        return $this->getCasts()[$key]::{'deserialize'}($value);
-                    }
-                }
-
-                return $value;
-        }
+        return parent::castAttribute($key, $value);
     }
 
     /**
