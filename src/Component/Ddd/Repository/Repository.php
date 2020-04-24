@@ -195,15 +195,17 @@ class Repository implements RepositoryInterface
      *
      * @param AbstractModel|mixed $model
      *
-     * @throws ReflectionException
+     * @return AbstractModel|mixed
      */
-    public function save(AbstractModel $model): void
+    public function save(AbstractModel $model)
     {
         DB::transaction(
             function () use ($model) {
                 $this->persist($model);
             }
         );
+
+        return $model;
     }
 
     /**

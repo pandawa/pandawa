@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd\Repository;
 
-use Pandawa\Component\Ddd\AbstractModel;
-use Pandawa\Component\Ddd\Specification\SpecificationInterface;
-use Pandawa\Component\Ddd\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Collection;
+use Pandawa\Component\Ddd\Specification\SpecificationInterface;
 use ReflectionException;
 
 /**
@@ -84,9 +84,11 @@ interface RepositoryInterface
      *
      * @param AbstractModel|mixed $model
      *
+     * @return AbstractModel|mixed
+     *
      * @throws ReflectionException
      */
-    public function save(AbstractModel $model): void;
+    public function save(AbstractModel $model);
 
     /**
      * Perform remove model.
