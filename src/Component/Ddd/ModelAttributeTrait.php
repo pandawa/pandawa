@@ -104,7 +104,8 @@ trait ModelAttributeTrait
     protected function castAttribute($key, $value)
     {
         if (null !== $value && $this->hasCast($key) && !is_object($value)) {
-            if (in_array(DeserializableInterface::class, class_implements($this->getCasts()[$key]))) {
+            $className = $this->getCasts()[$key];
+            if (class_exists($className) && in_array(DeserializableInterface::class, class_implements($className))) {
                 return $this->getCasts()[$key]::{'deserialize'}($value);
             }
         }
