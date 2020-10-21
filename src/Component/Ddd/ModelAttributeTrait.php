@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Support\Carbon;
 use Pandawa\Component\Serializer\DeserializableInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
@@ -88,6 +89,10 @@ trait ModelAttributeTrait
             }
 
             $attributes[$key] = $this->castToValue($value, $attributes[$key]);
+
+            if ($attributes[$key] && $this->isClassCastableAndSerializable($key)) {
+                $attributes[$key] = $this->serializeClassCastableAttribute($key, $attributes[$key]);
+            }
         }
 
         return $attributes;
@@ -132,5 +137,39 @@ trait ModelAttributeTrait
         }
 
         return $value;
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    private function isClassCastableAndSerializable($key)
+    {
+        $castType = $this->getCasts()[$key];
+
+        if (is_string($castType) && strpos($castType, ':') !== false) {
+            $segments = explode(':', $castType, 2);
+
+            $castType = $segments[0];
+        }
+
+        if (is_subclass_of($castType, Castable::class)) {
+            $castType = $castType::castUsing();
+        }
+
+        return $this->isClassCastable($key) &&
+            method_exists($castType, 'serializeCast');
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     * @return mixed
+     */
+    private function serializeClassCastableAttribute($key, $value)
+    {
+        return $this->resolveCasterClass($key)->serializeCast(
+            $this, $key, $value, $this->attributes
+        );
     }
 }
