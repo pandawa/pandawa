@@ -42,14 +42,18 @@ abstract class AbstractLoader implements LoaderTypeInterface
         foreach ($this->createRoutes($type, $path, $controller, $route, $parent) as $routeObject) {
             $routeObject->defaults = array_merge(
                 $parent['options'] ?? [],
-                (array) $routeObject->defaults,
+                (array)$routeObject->defaults,
                 $options['defaults'],
                 $this->getRouteDefaultParameters($route)
             );
 
+            if (isset($route['params']) && $route['params']) {
+                $routeObject->where($route['params']);
+            }
+
             foreach (['middleware', 'name'] as $option) {
                 if (isset($route[$option]) && $route[$option]) {
-                    $this->applyOption($option, $routeObject, $route, (array) $route[$option]);
+                    $this->applyOption($option, $routeObject, $route, (array)$route[$option]);
                 }
             }
         }
