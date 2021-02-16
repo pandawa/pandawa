@@ -12,11 +12,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd;
 
-use Illuminate\Contracts\Database\Eloquent\Castable;
-use Illuminate\Support\Carbon;
-use Pandawa\Component\Serializer\DeserializableInterface;
-use Pandawa\Component\Serializer\SerializableInterface;
-
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
@@ -32,15 +27,7 @@ trait ModelAttributeTrait
      */
     public function setAttribute($key, $value)
     {
-        $key = snake_case($key);
-
-        if ($value instanceof SerializableInterface) {
-            $this->attributes[$key] = $value->serialize();
-
-            return $this;
-        }
-
-        return parent::setAttribute($key, $value);
+        return parent::setAttribute(snake_case($key), $value);
     }
 
     /**
@@ -65,111 +52,5 @@ trait ModelAttributeTrait
     public function getRelationValue($key)
     {
         return parent::getRelationValue(camel_case($key));
-    }
-
-    /**
-     * Add cast attributes.
-     *
-     * @param array $attributes
-     * @param array $mutatedAttributes
-     *
-     * @return array
-     */
-    protected function addCastAttributesToArray(array $attributes, array $mutatedAttributes): array
-    {
-        foreach ($this->getCasts() as $key => $value) {
-            if (!array_key_exists($key, $attributes) || in_array($key, $mutatedAttributes)) {
-                continue;
-            }
-
-            $attributes[$key] = $this->castAttribute($key, $attributes[$key]);
-
-            if ($this->hasCast($key)) {
-                $attributes[$key] = $this->getAttribute($key);
-            }
-
-            $attributes[$key] = $this->castToValue($value, $attributes[$key]);
-
-            if ($attributes[$key] && $this->isClassCastableAndSerializable($key)) {
-                $attributes[$key] = $this->serializeClassCastableAttribute($key, $attributes[$key]);
-            }
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * Perform cast attribute.
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return Carbon|int|mixed
-     */
-    protected function castAttribute($key, $value)
-    {
-        if (null !== $value && $this->hasCast($key) && !is_object($value)) {
-            $className = $this->getCasts()[$key];
-            if (class_exists($className) && in_array(DeserializableInterface::class, class_implements($className))) {
-                return $this->getCasts()[$key]::{'deserialize'}($value);
-            }
-        }
-
-        return parent::castAttribute($key, $value);
-    }
-
-    /**
-     * Cast to value.
-     *
-     * @param string $cast
-     * @param mixed  $value
-     *
-     * @return mixed|string
-     */
-    private function castToValue(string $cast, $value)
-    {
-        if ($value && ($cast === 'date' || $cast === 'datetime')) {
-            return $this->serializeDate($value);
-        }
-
-        if ($value instanceof SerializableInterface) {
-            return $value->serialize();
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param string $key
-     * @return bool
-     */
-    private function isClassCastableAndSerializable($key)
-    {
-        $castType = $this->getCasts()[$key];
-
-        if (is_string($castType) && strpos($castType, ':') !== false) {
-            $segments = explode(':', $castType, 2);
-
-            $castType = $segments[0];
-        }
-
-        if (is_subclass_of($castType, Castable::class)) {
-            $castType = $castType::castUsing();
-        }
-
-        return $this->isClassCastable($key) &&
-            method_exists($castType, 'serializeCast');
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $value
-     * @return mixed
-     */
-    private function serializeClassCastableAttribute($key, $value)
-    {
-        return $this->resolveCasterClass($key)->serializeCast(
-            $this, $key, $value, $this->attributes
-        );
     }
 }
