@@ -14,6 +14,8 @@ namespace Pandawa\Module\Api\Security\Jwt;
 
 use InvalidArgumentException;
 use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Signer\Key\LocalFileReference;
 use Lcobucci\JWT\Signer\Rsa;
 
 /**
@@ -43,13 +45,13 @@ final class Keys
         $this->assertExistKey($key);
 
         if ($this->signers->get($algo) instanceof Rsa) {
-            return new Key(
-                sprintf('file://%s', array_get($this->keys[$key], 'private_key')),
+            return LocalFileReference::file(
+                array_get($this->keys[$key], 'private_key'),
                 array_get($this->keys[$key], 'passphrase', '')
             );
         }
 
-        return new Key(array_get($this->keys[$key], 'secret_key'));
+        return InMemory::plainText(array_get($this->keys[$key], 'secret_key'));
     }
 
     public function getDecryptKey(string $algo): Key
@@ -58,10 +60,10 @@ final class Keys
         $this->assertExistKey($key);
 
         if ($this->signers->get($algo) instanceof Rsa) {
-            return new Key(sprintf('file://%s', array_get($this->keys[$key], 'public_key')));
+            return LocalFileReference::file(array_get($this->keys[$key], 'public_key'));
         }
 
-        return new Key(array_get($this->keys[$key], 'secret_key'));
+        return InMemory::plainText(array_get($this->keys[$key], 'secret_key'));
     }
 
     private function getKeyName(string $algo): string

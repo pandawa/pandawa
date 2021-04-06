@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Pandawa\Module\Api\Security\Authentication\Authenticator;
 
 use Illuminate\Auth\AuthenticationException;
-use Lcobucci\Jose\Parsing\Parser as Decoder;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Token\Plain;
 use Pandawa\Module\Api\Security\Contract\SignableUserInterface;
@@ -58,7 +58,7 @@ final class JwtAuthenticator implements AuthenticatorInterface
             $claims['exp'] = date('Y-m-d H:i:s', strtotime(sprintf('+%d seconds', $this->ttl)));
         }
 
-        return new Signature((string) $this->jwt->sign($this->defaultAlgo, $claims), ['expires_in' => $this->ttl]);
+        return new Signature($this->jwt->sign($this->defaultAlgo, $claims)->toString(), ['expires_in' => $this->ttl]);
     }
 
     /**
@@ -69,7 +69,7 @@ final class JwtAuthenticator implements AuthenticatorInterface
      */
     public function verify(Signature $signature): ?AuthenticatedUser
     {
-        $parser = new Parser(new Decoder());
+        $parser = new Parser(new JoseEncoder());
         /** @var Plain $token */
         $token = $parser->parse($signature->getCredentials());
 

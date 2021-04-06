@@ -14,7 +14,8 @@ namespace Pandawa\Module\Api\Security\Jwt;
 
 use DateTimeImmutable;
 use Illuminate\Auth\AuthenticationException;
-use Lcobucci\Jose\Parsing\Parser;
+use Lcobucci\JWT\Encoding\ChainedFormatter;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token\Builder;
 use Lcobucci\JWT\Token\Plain;
 
@@ -42,7 +43,7 @@ final class Jwt
 
     public function sign(string $algo, array $claims): Plain
     {
-        $tokenBuilder = new Builder(new Parser());
+        $tokenBuilder = new Builder(new JoseEncoder(), new ChainedFormatter());
 
         foreach ($claims as $key => $value) {
             switch ($key) {
