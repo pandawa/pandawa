@@ -43,7 +43,7 @@ final class Jwt
 
     public function sign(string $algo, array $claims): Plain
     {
-        $tokenBuilder = new Builder(new JoseEncoder(), new ChainedFormatter());
+        $tokenBuilder = new Builder(new JoseEncoder(), ChainedFormatter::withUnixTimestampDates());
 
         foreach ($claims as $key => $value) {
             switch ($key) {
