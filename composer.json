@@ -12,14 +12,14 @@
     ],
     "require": {
         "php": ">=7.3|>=8.0",
-        "borobudur/dci": "~0.1@dev",
-        "borobudur/exception": "~0.1@dev",
-        "borobudur/parameter": "~0.1@dev",
+        "borobudur/dci": "^0.1",
+        "borobudur/exception": "^0.1",
+        "borobudur/parameter": "^0.1",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.1",
-        "lcobucci/jwt": "^4.0@dev",
+        "lcobucci/jwt": "^4.0",
         "ramsey/uuid": "^4.0",
         "reactivex/rxphp": "^2.0",
         "symfony/yaml": "^4.0"
