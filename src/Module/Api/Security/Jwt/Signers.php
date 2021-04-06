@@ -37,7 +37,7 @@ final class Signers
 
     public function add(Signer $signer): void
     {
-        $this->signers[$signer->getAlgorithmId()] = $signer;
+        $this->signers[$signer->algorithmId()] = $signer;
     }
 
     public function get(string $algo): Signer
