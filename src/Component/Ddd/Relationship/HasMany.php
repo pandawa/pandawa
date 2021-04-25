@@ -30,7 +30,7 @@ class HasMany extends LaravelHasMany
     /**
      * @param AbstractModel $model
      */
-    public function add(AbstractModel $model): void
+    public function add($model): void
     {
         $this->parent->addAfterAction(
             function () use ($model) {

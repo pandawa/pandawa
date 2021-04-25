@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Pandawa\Component\Module\Provider;
 
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Repository\EntityManagerInterface;
 use SplFileInfo;
@@ -70,12 +69,11 @@ trait ResourceProviderTrait
                 $modelClass = $this->getClassFromFile($file);
 
                 if (is_subclass_of($modelClass, AbstractModel::class)) {
-                    $name = substr($modelClass, (int)strrpos($modelClass, '\\') + 1);
-                    $name = Str::snake($name);
+                    $name = $modelClass::{'getResourceName'}();
 
                     $resources = $this->app['config']->get($key) ?? [];
                     $resources[$name] = [
-                        'model_class'      => $modelClass,
+                        'model_class'      => $modelClass::{'getMappedClass'}(),
                         'repository_class' => $modelClass::{'getRepositoryClass'}(),
                     ];
 

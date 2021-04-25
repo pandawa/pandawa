@@ -47,6 +47,11 @@ abstract class AbstractModule extends ServiceProvider
     /**
      * @var array
      */
+    protected $subModules = [];
+
+    /**
+     * @var array
+     */
     protected $scanServicePaths = [
         'Service',
         'Finder',
@@ -107,11 +112,15 @@ abstract class AbstractModule extends ServiceProvider
         }
 
         foreach ($this->getTraits() as $trait) {
-            $method = 'register' . $trait;
+            $method = 'register'.$trait;
 
             if (method_exists($this, $method)) {
                 call_user_func([$this, $method]);
             }
+        }
+
+        foreach ($this->subModules as $module) {
+            $this->app->register($module);
         }
 
         $this->init();

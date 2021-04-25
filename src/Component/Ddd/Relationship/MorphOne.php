@@ -30,7 +30,7 @@ class MorphOne extends LaravelMorphOne
     /**
      * @param AbstractModel $model
      */
-    public function associate(AbstractModel $model): void
+    public function associate($model): void
     {
         $this->parent->addAfterAction(
             function () use ($model) {

@@ -19,6 +19,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Collection;
 use Pandawa\Component\Ddd\LockModes;
+use Pandawa\Component\Ddd\Model;
 use Pandawa\Component\Ddd\Specification\SpecificationInterface;
 use Pandawa\Component\Serializer\SerializableInterface;
 use ReflectionException;
@@ -129,7 +130,7 @@ class Repository implements RepositoryInterface
      *
      * @return AbstractModel|mixed|null
      */
-    public function find($id, int $lockMode = null): ?AbstractModel
+    public function find($id, int $lockMode = null)
     {
         if ($id instanceof SerializableInterface) {
             $id = $id->serialize();
@@ -155,7 +156,7 @@ class Repository implements RepositoryInterface
      *
      * @return AbstractModel|mixed
      */
-    public function findOneBy(array $criteria): ?AbstractModel
+    public function findOneBy(array $criteria)
     {
         $stmt = $this->createQueryBuilder();
 
@@ -197,7 +198,7 @@ class Repository implements RepositoryInterface
      *
      * @return AbstractModel|mixed
      */
-    public function save(AbstractModel $model)
+    public function save(&$model)
     {
         DB::transaction(
             function () use ($model) {
@@ -215,7 +216,7 @@ class Repository implements RepositoryInterface
      *
      * @throws ReflectionException
      */
-    public function remove(AbstractModel $model): void
+    public function remove($model): void
     {
         DB::transaction(
             function () use ($model) {
@@ -263,7 +264,7 @@ class Repository implements RepositoryInterface
      *
      * @return AbstractModel|mixed
      */
-    protected function executeSingle($query): ?AbstractModel
+    protected function executeSingle($query)
     {
         $this->applyRelations($query);
         $this->applySpecifications($query);
@@ -320,9 +321,9 @@ class Repository implements RepositoryInterface
      *
      * @param string $modelClass
      *
-     * @return AbstractModel
+     * @return AbstractModel|Model
      */
-    private function createModel(string $modelClass): AbstractModel
+    protected function createModel(string $modelClass): Model
     {
         return new $modelClass;
     }
@@ -336,7 +337,7 @@ class Repository implements RepositoryInterface
      * @return bool
      * @throws ReflectionException
      */
-    private function persist(AbstractModel $model, string $walker = null): bool
+    protected function persist($model, string $walker = null): bool
     {
         if (null === $walker) {
             $walker = uniqid();
@@ -378,7 +379,7 @@ class Repository implements RepositoryInterface
      * @return bool
      * @throws ReflectionException
      */
-    private function invokeSaveModel(AbstractModel $model): bool
+    protected function invokeSaveModel($model): bool
     {
         $method = new ReflectionMethod(get_class($model), 'persist');
         $method->setAccessible(true);
@@ -392,7 +393,7 @@ class Repository implements RepositoryInterface
      * @return bool
      * @throws ReflectionException
      */
-    private function invokeDeleteModel(AbstractModel $model): bool
+    protected function invokeDeleteModel($model): bool
     {
         $method = new ReflectionMethod(get_class($model), 'remove');
         $method->setAccessible(true);

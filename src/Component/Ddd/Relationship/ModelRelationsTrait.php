@@ -15,6 +15,7 @@ namespace Pandawa\Component\Ddd\Relationship;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Model;
 
 /**
  * @mixin AbstractModel
@@ -28,7 +29,7 @@ trait ModelRelationsTrait
      */
     protected function newBelongsToMany(Builder $query, Eloquent $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName = null)
     {
-        if ($parent instanceof AbstractModel) {
+        if ($parent instanceof Model) {
             return new BelongsToMany(
                 $query, $parent, $table, $foreignPivotKey, $relatedPivotKey, $parentKey, $relatedKey, $relationName
             );
@@ -51,7 +52,7 @@ trait ModelRelationsTrait
      */
     protected function newHasOne(Builder $query, Eloquent $parent, $foreignKey, $localKey)
     {
-        if ($parent instanceof AbstractModel) {
+        if ($parent instanceof Model) {
             return new HasOne($query, $parent, $foreignKey, $localKey);
         }
 
@@ -63,7 +64,7 @@ trait ModelRelationsTrait
      */
     protected function newBelongsTo(Builder $query, Eloquent $child, $foreignKey, $ownerKey, $relation)
     {
-        if ($child instanceof AbstractModel) {
+        if ($child instanceof Model) {
             return new BelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
         }
 
@@ -75,7 +76,7 @@ trait ModelRelationsTrait
      */
     protected function newHasMany(Builder $query, Eloquent $parent, $foreignKey, $localKey)
     {
-        if ($parent instanceof AbstractModel) {
+        if ($parent instanceof Model) {
             return new HasMany($query, $parent, $foreignKey, $localKey);
         }
 
@@ -87,7 +88,7 @@ trait ModelRelationsTrait
      */
     protected function newMorphOne(Builder $query, Eloquent $parent, $type, $id, $localKey)
     {
-        if ($parent instanceof AbstractModel) {
+        if ($parent instanceof Model) {
             return new MorphOne($query, $parent, $type, $id, $localKey);
         }
 
@@ -99,7 +100,7 @@ trait ModelRelationsTrait
      */
     protected function newMorphTo(Builder $query, Eloquent $parent, $foreignKey, $ownerKey, $type, $relation)
     {
-        if ($parent instanceof AbstractModel) {
+        if ($parent instanceof Model) {
             return new MorphTo($query, $parent, $foreignKey, $ownerKey, $type, $relation);
         }
 
@@ -111,7 +112,7 @@ trait ModelRelationsTrait
      */
     protected function newMorphMany(Builder $query, Eloquent $parent, $type, $id, $localKey)
     {
-        if ($parent instanceof AbstractModel) {
+        if ($parent instanceof Model) {
             return new MorphMany($query, $parent, $type, $id, $localKey);
         }
 

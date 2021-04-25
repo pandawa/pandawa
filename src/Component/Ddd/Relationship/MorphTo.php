@@ -15,6 +15,7 @@ namespace Pandawa\Component\Ddd\Relationship;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo as LaravelMorphTo;
 use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Model as PandawaModel;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -31,7 +32,7 @@ class MorphTo extends LaravelMorphTo
      */
     public function associate($model)
     {
-        if ($model instanceof AbstractModel) {
+        if ($model instanceof PandawaModel) {
             $this->parent->addBeforeAction(
                 function () use ($model) {
                     $this->parent->setAttribute(

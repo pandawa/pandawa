@@ -14,7 +14,6 @@ namespace Pandawa\Module\Api\Http\Controller;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
-use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Repository\RepositoryInterface;
 
 /**
@@ -29,7 +28,7 @@ trait InteractsWithRelationsTrait
                 $stmt->with($withs);
             } else if ($stmt instanceof Builder) {
                 $stmt->with($withs);
-            } else if ($stmt instanceof AbstractModel) {
+            } else {
                 $stmt->load($withs);
             }
         }

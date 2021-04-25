@@ -14,7 +14,7 @@ namespace Pandawa\Component\Ddd\Repository;
 
 use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
-use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Model;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -54,9 +54,9 @@ class EntityManager implements EntityManagerInterface
      */
     public function getRepository(string $modelClass): RepositoryInterface
     {
-        if (!is_subclass_of($modelClass, AbstractModel::class)) {
+        if (!in_array(Model::class, class_implements($modelClass))) {
             throw new InvalidArgumentException(
-                sprintf('Model "%s" should sub class of "%s"', $modelClass, AbstractModel::class)
+                sprintf('Model "%s" should implement "%s"', $modelClass, Model::class)
             );
         }
 

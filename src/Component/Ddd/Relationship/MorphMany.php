@@ -30,7 +30,7 @@ class MorphMany extends LaravelMorphMany
     /**
      * @param AbstractModel $model
      */
-    public function add(AbstractModel $model): void
+    public function add($model): void
     {
         $this->parent->addAfterAction(
             function () use ($model) {

@@ -14,20 +14,25 @@ namespace Pandawa\Component\Ddd;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
 use Pandawa\Component\Ddd\Relationship\ModelRelationsTrait;
-use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-abstract class AbstractModel extends Eloquent
+abstract class AbstractModel extends Eloquent implements Model
 {
     use ModelUuidTrait,
         ModelRelationsTrait,
         ModelAttributeTrait,
         ModelSerializationTrait;
+
+    protected static $repositoryClass;
+    protected static $modelClass;
+    protected static $resourceName;
 
     /**
      * @var array
@@ -67,16 +72,53 @@ abstract class AbstractModel extends Eloquent
      */
     public static function getRepositoryClass(): ?string
     {
-        $reflection = new ReflectionClass(get_called_class());
-        $modelClass = $reflection->getName();
-        $repositoryClass = str_replace('Model', 'Repository', $modelClass);
-        $repositoryClass = sprintf('%sRepository', $repositoryClass);
+        if (null === $repositoryClass = static::$repositoryClass) {
+            $modelClass = static::getModelClass();
+            $repositoryClass = str_replace('Model', 'Repository', $modelClass);
+            $repositoryClass = sprintf('%sRepository', $repositoryClass);
+        }
 
         if (class_exists($repositoryClass)) {
             return $repositoryClass;
         }
 
         return null;
+    }
+
+    public static function getResourceName(): string
+    {
+        if (null !== $resource = static::$resourceName) {
+            return $resource;
+        }
+
+        $modelClass = static::getModelClass();
+        $name = substr($modelClass, (int)strrpos($modelClass, '\\') + 1);
+
+        return Str::snake($name);
+    }
+
+    public static function getMappedClass(): string
+    {
+        return static::getModelClass();
+    }
+
+    public function getMappedModel()
+    {
+        return $this;
+    }
+
+    public function hasRelation(string $method): bool
+    {
+        return method_exists($this, $method) && $this->{$method}() instanceof Relation;
+    }
+
+    public static function getModelClass(): ?string
+    {
+        if (null !== $modelClass = static::$modelClass) {
+            return $modelClass;
+        }
+
+        return get_called_class();
     }
 
     /**

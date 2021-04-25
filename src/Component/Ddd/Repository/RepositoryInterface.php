@@ -58,14 +58,14 @@ interface RepositoryInterface
      *
      * @return AbstractModel|mixed|null
      */
-    public function find($id, int $lockMode = null): ?AbstractModel;
+    public function find($id, int $lockMode = null);
 
     /**
      * @param array $criteria
      *
      * @return AbstractModel|mixed
      */
-    public function findOneBy(array $criteria): ?AbstractModel;
+    public function findOneBy(array $criteria);
 
     /**
      * @param array $criteria
@@ -88,7 +88,7 @@ interface RepositoryInterface
      *
      * @throws ReflectionException
      */
-    public function save(AbstractModel $model);
+    public function save(&$model);
 
     /**
      * Perform remove model.
@@ -97,5 +97,5 @@ interface RepositoryInterface
      *
      * @throws ReflectionException
      */
-    public function remove(AbstractModel $model): void;
+    public function remove($model): void;
 }

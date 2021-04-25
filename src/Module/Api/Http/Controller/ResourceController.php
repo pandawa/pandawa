@@ -213,7 +213,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
 
     protected function getModelKey(string $modelClass, Route $route): string
     {
-        $key = Str::snake(substr($modelClass, strrpos($modelClass, '\\') + 1));
+        $key = $modelClass::{'getResourceName'}();
 
         return array_get($route->defaults, 'key', $key);
     }
@@ -224,7 +224,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
      *
      * @throws ReflectionException
      */
-    protected function persist(AbstractModel $model, array $data): void
+    protected function persist($model, array $data): void
     {
         $this->appendRelations($model, $data);
 
@@ -252,19 +252,18 @@ class ResourceController extends Controller implements ResourceControllerInterfa
      *
      * @throws ReflectionException
      */
-    protected function appendRelations(AbstractModel $model, array &$data): void
+    protected function appendRelations($model, array &$data): void
     {
         foreach ($data as $attribute => $value) {
-
             $method = Str::camel($attribute);
 
-            if (method_exists($model, $method) && $model->{$method}() instanceof Relation) {
+            if ($model->hasRelation($method)) {
                 $relation = $model->{$method}();
 
                 if ($relation instanceof BelongsToMany) {
                     $relation->detach();
                     if (!empty($value)) {
-                        $relation->attach((array) $value);
+                        $relation->attach((array)$value);
                     }
                 } else {
                     if (null !== $value) {
@@ -288,7 +287,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
      * @return AbstractModel
      * @throws ReflectionException
      */
-    protected function findRelatedModel(Relation $relation, $value): AbstractModel
+    protected function findRelatedModel(Relation $relation, $value)
     {
         $class = get_class($relation->getModel());
 
@@ -306,7 +305,7 @@ class ResourceController extends Controller implements ResourceControllerInterfa
             $model = $class::{'findOrFail'}($value);
         }
 
-        return $model;
+        return $model->getMappedModel();
     }
 
     protected function applySpecifications(RepositoryInterface $repository, Request $request, string $action): void

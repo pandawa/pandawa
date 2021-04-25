@@ -14,23 +14,38 @@ namespace Pandawa\Component\Ddd\Relationship;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo as LaravelBelongsTo;
 use Pandawa\Component\Ddd\AbstractModel;
+use Pandawa\Component\Ddd\Model;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 class BelongsTo extends LaravelBelongsTo
 {
+    use DefaultModels;
+
     /**
      * @var AbstractModel
      */
     protected $parent;
 
     /**
+     * {@inheritDoc}
+     */
+    public function getResults()
+    {
+        if (is_null($this->child->{$this->foreignKey})) {
+            return $this->getDefaultFor($parent);
+        }
+
+        return $this->query->first() ?: $this->getDefaultFor($parent);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function associate($model)
     {
-        if ($model instanceof AbstractModel) {
+        if ($model instanceof Model) {
             $this->parent->addBeforeAction(
                 function () use ($model) {
                     $this->child->setAttribute($this->foreignKey, $model->getAttribute($this->ownerKey));
