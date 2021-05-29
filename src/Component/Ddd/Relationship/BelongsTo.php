@@ -34,10 +34,10 @@ class BelongsTo extends LaravelBelongsTo
     public function getResults()
     {
         if (is_null($this->child->{$this->foreignKey})) {
-            return $this->getDefaultFor($parent);
+            return $this->getDefaultFor($this->parent);
         }
 
-        return $this->query->first() ?: $this->getDefaultFor($parent);
+        return $this->query->first() ?: $this->getDefaultFor($this->parent);
     }
 
     /**
