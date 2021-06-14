@@ -63,4 +63,19 @@ class BelongsToMany extends LaravelBelongsToMany
             }
         );
     }
+
+    protected function migratePivotAttributes($model)
+    {
+        $values = [];
+
+        foreach ($model->getAttributes() as $key => $value) {
+            if (strpos($key, 'pivot_') === 0) {
+                $values[substr($key, 6)] = $value;
+
+                unset($model->$key);
+            }
+        }
+
+        return $values;
+    }
 }
