@@ -12,28 +12,23 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Ddd\Relationship;
 
-use Pandawa\Component\Ddd\AbstractModel;
 use Pandawa\Component\Ddd\Repository\EntityManagerInterface;
-use ReflectionException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 trait EntityManagerPersistentTrait
 {
-    /**
-     * @param AbstractModel $model
-     *
-     * @throws ReflectionException
-     */
     protected function persist($model): void
     {
         $this->em()->getRepository(get_class($model))->save($model);
     }
 
-    /**
-     * @return EntityManagerInterface
-     */
+    protected function destroy($model): void
+    {
+        $this->em()->getRepository(get_class($model))->remove($model);
+    }
+
     protected function em(): EntityManagerInterface
     {
         return app(EntityManagerInterface::class);

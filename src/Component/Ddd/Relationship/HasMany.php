@@ -39,4 +39,13 @@ class HasMany extends LaravelHasMany
             }
         );
     }
+
+    public function remove($model): void
+    {
+        $this->parent->addBeforeAction(
+            function () use ($model) {
+                $this->destroy($model);
+            }
+        );
+    }
 }
