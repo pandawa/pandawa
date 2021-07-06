@@ -23,13 +23,19 @@ trait InteractsWithRelationsTrait
 {
     protected function withRelations($stmt, array $options, string $scope = null): void
     {
+        if (null === $stmt) {
+            return;
+        }
+
         if (null !== $withs = $this->getRelations($options, $scope)) {
             if ($stmt instanceof RepositoryInterface) {
                 $stmt->with($withs);
-            } else if ($stmt instanceof Builder) {
-                $stmt->with($withs);
             } else {
-                $stmt->load($withs);
+                if ($stmt instanceof Builder) {
+                    $stmt->with($withs);
+                } else {
+                    $stmt->load($withs);
+                }
             }
         }
     }
