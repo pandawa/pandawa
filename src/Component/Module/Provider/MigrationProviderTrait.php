@@ -16,10 +16,10 @@ trait MigrationProviderTrait
 {
     protected $migrationPath = 'Resources/database/migrations';
 
-    public function boolMigrationProvider(): void
+    public function bootMigrationProvider(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->migrator()->path(__DIR__.'/'.$this->migrationPath);
+            $this->migrator()->path($this->getCurrentPath() . '/' . $this->migrationPath);
         }
     }
 
