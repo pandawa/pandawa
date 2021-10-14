@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Bus\Pipe;
 
+use Illuminate\Support\Facades\DB;
+use Pandawa\Component\Bus\Contract\DisableTransaction;
 use Pandawa\Component\Message\AbstractCommand;
 use Pandawa\Component\Message\AbstractMessage;
-use DB;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -33,7 +34,7 @@ final class DatabaseTransactionPipe
      */
     public function handle($message, $next)
     {
-        if ($message instanceof AbstractCommand) {
+        if ($message instanceof AbstractCommand && !$message instanceof DisableTransaction) {
             return DB::transaction(
                 function () use ($message, $next) {
                     return $next($message);
