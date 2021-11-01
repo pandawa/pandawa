@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=7.3|>=8.0",
+        "php": "^7.3|^8.0",
         "borobudur/dci": "^0.1",
         "borobudur/exception": "^0.1",
         "borobudur/parameter": "^0.1",
