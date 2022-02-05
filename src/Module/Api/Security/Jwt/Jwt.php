@@ -56,6 +56,15 @@ final class Jwt
                 case 'exp':
                     $tokenBuilder->expiresAt(new DateTimeImmutable($value));
                     break;
+                case 'iss':
+                    $tokenBuilder->issuedBy($value);
+                    break;
+                case 'iat':
+                    $tokenBuilder->issuedAt(new DateTimeImmutable($value));
+                    break;
+                case 'nbf':
+                    $tokenBuilder->canOnlyBeUsedAfter(new DateTimeImmutable($value));
+                    break;
                 case 'aud':
                     call_user_func_array([$tokenBuilder, 'permittedFor'], (array)$value);
                     break;
