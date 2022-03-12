@@ -15,7 +15,6 @@
         "borobudur/dci": "^0.1",
         "borobudur/exception": "^0.1",
         "borobudur/parameter": "^0.1",
-        "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^9.0",
         "laravel/helpers": "^1.1",
