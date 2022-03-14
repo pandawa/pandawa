@@ -163,8 +163,14 @@ abstract class AbstractModel extends Eloquent implements Model
         throw new RuntimeException('Forbidden delete directly from model. Please use repository instead.');
     }
 
-    public function touch(): void
+    public function touch($attribute = null): void
     {
+        if ($attribute) {
+            $this->$attribute = $this->freshTimestamp();
+
+            return;
+        }
+
         if ($this->usesTimestamps()) {
             $this->updateTimestamps();
         }
