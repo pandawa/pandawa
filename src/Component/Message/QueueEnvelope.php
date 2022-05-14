@@ -28,14 +28,21 @@ final class QueueEnvelope
     private $command;
 
     /**
+     * @var int|null
+     */
+    public $tries;
+
+    /**
      * Constructor.
      *
      * @param AbstractCommand $command
      * @param string|null     $channel
+     * @param int|null        $tries
      */
-    public function __construct(AbstractCommand $command, string $channel = null)
+    public function __construct(AbstractCommand $command, string $channel = null, int $tries = null)
     {
         $this->command = $command;
+        $this->tries = $tries;
         $this->onQueue($channel);
     }
 
