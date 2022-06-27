@@ -1,0 +1,30 @@
+{
+    "name": "pandawa/config",
+    "description": "The pandawa config package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "illuminate/config": "^9.0",
+        "symfony/yaml": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Component\\Config\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
