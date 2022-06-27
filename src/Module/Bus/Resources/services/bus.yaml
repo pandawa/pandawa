@@ -1,2 +1,0 @@
-Pandawa\Component\Message\MessageRegistryInterface:
-    class: "%modules.bus.registry_class%"
