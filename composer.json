@@ -1,7 +1,10 @@
 {
     "name": "pandawa/pandawa",
-    "description": "The Laravel Higher Framework.",
-    "keywords": ["laravel", "pandawa"],
+    "description": "Modular Laravel Framework",
+    "keywords": [
+        "laravel",
+        "pandawa"
+    ],
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -13,7 +16,7 @@
     "require": {
         "php": ">=8.1",
         "laravel/framework": "^9.0",
-        "symfony/yaml": "^4.0|^5.0|^6.0"
+        "symfony/yaml": "^6.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"
@@ -27,7 +30,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
         }
     },
     "config": {
