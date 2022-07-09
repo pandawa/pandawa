@@ -9,7 +9,7 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration as LaravelLoadConfiguration;
 use Pandawa\Component\Config\ChainLoader;
-use Pandawa\Component\Config\Contract\Loader;
+use Pandawa\Contracts\Config\LoaderInterface;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -17,7 +17,7 @@ use Symfony\Component\Finder\Finder;
  */
 class LoadConfiguration extends LaravelLoadConfiguration
 {
-    protected Loader $loader;
+    protected LoaderInterface $loader;
 
     public function __construct()
     {

@@ -9,6 +9,8 @@ use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\ServiceProvider;
+use Pandawa\Contracts\Foundation\BundleInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -79,14 +81,6 @@ class Application extends LaravelApplication
             ->load($providers->collapse()->toArray());
     }
 
-    protected function getBundles(): array
-    {
-        return Collection::make($this['config']->get('bundles'))
-            ->filter(fn(array $item) => $item['all'] ?? null === true || $item[$this->environment()] ?? null === true)
-            ->keys()
-            ->toArray();
-    }
-
     public function registerCoreContainerAliases(): void
     {
         foreach ($this->coreAliases as $key => $aliases) {
@@ -94,5 +88,78 @@ class Application extends LaravelApplication
                 $this->alias($key, $alias);
             }
         }
+    }
+
+    public function register($provider, $force = false): BundleInterface|ServiceProvider
+    {
+        if (($registered = $this->getProvider($provider)) && !$force) {
+            return $registered;
+        }
+
+        if (is_string($provider)) {
+            $provider = $this->resolveProvider($provider);
+        }
+
+        if ($provider instanceof BundleInterface) {
+            $provider->configurePlugin();
+            $provider->configure();
+        } else {
+            $provider->register();
+        }
+
+        if (property_exists($provider, 'bindings')) {
+            foreach ($provider->bindings as $key => $value) {
+                $this->bind($key, $value);
+            }
+        }
+
+        if (property_exists($provider, 'singletons')) {
+            foreach ($provider->singletons as $key => $value) {
+                $this->singleton($key, $value);
+            }
+        }
+
+        $this->markAsRegistered($provider);
+
+        if ($this->isBooted()) {
+            $this->bootProvider($provider);
+        }
+
+        return $provider;
+    }
+
+    protected function bootProvider(ServiceProvider|BundleInterface $provider)
+    {
+        $provider->callBootingCallbacks();
+
+        if ($provider instanceof BundleInterface) {
+            $provider->bootPlugin();
+        }
+
+        if (method_exists($provider, 'boot')) {
+            $this->call([$provider, 'boot']);
+        }
+
+        $provider->callBootedCallbacks();
+    }
+
+    protected function getBundles(): array
+    {
+        $bundles = [];
+        foreach ($this['config']->get('bundles', []) as $bundle => $stage) {
+            if (is_string($stage)) {
+                $bundles[] = $stage;
+
+                continue;
+            }
+
+            if (is_array($stage)) {
+                if ($stage['all'] ?? null === true || $stage[$this->environment()] ?? null === true) {
+                    $bundles[] = $bundle;
+                }
+            }
+        }
+
+        return $bundles;
     }
 }

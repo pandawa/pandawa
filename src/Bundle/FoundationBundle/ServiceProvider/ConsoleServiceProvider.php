@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Foundation\ServiceProvider;
+namespace Pandawa\Bundle\FoundationBundle\ServiceProvider;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Foundation\Providers\ComposerServiceProvider;

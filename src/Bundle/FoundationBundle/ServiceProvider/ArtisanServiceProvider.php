@@ -2,18 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Foundation\ServiceProvider;
+namespace Pandawa\Bundle\FoundationBundle\ServiceProvider;
 
 use Illuminate\Cache\Console\CacheTableCommand;
 use Illuminate\Cache\Console\ClearCommand as CacheClearCommand;
 use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
-use Illuminate\Console\Scheduling\ScheduleClearCacheCommand;
-use Illuminate\Console\Scheduling\ScheduleFinishCommand;
-use Illuminate\Console\Scheduling\ScheduleListCommand;
-use Illuminate\Console\Scheduling\ScheduleRunCommand;
-use Illuminate\Console\Scheduling\ScheduleTestCommand;
-use Illuminate\Console\Scheduling\ScheduleWorkCommand;
-use Illuminate\Foundation\Console\ChannelMakeCommand;
 use Illuminate\Foundation\Console\ClearCompiledCommand;
 use Illuminate\Foundation\Console\ConfigCacheCommand;
 use Illuminate\Foundation\Console\ConfigClearCommand;
@@ -69,12 +62,6 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
         'RouteCache'         => RouteCacheCommand::class,
         'RouteClear'         => RouteClearCommand::class,
         'RouteList'          => RouteListCommand::class,
-        'ScheduleFinish'     => ScheduleFinishCommand::class,
-        'ScheduleList'       => ScheduleListCommand::class,
-        'ScheduleRun'        => ScheduleRunCommand::class,
-        'ScheduleClearCache' => ScheduleClearCacheCommand::class,
-        'ScheduleTest'       => ScheduleTestCommand::class,
-        'ScheduleWork'       => ScheduleWorkCommand::class,
         'StorageLink'        => StorageLinkCommand::class,
         'Up'                 => UpCommand::class,
     ];
@@ -86,7 +73,6 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
      */
     protected $devCommands = [
         'CacheTable'     => CacheTableCommand::class,
-        'ChannelMake'    => ChannelMakeCommand::class,
         'ConsoleMake'    => ConsoleMakeCommand::class,
         'ControllerMake' => ControllerMakeCommand::class,
         'EventGenerate'  => EventGenerateCommand::class,
