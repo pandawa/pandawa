@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Config;
 
-use Pandawa\Component\Config\Contract\Loader;
+use Pandawa\Contracts\Config\LoaderInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class PhpLoader implements Loader
+final class PhpLoader implements LoaderInterface
 {
     public function load(string $file): array
     {

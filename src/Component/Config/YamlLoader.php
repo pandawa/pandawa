@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Config;
 
-use Pandawa\Component\Config\Contract\Loader;
+use Pandawa\Contracts\Config\LoaderInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class YamlLoader implements Loader
+final class YamlLoader implements LoaderInterface
 {
     public function load(string $file): array
     {

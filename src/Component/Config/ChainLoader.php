@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Config;
 
-use Pandawa\Component\Config\Contract\Loader;
+use Pandawa\Contracts\Config\LoaderInterface;
 use RuntimeException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class ChainLoader implements Loader
+final class ChainLoader implements LoaderInterface
 {
     /**
-     * @var Loader[]
+     * @var LoaderInterface[]
      */
     private array $loaders = [];
 
