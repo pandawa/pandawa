@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Config\Contract;
+namespace Pandawa\Contracts\Config;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-interface Loader
+interface LoaderInterface
 {
     public function load(string $file): array;
 
