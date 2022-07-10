@@ -24,6 +24,11 @@ interface BundleInterface
     public function bootPlugin(): void;
 
     /**
+     * Register the bundle.
+     */
+    public function register(): void;
+
+    /**
      * Boot the bundle.
      */
     public function boot(): void;

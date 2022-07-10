@@ -101,11 +101,11 @@ class Application extends LaravelApplication
             $provider = $this->resolveProvider($provider);
         }
 
+        $provider->register();
+
         if ($provider instanceof BundleInterface) {
             $provider->configurePlugin();
             $provider->configure();
-        } else {
-            $provider->register();
         }
 
         if (property_exists($provider, 'bindings')) {

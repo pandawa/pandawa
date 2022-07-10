@@ -148,6 +148,10 @@ abstract class Bundle implements BundleContract
         }
     }
 
+    public function register(): void
+    {
+    }
+
     public function configure(): void
     {
     }
