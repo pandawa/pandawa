@@ -41,11 +41,9 @@ interface BundleInterface
 
     public function getName(): string;
 
-    public function getShortName(): string;
-
     public function getNamespace(): string;
 
-    public function getPath(): string;
+    public function getPath(?string $path = null): string;
 
     public function isDeferred(): bool;
 }

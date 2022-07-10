@@ -10,6 +10,7 @@ use Illuminate\Foundation\PackageManifest;
 use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
+use Pandawa\Component\Foundation\ServiceProvider\ConfigServiceProvider;
 use Pandawa\Contracts\Foundation\BundleInterface;
 
 /**
@@ -128,6 +129,15 @@ class Application extends LaravelApplication
         return $provider;
     }
 
+    protected function registerBaseServiceProviders(): void
+    {
+        parent::registerBaseServiceProviders();
+
+        foreach ($this->getBaseServiceProviders() as $provider) {
+            $this->register($provider);
+        }
+    }
+
     protected function bootProvider(ServiceProvider|BundleInterface $provider)
     {
         $provider->callBootingCallbacks();
@@ -161,5 +171,12 @@ class Application extends LaravelApplication
         }
 
         return $bundles;
+    }
+
+    protected function getBaseServiceProviders(): array
+    {
+        return [
+            new ConfigServiceProvider($this),
+        ];
     }
 }

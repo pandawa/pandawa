@@ -7,6 +7,7 @@ namespace Pandawa\Component\Foundation\Bundle;
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\Str;
 use Pandawa\Contracts\Foundation\BundleInterface as BundleContract;
 use Pandawa\Contracts\Foundation\PluginInterface;
 use ReflectionClass;
@@ -35,7 +36,7 @@ abstract class Bundle implements BundleContract
      *
      * @var ReflectionClass|null
      */
-    private ?ReflectionClass $reflection;
+    private ?ReflectionClass $reflection = null;
 
     /**
      * @var PluginInterface[]
@@ -52,41 +53,12 @@ abstract class Bundle implements BundleContract
         }
     }
 
-    /**
-     * Get the plugins provided by the bundle.
-     *
-     * @return PluginInterface[]
-     */
-    protected function plugins(): array
-    {
-        return [];
-    }
-
     public function getApp(): Application
     {
         return $this->app;
     }
 
     public function getName(): string
-    {
-        return $this->transformName($this->getReflection()->getName());
-    }
-
-    protected function transformName(string $name): string
-    {
-        return preg_replace('/Bundle$/', '', $name);
-    }
-
-    protected function getReflection(): ReflectionClass
-    {
-        if (null === $this->reflection) {
-            $this->reflection = new ReflectionClass(static::class);
-        }
-
-        return $this->reflection;
-    }
-
-    public function getShortName(): string
     {
         return $this->transformName($this->getReflection()->getShortName());
     }
@@ -96,9 +68,15 @@ abstract class Bundle implements BundleContract
         return $this->getReflection()->getNamespaceName();
     }
 
-    public function getPath(): string
+    public function getPath(?string $path = null): string
     {
-        return dirname($this->getReflection()->getFileName());
+        $parts = [dirname($this->getReflection()->getFileName())];
+
+        if ($path) {
+            $parts[] = ltrim($path, DIRECTORY_SEPARATOR);
+        }
+
+        return implode(DIRECTORY_SEPARATOR, $parts);
     }
 
     /**
@@ -183,5 +161,29 @@ abstract class Bundle implements BundleContract
 
     public function boot(): void
     {
+    }
+
+    protected function transformName(string $name): string
+    {
+        return Str::snake(preg_replace('/Bundle$/', '', $name));
+    }
+
+    protected function getReflection(): ReflectionClass
+    {
+        if (null === $this->reflection) {
+            $this->reflection = new ReflectionClass(static::class);
+        }
+
+        return $this->reflection;
+    }
+
+    /**
+     * Get the plugins provided by the bundle.
+     *
+     * @return PluginInterface[]
+     */
+    protected function plugins(): array
+    {
+        return [];
     }
 }

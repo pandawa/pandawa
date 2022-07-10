@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Contracts\Config\Repository as RepositoryContract;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration as LaravelLoadConfiguration;
-use Pandawa\Component\Config\ChainLoader;
 use Pandawa\Contracts\Config\LoaderInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -17,11 +16,8 @@ use Symfony\Component\Finder\Finder;
  */
 class LoadConfiguration extends LaravelLoadConfiguration
 {
-    protected LoaderInterface $loader;
-
-    public function __construct()
+    public function __construct(protected LoaderInterface $loader)
     {
-        $this->loader = ChainLoader::defaults();
     }
 
     /**
