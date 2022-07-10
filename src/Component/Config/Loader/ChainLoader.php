@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Config;
+namespace Pandawa\Component\Config\Loader;
 
 use Pandawa\Contracts\Config\LoaderInterface;
 use RuntimeException;

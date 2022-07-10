@@ -2,23 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Config;
+namespace Pandawa\Component\Config\Loader;
 
 use Pandawa\Contracts\Config\LoaderInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class YamlLoader implements LoaderInterface
+final class PhpLoader implements LoaderInterface
 {
     public function load(string $file): array
     {
-        return Yaml::parseFile($file);
+        return require $file;
     }
 
     public function supports(string $extension): bool
     {
-        return in_array($extension, ['yaml', 'yml'], true);
+        return 'php' === $extension;
     }
 }
