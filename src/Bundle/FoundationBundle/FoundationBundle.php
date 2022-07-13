@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\FoundationBundle;
 
 use Illuminate;
+use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
-use Pandawa\Component\Foundation\Bundle\Plugin\RegisterBundlesPlugin;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -14,7 +14,6 @@ use Pandawa\Component\Foundation\Bundle\Plugin\RegisterBundlesPlugin;
 class FoundationBundle extends Bundle
 {
     protected array $registerBundles = [
-        Illuminate\Cache\CacheServiceProvider::class,
         ServiceProvider\ConsoleServiceProvider::class,
         Illuminate\Encryption\EncryptionServiceProvider::class,
         Illuminate\Filesystem\FilesystemServiceProvider::class,

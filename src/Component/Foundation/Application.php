@@ -69,7 +69,7 @@ class Application extends LaravelApplication
     public function registerConfiguredProviders(): void
     {
         $providers = Collection::make([
-            ...$this->make('config')->get('app.providers'),
+            ...$this->make('config')->get('app.providers', []),
             ...$this->getBundles(),
         ])
             ->partition(function ($provider) {

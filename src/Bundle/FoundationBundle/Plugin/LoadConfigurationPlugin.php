@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Config\Plugin;
+namespace Pandawa\Bundle\FoundationBundle\Plugin;
 
 use Illuminate\Support\ServiceProvider;
-use Pandawa\Component\Foundation\Bundle\Plugin\Plugin;
+use Pandawa\Component\Foundation\Bundle\Plugin;
 use Pandawa\Contracts\Config\LoaderInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Foundation\Bundle\Plugin;
+namespace Pandawa\Component\Foundation\Bundle;
 
 use Pandawa\Contracts\Foundation\BundleInterface;
 use Pandawa\Contracts\Foundation\PluginInterface;

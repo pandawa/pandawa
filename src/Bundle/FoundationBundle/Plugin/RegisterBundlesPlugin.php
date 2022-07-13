@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Foundation\Bundle\Plugin;
+namespace Pandawa\Bundle\FoundationBundle\Plugin;
+
+use Pandawa\Component\Foundation\Bundle\Plugin;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>

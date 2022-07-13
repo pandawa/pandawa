@@ -21,6 +21,7 @@
         "symfony/config": "^6.0"
     },
     "require-dev": {
+        "mockery/mockery": "^1.5",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {

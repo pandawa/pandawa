@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\FoundationBundle\ServiceProvider;
 
-use Illuminate\Cache\Console\CacheTableCommand;
-use Illuminate\Cache\Console\ClearCommand as CacheClearCommand;
-use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
 use Illuminate\Foundation\Console\ClearCompiledCommand;
 use Illuminate\Foundation\Console\ConfigCacheCommand;
 use Illuminate\Foundation\Console\ConfigClearCommand;
-use Illuminate\Foundation\Console\ConsoleMakeCommand;
 use Illuminate\Foundation\Console\DownCommand;
 use Illuminate\Foundation\Console\EnvironmentCommand;
 use Illuminate\Foundation\Console\EventCacheCommand;
@@ -45,8 +41,6 @@ use Illuminate\Routing\Console\MiddlewareMakeCommand;
 class ArtisanServiceProvider extends LaravelArtisanServiceProvider
 {
     protected $commands = [
-        'CacheClear'         => CacheClearCommand::class,
-        'CacheForget'        => CacheForgetCommand::class,
         'ClearCompiled'      => ClearCompiledCommand::class,
         'ConfigCache'        => ConfigCacheCommand::class,
         'ConfigClear'        => ConfigClearCommand::class,
@@ -72,8 +66,6 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
      * @var array
      */
     protected $devCommands = [
-        'CacheTable'     => CacheTableCommand::class,
-        'ConsoleMake'    => ConsoleMakeCommand::class,
         'ControllerMake' => ControllerMakeCommand::class,
         'EventGenerate'  => EventGenerateCommand::class,
         'EventMake'      => EventMakeCommand::class,
