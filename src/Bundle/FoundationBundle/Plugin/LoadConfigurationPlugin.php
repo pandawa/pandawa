@@ -45,6 +45,19 @@ class LoadConfigurationPlugin extends Plugin
         ));
     }
 
+    public function boot(): void
+    {
+        if ($this->bundle->getApp()->runningInConsole()) {
+            if (!file_exists($this->getBundleConfigPath())) {
+                return;
+            }
+
+            $this->publishes([
+                $this->getBundleConfigPath() => $this->getPackageConfigPath(),
+            ], 'config');
+        }
+    }
+
     protected function isConfigCached(): bool
     {
         return $this->bundle->getApp()->configurationIsCached();
@@ -111,19 +124,6 @@ class LoadConfigurationPlugin extends Plugin
     protected function configLoader(): LoaderInterface
     {
         return $this->bundle->getApp()->get(LoaderInterface::class);
-    }
-
-    public function boot(): void
-    {
-        if ($this->bundle->getApp()->runningInConsole()) {
-            if (!file_exists($this->getBundleConfigPath())) {
-                return;
-            }
-
-            $this->publishes([
-                $this->getBundleConfigPath() => $this->getPackageConfigPath(),
-            ], 'config');
-        }
     }
 
     /**
