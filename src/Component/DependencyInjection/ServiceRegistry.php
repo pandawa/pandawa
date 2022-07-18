@@ -35,9 +35,10 @@ class ServiceRegistry implements ServiceRegistryInterface
 
     public function register(string $name, array $config): void
     {
+        $configName = $this->normalizeServiceName($name);
         $config = $this->configurationProcessor->process(
-            $this->configurationFactory->create($name)->buildTree(),
-            [$name => $config]
+            $this->configurationFactory->create($configName)->buildTree(),
+            [$configName => $config]
         );
 
         $this->bind($name, $config);
@@ -77,5 +78,10 @@ class ServiceRegistry implements ServiceRegistryInterface
         }
 
         return $factory->create($config);
+    }
+
+    protected function normalizeServiceName(string $name): string
+    {
+        return str_replace(['.', '-'], '_', $name);
     }
 }

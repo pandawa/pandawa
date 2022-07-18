@@ -1,0 +1,4 @@
+app.dashboard:
+  type:       get
+  uri:        dashboard
+  controller: Test\Routing\Controller\MyController

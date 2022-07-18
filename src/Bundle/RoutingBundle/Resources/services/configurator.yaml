@@ -1,0 +1,21 @@
+routing.configurator.chain:
+  class: Pandawa\Component\Routing\Configurator\ChainRouteConfigurator
+  alias: Pandawa\Contracts\Routing\RouteConfiguratorInterface
+  arguments:
+    - "#routing.configurators"
+
+routing.configurator.middleware:
+  class: Pandawa\Component\Routing\Configurator\RouteMiddlewareConfigurator
+  tag:   "routing.configurators"
+
+routing.configurator.name:
+  class: Pandawa\Component\Routing\Configurator\RouteNameConfigurator
+  tag:   "routing.configurators"
+
+routing.configurator.params:
+  class: Pandawa\Component\Routing\Configurator\RouteParamsConfigurator
+  tag:   "routing.configurators"
+
+routing.configurator.options:
+  class: Pandawa\Component\Routing\Configurator\RouteOptionsConfigurator
+  tag:   "routing.configurators"

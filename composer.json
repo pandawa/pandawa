@@ -28,6 +28,7 @@
         "psr-4": {
             "Pandawa\\Component\\": "src/Component/",
             "Pandawa\\Bundle\\": "src/Bundle/",
+            "Pandawa\\Annotations\\": "src/Annotations/",
             "Pandawa\\Contracts\\": "src/Contracts/"
         },
         "files": [

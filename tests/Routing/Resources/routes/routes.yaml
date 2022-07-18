@@ -1,0 +1,10 @@
+ping:
+  type:       get
+  controller: Test\Routing\Controller\MyController
+  uri:        /ping
+
+app:
+  type:     group
+  middleware: [ auth ]
+  prefix:   app
+  children: apps/dashboard.yaml
