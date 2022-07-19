@@ -22,16 +22,6 @@ final class ChainLoader implements LoaderInterface
         $this->loaders = $loaders;
     }
 
-    public static function defaults(): ChainLoader
-    {
-        return new ChainLoader(
-            [
-                new PhpLoader(),
-                new YamlLoader(),
-            ]
-        );
-    }
-
     public function load(string $file): array
     {
         $extension = pathinfo($file, PATHINFO_EXTENSION);

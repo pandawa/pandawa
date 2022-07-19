@@ -15,14 +15,14 @@ use Symfony\Component\Config\Definition\Processor;
  *
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class LoadConfigurationPlugin extends Plugin
+class ImportConfigurationPlugin extends Plugin
 {
     const PACKAGE_CONFIG_PATH = 'packages';
 
     public function __construct(
         protected string $basePath = 'Resources/config',
-        protected string $definitionFilename = 'definition.php',
-        protected string $configFilename = 'config.php'
+        protected string $definitionFilename = 'definition',
+        protected string $configFilename = 'config',
     ) {
     }
 
@@ -48,13 +48,17 @@ class LoadConfigurationPlugin extends Plugin
     public function boot(): void
     {
         if ($this->bundle->getApp()->runningInConsole()) {
-            if (!file_exists($this->getBundleConfigPath())) {
-                return;
-            }
+            foreach ($this->getBundleConfigs() as $bundleConfig) {
+                if (!file_exists($bundleConfig)) {
+                    continue;
+                }
 
-            $this->publishes([
-                $this->getBundleConfigPath() => $this->getPackageConfigPath(),
-            ], 'config');
+                $this->publishes([
+                    $bundleConfig => $this->getPackageConfigPath(
+                        $this->bundle->getName().'.'.pathinfo($bundleConfig, PATHINFO_EXTENSION)
+                    ),
+                ], 'config');
+            }
         }
     }
 
@@ -88,14 +92,14 @@ class LoadConfigurationPlugin extends Plugin
 
     protected function getBundleConfigDefinitionPath(): string
     {
-        return $this->bundle->getPath($this->basePath.DIRECTORY_SEPARATOR.$this->definitionFilename);
+        return $this->bundle->getPath($this->basePath.DIRECTORY_SEPARATOR.$this->definitionFilename.'.php');
     }
 
     protected function loadConfigs(): array
     {
         $paths = [
-            $this->getBundleConfigPath(),
-            $this->getPackageConfigPath(),
+            ...$this->getBundleConfigs(),
+            ...$this->getPackageConfigs(),
         ];
 
         $configs = [];
@@ -109,15 +113,31 @@ class LoadConfigurationPlugin extends Plugin
         return $configs;
     }
 
-    protected function getBundleConfigPath(): string
+    protected function getBundleConfigs(): array
     {
-        return $this->bundle->getPath($this->basePath.DIRECTORY_SEPARATOR.$this->configFilename);
+        return [
+            $this->getBundleConfigPath($this->configFilename.'.php'),
+            $this->getBundleConfigPath($this->configFilename.'.yaml'),
+        ];
     }
 
-    protected function getPackageConfigPath(): string
+    protected function getBundleConfigPath(string $filename): string
+    {
+        return $this->bundle->getPath($this->basePath.DIRECTORY_SEPARATOR.$filename);
+    }
+
+    protected function getPackageConfigs(): array
+    {
+        return [
+            $this->getPackageConfigPath($this->bundle->getName().'.php'),
+            $this->getPackageConfigPath($this->bundle->getName().'.yaml'),
+        ];
+    }
+
+    protected function getPackageConfigPath(string $filename): string
     {
         return $this->bundle->getApp()->configPath(
-            static::PACKAGE_CONFIG_PATH.DIRECTORY_SEPARATOR.$this->bundle->getName().'.php'
+            static::PACKAGE_CONFIG_PATH.DIRECTORY_SEPARATOR.$filename
         );
     }
 

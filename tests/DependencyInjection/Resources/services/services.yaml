@@ -1,0 +1,9 @@
+single:
+  class: Test\DependencyInjection\Service\SingleService
+  arguments:
+    - "%debug%"
+
+single_factory:
+  factory: [ '@my_factory', create ]
+  arguments:
+    - "%debug%"

@@ -58,6 +58,11 @@ abstract class Bundle implements BundleContract
         return $this->app;
     }
 
+    public function getService(string $name): mixed
+    {
+        return $this->app->get($name);
+    }
+
     public function getName(): string
     {
         return $this->transformName($this->getReflection()->getShortName());

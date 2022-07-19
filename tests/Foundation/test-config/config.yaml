@@ -1,0 +1,4 @@
+debug:         "env(APP_DEBUG)"
+env(KEY_FILE): "env(BASE_PATH)/download-%file.name%.%file.ext%"
+cache:
+  redis: "%redis.default%"

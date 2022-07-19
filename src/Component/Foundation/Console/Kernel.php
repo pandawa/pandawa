@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
         \Illuminate\Foundation\Bootstrap\SetRequestForConsole::class,
         \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
+        \Pandawa\Component\Foundation\Bootstrap\ConfigureBundles::class,
         \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
 

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Foundation;
 
+use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Foundation\ProviderRepository;
+use Illuminate\Log\LogServiceProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Pandawa\Component\Foundation\ServiceProvider\ConfigServiceProvider;
@@ -66,6 +68,8 @@ class Application extends LaravelApplication
         ],
     ];
 
+    protected bool $configured = false;
+
     public function registerConfiguredProviders(): void
     {
         $providers = Collection::make([
@@ -103,11 +107,6 @@ class Application extends LaravelApplication
 
         $provider->register();
 
-        if ($provider instanceof BundleInterface) {
-            $provider->configurePlugin();
-            $provider->configure();
-        }
-
         if (property_exists($provider, 'bindings')) {
             foreach ($provider->bindings as $key => $value) {
                 $this->bind($key, $value);
@@ -122,6 +121,10 @@ class Application extends LaravelApplication
 
         $this->markAsRegistered($provider);
 
+        if ($this->isConfigured() && $provider instanceof BundleInterface) {
+            $this->configureBundle($provider);
+        }
+
         if ($this->isBooted()) {
             $this->bootProvider($provider);
         }
@@ -129,13 +132,37 @@ class Application extends LaravelApplication
         return $provider;
     }
 
+    public function configure(): void
+    {
+        if ($this->isConfigured()) {
+            return;
+        }
+
+        array_walk($this->serviceProviders, function ($p) {
+            if ($p instanceof BundleInterface) {
+                $this->configureBundle($p);
+            }
+        });
+
+        $this->configured = true;
+    }
+
+    public function isConfigured(): bool
+    {
+        return $this->configured;
+    }
+
     protected function registerBaseServiceProviders(): void
     {
-        parent::registerBaseServiceProviders();
-
         foreach ($this->getBaseServiceProviders() as $provider) {
             $this->register($provider);
         }
+    }
+
+    protected function configureBundle(BundleInterface $bundle): void
+    {
+        $bundle->configurePlugin();
+        $bundle->configure();
     }
 
     protected function bootProvider(ServiceProvider|BundleInterface $provider)
@@ -176,6 +203,8 @@ class Application extends LaravelApplication
     protected function getBaseServiceProviders(): array
     {
         return [
+            new EventServiceProvider($this),
+            new LogServiceProvider($this),
             new ConfigServiceProvider($this),
         ];
     }

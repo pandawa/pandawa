@@ -38,6 +38,8 @@ interface BundleInterface
      */
     public function configure(): void;
 
+    public function getService(string $name): mixed;
+
     public function callBootingCallbacks(): void;
 
     public function callBootedCallbacks(): void;

@@ -22,6 +22,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
         \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
         \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
+        \Pandawa\Component\Foundation\Bootstrap\ConfigureBundles::class,
         \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
 }

@@ -29,6 +29,7 @@ class BundleTest extends TestCase
         $bundle->expects('callBootedCallbacks');
 
         $app->register($bundle);
+        $app->configure();
         $app->boot();
 
         $this->assertArrayHasKey(get_class($bundle), $app->getLoadedProviders());
@@ -66,6 +67,7 @@ class BundleTest extends TestCase
         });
 
         $app->register($bundle);
+        $app->configure();
         $app->boot();
     }
 
