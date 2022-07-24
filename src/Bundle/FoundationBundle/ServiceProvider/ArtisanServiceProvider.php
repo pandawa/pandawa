@@ -16,6 +16,7 @@ use Illuminate\Foundation\Console\KeyGenerateCommand;
 use Illuminate\Foundation\Console\OptimizeClearCommand;
 use Illuminate\Foundation\Console\OptimizeCommand;
 use Illuminate\Foundation\Console\PackageDiscoverCommand;
+use Illuminate\Foundation\Console\ServeCommand;
 use Illuminate\Foundation\Console\StorageLinkCommand;
 use Illuminate\Foundation\Console\StubPublishCommand;
 use Illuminate\Foundation\Console\UpCommand;
@@ -28,20 +29,20 @@ use Illuminate\Foundation\Providers\ArtisanServiceProvider as LaravelArtisanServ
 class ArtisanServiceProvider extends LaravelArtisanServiceProvider
 {
     protected $commands = [
-        'ClearCompiled'      => ClearCompiledCommand::class,
-        'ConfigCache'        => ConfigCacheCommand::class,
-        'ConfigClear'        => ConfigClearCommand::class,
-        'Down'               => DownCommand::class,
-        'Environment'        => EnvironmentCommand::class,
-        'EventCache'         => EventCacheCommand::class,
-        'EventClear'         => EventClearCommand::class,
-        'EventList'          => EventListCommand::class,
-        'KeyGenerate'        => KeyGenerateCommand::class,
-        'Optimize'           => OptimizeCommand::class,
-        'OptimizeClear'      => OptimizeClearCommand::class,
-        'PackageDiscover'    => PackageDiscoverCommand::class,
-        'StorageLink'        => StorageLinkCommand::class,
-        'Up'                 => UpCommand::class,
+        'ClearCompiled'   => ClearCompiledCommand::class,
+        'ConfigCache'     => ConfigCacheCommand::class,
+        'ConfigClear'     => ConfigClearCommand::class,
+        'Down'            => DownCommand::class,
+        'Environment'     => EnvironmentCommand::class,
+        'EventCache'      => EventCacheCommand::class,
+        'EventClear'      => EventClearCommand::class,
+        'EventList'       => EventListCommand::class,
+        'KeyGenerate'     => KeyGenerateCommand::class,
+        'Optimize'        => OptimizeCommand::class,
+        'OptimizeClear'   => OptimizeClearCommand::class,
+        'PackageDiscover' => PackageDiscoverCommand::class,
+        'StorageLink'     => StorageLinkCommand::class,
+        'Up'              => UpCommand::class,
     ];
 
     /**
@@ -50,7 +51,8 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
      * @var array
      */
     protected $devCommands = [
-        'StubPublish'    => StubPublishCommand::class,
-        'VendorPublish'  => VendorPublishCommand::class,
+        'StubPublish'   => StubPublishCommand::class,
+        'Serve'         => ServeCommand::class,
+        'VendorPublish' => VendorPublishCommand::class,
     ];
 }
