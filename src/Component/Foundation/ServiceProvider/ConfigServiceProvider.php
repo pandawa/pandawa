@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Foundation\ServiceProvider;
 
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 use Pandawa\Component\Config\ConfigProcessor;
@@ -24,6 +25,9 @@ class ConfigServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Register temporary config that used by container.
+        $this->app->instance('config', new Repository());
+
         $this->registerParsers();
         $this->registerLoaders();
         $this->registerProcessor();
