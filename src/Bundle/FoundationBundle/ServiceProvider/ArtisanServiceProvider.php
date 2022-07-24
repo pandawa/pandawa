@@ -21,19 +21,12 @@ use Illuminate\Foundation\Console\OptimizeClearCommand;
 use Illuminate\Foundation\Console\OptimizeCommand;
 use Illuminate\Foundation\Console\PackageDiscoverCommand;
 use Illuminate\Foundation\Console\ProviderMakeCommand;
-use Illuminate\Foundation\Console\RequestMakeCommand;
-use Illuminate\Foundation\Console\RouteCacheCommand;
-use Illuminate\Foundation\Console\RouteClearCommand;
-use Illuminate\Foundation\Console\RouteListCommand;
-use Illuminate\Foundation\Console\ServeCommand;
 use Illuminate\Foundation\Console\StorageLinkCommand;
 use Illuminate\Foundation\Console\StubPublishCommand;
 use Illuminate\Foundation\Console\TestMakeCommand;
 use Illuminate\Foundation\Console\UpCommand;
 use Illuminate\Foundation\Console\VendorPublishCommand;
 use Illuminate\Foundation\Providers\ArtisanServiceProvider as LaravelArtisanServiceProvider;
-use Illuminate\Routing\Console\ControllerMakeCommand;
-use Illuminate\Routing\Console\MiddlewareMakeCommand;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -53,9 +46,6 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
         'Optimize'           => OptimizeCommand::class,
         'OptimizeClear'      => OptimizeClearCommand::class,
         'PackageDiscover'    => PackageDiscoverCommand::class,
-        'RouteCache'         => RouteCacheCommand::class,
-        'RouteClear'         => RouteClearCommand::class,
-        'RouteList'          => RouteListCommand::class,
         'StorageLink'        => StorageLinkCommand::class,
         'Up'                 => UpCommand::class,
     ];
@@ -66,15 +56,11 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
      * @var array
      */
     protected $devCommands = [
-        'ControllerMake' => ControllerMakeCommand::class,
         'EventGenerate'  => EventGenerateCommand::class,
         'EventMake'      => EventMakeCommand::class,
         'ExceptionMake'  => ExceptionMakeCommand::class,
         'ListenerMake'   => ListenerMakeCommand::class,
-        'MiddlewareMake' => MiddlewareMakeCommand::class,
         'ProviderMake'   => ProviderMakeCommand::class,
-        'RequestMake'    => RequestMakeCommand::class,
-        'Serve'          => ServeCommand::class,
         'StubPublish'    => StubPublishCommand::class,
         'TestMake'       => TestMakeCommand::class,
         'VendorPublish'  => VendorPublishCommand::class,
