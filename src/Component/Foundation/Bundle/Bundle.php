@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pandawa\Component\Foundation\Bundle;
 
 use Closure;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Str;
+use Pandawa\Component\Foundation\Application;
 use Pandawa\Contracts\Foundation\BundleInterface as BundleContract;
 use Pandawa\Contracts\Foundation\PluginInterface;
 use ReflectionClass;
@@ -144,6 +144,11 @@ abstract class Bundle implements BundleContract
     public function isDeferred(): bool
     {
         return $this instanceof DeferrableProvider;
+    }
+
+    public function provides(): array
+    {
+        return [];
     }
 
     public function configurePlugin(): void

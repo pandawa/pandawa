@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Contracts\Foundation;
 
-use Illuminate\Contracts\Foundation\Application;
+use Pandawa\Component\Foundation\Application;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>

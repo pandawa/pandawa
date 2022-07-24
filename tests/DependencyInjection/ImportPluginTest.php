@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\DependencyInjection;
 
 use Illuminate\Config\Repository;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Component\Foundation\Application;
@@ -35,6 +36,27 @@ class ImportPluginTest extends TestCase
         $this->assertNotNull($app['single']);
         $this->assertNotNull($app['my_factory']);
         $this->assertNotNull($app['single_factory']);
+    }
+
+    public function testDeferServices(): void
+    {
+        $app = $this->createApp();
+        $app->register(
+            new class($app) extends Bundle implements DeferrableProvider {
+                protected function plugins(): array
+                {
+                    return [
+                        new ImportServicesPlugin(),
+                    ];
+                }
+            }
+        );
+        $app->configure();
+        $app->boot();
+
+        $this->assertTrue($app->isDeferredService('single'));
+        $this->assertTrue($app->isDeferredService('single_factory'));
+        $this->assertTrue($app->isDeferredService('my_factory'));
     }
 
     protected function createApp(?string $path = null): Application

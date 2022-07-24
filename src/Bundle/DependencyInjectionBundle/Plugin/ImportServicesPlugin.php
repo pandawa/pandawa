@@ -40,6 +40,7 @@ class ImportServicesPlugin extends Plugin
         }
 
         $this->mergeConfig($this->getConfigKey(), $services);
+        $this->registerDeferServices(array_keys($services));
     }
 
     protected function mergeConfig(string $key, array $configs): void
@@ -62,7 +63,20 @@ class ImportServicesPlugin extends Plugin
 
     protected function loadFromConfig(): void
     {
-        $this->serviceRegistry()->load($this->config()->get($this->getConfigKey(), []));
+        $this->serviceRegistry()->load($services = $this->config()->get($this->getConfigKey(), []));
+        $this->registerDeferServices(array_keys($services));
+    }
+
+    protected function registerDeferServices(array $serviceKeys): void
+    {
+        if ($this->bundle->isDeferred()) {
+            $deferred = [];
+            foreach ($serviceKeys as $key) {
+                $deferred[$key] = get_class($this->bundle);
+            }
+
+            $this->bundle->getApp()->addDeferredServices($deferred);
+        }
     }
 
     protected function getConfigKey(): string
