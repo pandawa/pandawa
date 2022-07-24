@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\DependencyInjection\Factory;
 
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Pandawa\Contracts\Config\Parser\ParserResolverInterface;
 use Pandawa\Contracts\DependencyInjection\Factory\ServiceFactoryInterface;
@@ -18,18 +18,14 @@ final class FactoryServiceFactory implements ServiceFactoryInterface
     {
     }
 
-    public function create(array $config, array $arguments): callable
+    public function create(array $config): callable
     {
         $this->validate($config);
 
-        return function () use ($config, $arguments) {
-            if (is_array($config['factory'])) {
-                $factory = $this->make($config['factory']);
-            } else {
-                $factory = $config['factory'];
-            }
-
-            $arguments = $this->resolver->resolve($arguments)?->parse($arguments) ?? [];
+        return function () use ($config) {
+            $config = $this->resolver->resolve($config)?->parse($config) ?? $config;
+            $factory = $config['factory'];
+            $arguments = $config['arguments'] ?? [];
 
             return call_user_func($factory, ...$arguments);
         };
@@ -38,15 +34,6 @@ final class FactoryServiceFactory implements ServiceFactoryInterface
     public function supports(array $config): bool
     {
         return array_key_exists('factory', $config);
-    }
-
-    protected function make(array $factory): array
-    {
-        [$service, $method] = $factory;
-
-        $service = $this->resolver->resolve($service)?->parse($service) ?? $service;
-
-        return [$service, $method];
     }
 
     protected function validate(array $config): void

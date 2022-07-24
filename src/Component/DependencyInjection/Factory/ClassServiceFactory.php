@@ -18,13 +18,14 @@ final class ClassServiceFactory implements ServiceFactoryInterface
     {
     }
 
-    public function create(array $config, array $arguments): callable
+    public function create(array $config): callable
     {
         $this->validate($config);
 
-        return function () use ($config, $arguments) {
+        return function () use ($config) {
+            $config = $this->resolver->resolve($config)?->parse($config) ?? $config;
+            $arguments = $config['arguments'] ?? [];
             $reflection = new ReflectionClass($config['class']);
-            $arguments = $this->resolver->resolve($arguments)?->parse($arguments) ?? [];
 
             return $reflection->newInstance(...$arguments);
         };

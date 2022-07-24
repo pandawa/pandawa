@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Pandawa\Component\Config\Parser;
+namespace Pandawa\Component\DependencyInjection\Parser;
 
 use Illuminate\Contracts\Container\Container;
-use Pandawa\Component\Config\Traits\ParserResolverTrait;
+use Pandawa\Component\DependencyInjection\Traits\ParserResolverTrait;
 use Pandawa\Contracts\Config\Parser\ParserInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class TagParser implements ParserInterface
+final class ServiceParser implements ParserInterface
 {
     use ParserResolverTrait;
 
@@ -19,13 +19,13 @@ final class TagParser implements ParserInterface
     {
     }
 
-    public function parse(mixed $value): array
+    public function parse(mixed $value): mixed
     {
-        return iterator_to_array($this->container->tagged(substr($value, 1))->getIterator());
+        return $this->container->get(substr($value, 1));
     }
 
     public function supports(mixed $value): bool
     {
-        return is_string($value) && !empty($value) && str_starts_with($value, '#');
+        return is_string($value) && !empty($value) && str_starts_with($value, '@');
     }
 }

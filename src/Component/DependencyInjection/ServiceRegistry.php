@@ -45,14 +45,10 @@ class ServiceRegistry implements ServiceRegistryInterface
 
     protected function bind(string $name, array $config): void
     {
-        $arguments = $config['arguments'] ?? [];
-
-        unset($config['arguments']);
-
         $name = $this->parse($name);
         $config = $this->parse($config);
 
-        $this->container->bind($name, $this->factory($name, $config, $arguments), $config['shared'] ?? true);
+        $this->container->bind($name, $this->factory($name, $config), $config['shared'] ?? true);
 
         if ($tag = $config['tag'] ?? null) {
             $this->container->tag([$name], $tag);
@@ -74,12 +70,12 @@ class ServiceRegistry implements ServiceRegistryInterface
         return $value;
     }
 
-    protected function factory(string $name, array $config, array $arguments): callable
+    protected function factory(string $name, array $config): callable
     {
         if (null === $factory = $this->factoryResolver->resolve($config)) {
             throw new InvalidArgumentException(sprintf('Unsupported factory service for "%s".', $name));
         }
 
-        return $factory->create($config, $arguments);
+        return $factory->create($config);
     }
 }

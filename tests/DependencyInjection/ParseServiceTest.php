@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace Test\DependencyInjection;
 
 use Illuminate\Config\Repository;
+use Illuminate\Contracts\Container\Container;
+use Pandawa\Component\Config\Parser\ArrayParser;
+use Pandawa\Component\Config\Parser\ParserResolver;
 use Pandawa\Component\DependencyInjection\Factory\ClassServiceFactory;
 use Pandawa\Component\DependencyInjection\Factory\ConfigurationFactory;
 use Pandawa\Component\DependencyInjection\Factory\FactoryResolver;
 use Pandawa\Component\DependencyInjection\Factory\FactoryServiceFactory;
+use Pandawa\Component\DependencyInjection\Parser\ServiceParser;
+use Pandawa\Component\DependencyInjection\Parser\TagParser;
 use Pandawa\Component\DependencyInjection\ServiceRegistry;
 use Pandawa\Component\Foundation\Application;
+use Pandawa\Contracts\Config\ProcessorInterface;
 use Pandawa\Contracts\DependencyInjection\Factory\ConfigurationFactoryInterface;
 use Pandawa\Contracts\DependencyInjection\Factory\FactoryResolverInterface;
 use PHPUnit\Framework\TestCase;
@@ -128,12 +134,24 @@ class ParseServiceTest extends TestCase
     {
         $app = new Application($path);
         $app->instance('config', new Repository());
-        $app->singleton(FactoryResolverInterface::class, fn() => new FactoryResolver([
-            $app->make(ClassServiceFactory::class),
-            $app->make(FactoryServiceFactory::class),
+        $app->singleton('service.parser', fn(Container $container) => new ParserResolver([
+            $container->make(ArrayParser::class),
+            $container->make(ServiceParser::class),
+            $container->make(TagParser::class),
+        ]));
+        $app->singleton(FactoryResolverInterface::class, fn(Container $container) => new FactoryResolver([
+            $app->make(ClassServiceFactory::class, ['resolver' => $container->get('service.parser')]),
+            $app->make(FactoryServiceFactory::class, ['resolver' => $container->get('service.parser')]),
         ]));
 
         $app->singleton(ConfigurationFactoryInterface::class, ConfigurationFactory::class);
+        $app->singleton(ServiceRegistry::class, fn(Container $container) => new ServiceRegistry(
+            $container,
+            $container->get('config.resolver.parser'),
+            $container->get(FactoryResolverInterface::class),
+            $container->get(ConfigurationFactoryInterface::class),
+            $container->get(ProcessorInterface::class)
+        ));
 
         return $app;
     }

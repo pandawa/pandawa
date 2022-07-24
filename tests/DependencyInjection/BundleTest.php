@@ -6,9 +6,11 @@ namespace Test\DependencyInjection;
 
 use Illuminate\Config\Repository;
 use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
+use Pandawa\Component\DependencyInjection\Parser\ServiceResolver;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Contracts\DependencyInjection\Factory\ConfigurationFactoryInterface;
 use Pandawa\Contracts\DependencyInjection\Factory\FactoryResolverInterface;
+use Pandawa\Contracts\DependencyInjection\Parser\ParserResolverInterface;
 use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use PHPUnit\Framework\TestCase;
 use Test\DependencyInjection\Factory\MyFactory;
@@ -31,6 +33,8 @@ class BundleTest extends TestCase
     public function testLoadService(): void
     {
         $app = $this->createApp();
+        $app['config']->set('debug', false);
+
         $registry = $app->get(ServiceRegistryInterface::class);
         $registry->load([
             'single'         => [
