@@ -10,6 +10,7 @@ use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Log\LogServiceProvider;
+use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Pandawa\Component\Foundation\ServiceProvider\ConfigServiceProvider;
@@ -205,6 +206,7 @@ class Application extends LaravelApplication
         return [
             new EventServiceProvider($this),
             new LogServiceProvider($this),
+            new RoutingServiceProvider($this),
             new ConfigServiceProvider($this),
         ];
     }
