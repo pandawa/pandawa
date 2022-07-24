@@ -11,19 +11,13 @@ use Illuminate\Foundation\Console\DownCommand;
 use Illuminate\Foundation\Console\EnvironmentCommand;
 use Illuminate\Foundation\Console\EventCacheCommand;
 use Illuminate\Foundation\Console\EventClearCommand;
-use Illuminate\Foundation\Console\EventGenerateCommand;
 use Illuminate\Foundation\Console\EventListCommand;
-use Illuminate\Foundation\Console\EventMakeCommand;
-use Illuminate\Foundation\Console\ExceptionMakeCommand;
 use Illuminate\Foundation\Console\KeyGenerateCommand;
-use Illuminate\Foundation\Console\ListenerMakeCommand;
 use Illuminate\Foundation\Console\OptimizeClearCommand;
 use Illuminate\Foundation\Console\OptimizeCommand;
 use Illuminate\Foundation\Console\PackageDiscoverCommand;
-use Illuminate\Foundation\Console\ProviderMakeCommand;
 use Illuminate\Foundation\Console\StorageLinkCommand;
 use Illuminate\Foundation\Console\StubPublishCommand;
-use Illuminate\Foundation\Console\TestMakeCommand;
 use Illuminate\Foundation\Console\UpCommand;
 use Illuminate\Foundation\Console\VendorPublishCommand;
 use Illuminate\Foundation\Providers\ArtisanServiceProvider as LaravelArtisanServiceProvider;
@@ -56,13 +50,7 @@ class ArtisanServiceProvider extends LaravelArtisanServiceProvider
      * @var array
      */
     protected $devCommands = [
-        'EventGenerate'  => EventGenerateCommand::class,
-        'EventMake'      => EventMakeCommand::class,
-        'ExceptionMake'  => ExceptionMakeCommand::class,
-        'ListenerMake'   => ListenerMakeCommand::class,
-        'ProviderMake'   => ProviderMakeCommand::class,
         'StubPublish'    => StubPublishCommand::class,
-        'TestMake'       => TestMakeCommand::class,
         'VendorPublish'  => VendorPublishCommand::class,
     ];
 }
