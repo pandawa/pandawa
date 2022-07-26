@@ -21,6 +21,8 @@ use Pandawa\Contracts\Foundation\BundleInterface;
  */
 class Application extends LaravelApplication
 {
+    const VERSION = '5.0.0';
+
     protected array $coreAliases = [
         'app'              => [
             self::class,
