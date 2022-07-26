@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Foundation;
 
+use Illuminate\Console\Application as Artisan;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application as LaravelApplication;
@@ -153,6 +154,13 @@ class Application extends LaravelApplication
     public function isConfigured(): bool
     {
         return $this->configured;
+    }
+
+    public function loadConsoles(array $consoles): void
+    {
+        Artisan::starting(function ($artisan) use ($consoles) {
+            $artisan->resolveCommands($consoles);
+        });
     }
 
     protected function registerBaseServiceProviders(): void

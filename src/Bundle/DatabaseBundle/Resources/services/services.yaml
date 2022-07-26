@@ -1,0 +1,22 @@
+db.factory:
+  class: Illuminate\Database\Connectors\ConnectionFactory
+  arguments:
+    - '@app'
+
+db:
+  class: Illuminate\Database\DatabaseManager
+  alias: Illuminate\Database\ConnectionResolverInterface
+  arguments:
+    - '@app'
+    - '@db.factory'
+
+db.connection:
+  factory: [ '@db', 'connection' ]
+  shared: false
+
+db.schema:
+  factory: [ '@db.connection', 'getSchemaBuilder' ]
+  shared: false
+
+db.transactions:
+  class: Illuminate\Database\DatabaseTransactionsManager

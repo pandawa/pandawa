@@ -25,6 +25,8 @@ jobs:
             split_repository: 'foundation-bundle'
           - local_path:       'Bundle/RoutingBundle'
             split_repository: 'routing-bundle'
+          - local_path:       'Bundle/DatabaseBundle'
+            split_repository: 'database-bundle'
 
           # Components
           - local_path:       'Component/Config'

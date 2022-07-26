@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\FoundationBundle\Plugin;
 
 use Generator;
-use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Str;
@@ -29,7 +28,7 @@ class ImportCommandLinesPlugin extends Plugin
 
     public function boot(): void
     {
-        $this->loadConsoles(
+        $this->bundle->getApp()->loadConsoles(
             array_values(
                 $this->config()->get($this->getConfigKey(), [])
             )
@@ -47,13 +46,6 @@ class ImportCommandLinesPlugin extends Plugin
         }
 
         $this->registerConsoles();
-    }
-
-    protected function loadConsoles(array $consoles): void
-    {
-        Artisan::starting(function ($artisan) use ($consoles) {
-            $artisan->resolveCommands($consoles);
-        });
     }
 
     protected function registerConsoles(): void

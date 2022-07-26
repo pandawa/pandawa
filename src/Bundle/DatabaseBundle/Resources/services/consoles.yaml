@@ -1,0 +1,22 @@
+Illuminate\Database\Console\DbCommand:
+  class: Illuminate\Database\Console\DbCommand
+
+Illuminate\Database\Console\DumpCommand:
+  class: Illuminate\Database\Console\DumpCommand
+
+Illuminate\Database\Console\PruneCommand:
+  class: Illuminate\Database\Console\PruneCommand
+
+Illuminate\Database\Console\Seeds\SeedCommand:
+  class: Illuminate\Database\Console\Seeds\SeedCommand
+  arguments:
+    - '@db'
+
+Illuminate\Database\Console\WipeCommand:
+  class: Illuminate\Database\Console\WipeCommand
+
+Illuminate\Database\Console\Seeds\SeederMakeCommand:
+  class: Illuminate\Database\Console\Seeds\SeederMakeCommand
+  arguments:
+    - '@files'
+    - '@composer'
