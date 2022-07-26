@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\DependencyInjectionBundle;
 
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Component\Config\Parser\ArrayParser;
 use Pandawa\Component\Config\Parser\ParserResolver;
 use Pandawa\Component\DependencyInjection\Factory\ClassServiceFactory;
@@ -24,7 +23,7 @@ use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class DependencyInjectionBundle extends Bundle implements DeferrableProvider
+class DependencyInjectionBundle extends Bundle
 {
     public function register(): void
     {
@@ -32,21 +31,6 @@ class DependencyInjectionBundle extends Bundle implements DeferrableProvider
         $this->registerFactoryResolver();
         $this->registerServiceParser();
         $this->registerServiceRegistry();
-    }
-
-    public function provides(): array
-    {
-        return [
-            'service.factory.config',
-            'service.resolver.factory',
-            'service.resolver.parser',
-            'service.parser.array',
-            'service.parser.service',
-            'service.parser.tag',
-            'service.factory.class',
-            'service.factory.factory',
-            'service.registry',
-        ];
     }
 
     protected function registerConfigurationFactory(): void
