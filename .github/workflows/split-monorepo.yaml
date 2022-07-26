@@ -39,7 +39,7 @@ jobs:
           # Contracts
           - local_path:       'Contracts/Config'
             split_repository: 'config-contracts'
-          - local_path:       'Contracts/Config'
+          - local_path:       'Contracts/DependencyInjection'
             split_repository: 'dependency-injection-contracts'
           - local_path:       'Contracts/Foundation'
             split_repository: 'foundation-contracts'
