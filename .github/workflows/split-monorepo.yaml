@@ -1,0 +1,79 @@
+name: Split Monorepo
+
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - 'master'
+
+jobs:
+  split_monorepo:
+    name:    Split Monorepo
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        # define package to repository map
+        package:
+          # Bundles
+          - local_path:       'Bundle/DependencyInjectionBundle'
+            split_repository: 'dependency-injection-bundle'
+          - local_path:       'Bundle/FoundationBundle'
+            split_repository: 'foundation-bundle'
+          - local_path:       'Bundle/RoutingBundle'
+            split_repository: 'routing-bundle'
+
+          # Components
+          - local_path:       'Component/Config'
+            split_repository: 'config'
+          - local_path:       'Component/DependencyInjection'
+            split_repository: 'dependency-injection'
+          - local_path:       'Component/Foundation'
+            split_repository: 'foundation'
+          - local_path:       'Component/Routing'
+            split_repository: 'routing'
+
+          # Contracts
+          - local_path:       'Contracts/Config'
+            split_repository: 'config-contracts'
+          - local_path:       'Contracts/Config'
+            split_repository: 'dependency-injection-contracts'
+          - local_path:       'Contracts/Foundation'
+            split_repository: 'foundation-contracts'
+          - local_path:       'Contracts/Routing'
+            split_repository: 'routing-contracts'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # no tag
+      - if:   "!startsWith(github.ref, 'refs/tags/')"
+        name: Monorepo Split of ${{ matrix.package }}
+        uses: "symplify/monorepo-split-github-action@2.1"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          branch:                  "master"
+          package_directory:       'src/${{ matrix.package.local_path }}'
+          repository_organization: 'pandawa'
+          repository_name:         '${{ matrix.package.split_repository }}'
+          user_name:               "pandawabot"
+          user_email:              "dev@pandawa.io"
+
+      # with tag
+      - if:   "startsWith(github.ref, 'refs/tags/')"
+        name: Monorepo Tagged Split of ${{ matrix.package }}
+        uses: "symplify/monorepo-split-github-action@2.1"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          tag:                     ${GITHUB_REF#refs/tags/}
+          branch:                  "master"
+          package_directory:       'src/${{ matrix.package.local_path }}'
+          repository_organization: 'pandawa'
+          repository_name:         '${{ matrix.package.split_repository }}'
+          user_name:               "pandawabot"
+          user_email:              "dev@pandawa.io"
