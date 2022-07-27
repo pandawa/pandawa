@@ -5,22 +5,19 @@ declare(strict_types=1);
 namespace Pandawa\Component\Foundation;
 
 use Illuminate\Console\Application as Artisan;
-use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Foundation\PackageManifest;
 use Illuminate\Foundation\ProviderRepository;
-use Illuminate\Log\LogServiceProvider;
-use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use Pandawa\Component\Foundation\ServiceProvider\ConfigServiceProvider;
+use Pandawa\Contracts\Foundation\ApplicationInterface;
 use Pandawa\Contracts\Foundation\BundleInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class Application extends LaravelApplication
+class Application extends LaravelApplication implements ApplicationInterface
 {
     const VERSION = '5.0.0';
 
@@ -29,6 +26,7 @@ class Application extends LaravelApplication
             self::class,
             \Illuminate\Contracts\Container\Container::class,
             \Illuminate\Contracts\Foundation\Application::class,
+            \Pandawa\Contracts\Foundation\ApplicationInterface::class,
             \Psr\Container\ContainerInterface::class,
         ],
         'cache'            => [\Illuminate\Cache\CacheManager::class, \Illuminate\Contracts\Cache\Factory::class],
@@ -73,6 +71,17 @@ class Application extends LaravelApplication
     ];
 
     protected bool $configured = false;
+
+    protected array $baseProviders = [];
+
+    public function __construct(?string $basePath = null, protected array $foundationConfigs = [])
+    {
+        $this->baseProviders = $this->foundationConfigs['bootstrap_providers'] ?? [];
+
+        parent::__construct($basePath);
+
+        $this->useAppPath($this->foundationConfigs['app_path'] ?? '');
+    }
 
     public function registerConfiguredProviders(): void
     {
@@ -163,10 +172,22 @@ class Application extends LaravelApplication
         });
     }
 
+    public function getFoundationConfig(?string $key, mixed $default = null): mixed
+    {
+        if (null === $key) {
+            return $this->foundationConfigs;
+        }
+
+        return array_get($this->foundationConfigs, $key, $default);
+    }
+
     protected function registerBaseServiceProviders(): void
     {
-        foreach ($this->getBaseServiceProviders() as $provider) {
-            $this->register($provider);
+        foreach ($this->baseProviders as $bundle) {
+            if (is_string($bundle)) {
+                $bundle = new $bundle($this);
+            }
+            $this->register($bundle);
         }
     }
 
@@ -209,15 +230,5 @@ class Application extends LaravelApplication
         }
 
         return $bundles;
-    }
-
-    protected function getBaseServiceProviders(): array
-    {
-        return [
-            new EventServiceProvider($this),
-            new LogServiceProvider($this),
-            new RoutingServiceProvider($this),
-            new ConfigServiceProvider($this),
-        ];
     }
 }

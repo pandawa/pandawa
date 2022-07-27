@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Foundation\Console;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Pandawa\Contracts\Foundation\ApplicationInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -22,6 +24,13 @@ class Kernel extends ConsoleKernel
         \Pandawa\Component\Foundation\Bootstrap\ConfigureBundles::class,
         \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
+
+    public function __construct(ApplicationInterface $app, Dispatcher $events)
+    {
+        parent::__construct($app, $events);
+
+        $this->bootstrappers = $app->getFoundationConfig('console.kernel.bootstrappers', $this->bootstrappers);
+    }
 
     public function getApplication(): Application
     {

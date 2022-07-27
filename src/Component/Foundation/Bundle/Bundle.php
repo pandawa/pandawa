@@ -45,7 +45,7 @@ abstract class Bundle implements BundleContract
 
     public function __construct(protected Application $app)
     {
-        foreach ([...config('app.default_plugins', []), ...$this->plugins()] as $plugin) {
+        foreach ($this->plugins() as $plugin) {
             $this->initializedPlugins[] = tap(
                 $plugin,
                 fn(PluginInterface $plugin) => $plugin->setBundle($this)
