@@ -72,11 +72,16 @@ class Application extends LaravelApplication implements ApplicationInterface
 
     protected bool $configured = false;
 
-    protected array $baseProviders = [];
+    protected array $bootProviders = [
+        \Illuminate\Events\EventServiceProvider::class,
+        \Illuminate\Log\LogServiceProvider::class,
+        \Illuminate\Routing\RoutingServiceProvider::class,
+        \Pandawa\Component\Foundation\ServiceProvider\ConfigServiceProvider::class,
+    ];
 
     public function __construct(?string $basePath = null, protected array $foundationConfigs = [])
     {
-        $this->baseProviders = $this->foundationConfigs['bootstrap_providers'] ?? [];
+        $this->bootProviders = $this->foundationConfigs['bootstrap_providers'] ?? $this->bootProviders;
 
         parent::__construct($basePath);
 
@@ -183,7 +188,7 @@ class Application extends LaravelApplication implements ApplicationInterface
 
     protected function registerBaseServiceProviders(): void
     {
-        foreach ($this->baseProviders as $bundle) {
+        foreach ($this->bootProviders as $bundle) {
             if (is_string($bundle)) {
                 $bundle = new $bundle($this);
             }
