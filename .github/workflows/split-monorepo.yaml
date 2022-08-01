@@ -27,6 +27,8 @@ jobs:
             split_repository: 'routing-bundle'
           - local_path:       'Bundle/DatabaseBundle'
             split_repository: 'database-bundle'
+          - local_path:       'Bundle/EloquentBundle'
+            split_repository: 'eloquent-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -37,6 +39,8 @@ jobs:
             split_repository: 'foundation'
           - local_path:       'Component/Routing'
             split_repository: 'routing'
+          - local_path:       'Component/Eloquent'
+            split_repository: 'eloquent'
 
           # Contracts
           - local_path:       'Contracts/Config'

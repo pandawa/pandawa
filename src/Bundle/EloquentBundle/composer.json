@@ -1,0 +1,37 @@
+{
+    "name": "pandawa/eloquent-bundle",
+    "description": "The pandawa eloquent bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/eloquent": "^5.0",
+        "pandawa/database-bundle": "^5.0",
+        "pandawa/foundation-bundle": "^5.0",
+        "pandawa/dependency-injection-bundle": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\EloquentBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\EloquentBundle\\EloquentBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
