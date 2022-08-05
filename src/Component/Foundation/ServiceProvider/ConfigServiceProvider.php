@@ -35,27 +35,27 @@ class ConfigServiceProvider extends ServiceProvider
 
     protected function registerParsers(): void
     {
-        $this->app->singleton('config.parser.array', ArrayParser::class);
-        $this->app->singleton('config.parser.env', EnvParser::class);
-        $this->app->singleton('config.parser.config', ConfigParser::class);
+        $this->app->bind('config.parser.array', ArrayParser::class);
+        $this->app->bind('config.parser.env', EnvParser::class);
+        $this->app->bind('config.parser.config', ConfigParser::class);
 
         $this->app->tag(['config.parser.array', 'config.parser.env', 'config.parser.config'], 'ConfigParsers');
 
-        $this->app->singleton('config.resolver.parser', fn(Container $container) => new ParserResolver(
+        $this->app->bind('config.resolver.parser', fn(Container $container) => new ParserResolver(
             iterator_to_array($container->tagged('ConfigParsers')->getIterator()),
         ));
     }
 
     protected function registerLoaders(): void
     {
-        $this->app->singleton('config.loader.php', PhpLoader::class);
-        $this->app->singleton('config.loader.yaml', fn(Container $container) => new YamlLoader(
+        $this->app->bind('config.loader.php', PhpLoader::class);
+        $this->app->bind('config.loader.yaml', fn(Container $container) => new YamlLoader(
             $container->get('config.resolver.parser'),
         ));
 
         $this->app->tag(['config.loader.php', 'config.loader.yaml'], 'ConfigLoaders');
 
-        $this->app->singleton('loader', fn(Container $container) => new ChainLoader(
+        $this->app->bind('loader', fn(Container $container) => new ChainLoader(
             iterator_to_array($this->app->tagged('ConfigLoaders')->getIterator()),
         ));
         $this->app->alias('loader', LoaderInterface::class);
