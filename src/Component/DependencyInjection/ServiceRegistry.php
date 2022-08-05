@@ -71,7 +71,7 @@ class ServiceRegistry implements ServiceRegistryInterface
         return $value;
     }
 
-    protected function factory(string $name, array $config): callable
+    protected function factory(string $name, array $config): callable|string
     {
         if (null === $factory = $this->factoryResolver->resolve($config)) {
             throw new InvalidArgumentException(sprintf('Unsupported factory service for "%s".', $name));

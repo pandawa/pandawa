@@ -9,7 +9,7 @@ namespace Pandawa\Contracts\DependencyInjection\Factory;
  */
 interface ServiceFactoryInterface
 {
-    public function create(array $config): callable;
+    public function create(array $config): callable|string;
 
     public function supports(array $config): bool;
 }

@@ -14,6 +14,7 @@ use Pandawa\Contracts\DependencyInjection\Parser\ParserResolverInterface;
 use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use PHPUnit\Framework\TestCase;
 use Test\DependencyInjection\Factory\MyFactory;
+use Test\DependencyInjection\Service\DependService;
 use Test\DependencyInjection\Service\SingleService;
 
 /**
@@ -33,15 +34,19 @@ class BundleTest extends TestCase
     public function testLoadService(): void
     {
         $app = $this->createApp();
-        $app['config']->set('debug', false);
+        $app['config']->set('debug', true);
 
         $registry = $app->get(ServiceRegistryInterface::class);
         $registry->load([
             'single'         => [
                 'class'     => SingleService::class,
+                'alias'     => SingleService::class,
                 'arguments' => [
                     '%debug%',
                 ],
+            ],
+            'depend'         => [
+                'class' => DependService::class,
             ],
             'my_factory'     => [
                 'class' => MyFactory::class,
@@ -55,6 +60,9 @@ class BundleTest extends TestCase
         ]);
 
         $this->assertNotNull($app['single']);
+        $this->assertTrue($app['single']->isDebug());
+        $this->assertNotNull($app['depend']);
+        $this->assertSame('DEBUG-PING', $app['depend']->run());
         $this->assertNotNull($app['my_factory']);
         $this->assertNotNull($app['single_factory']);
     }
