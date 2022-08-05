@@ -1,0 +1,14 @@
+eloquent.factory.query_builder:
+  class: "%eloquent.factory.query_builder%"
+  alias: Pandawa\Contracts\Eloquent\Factory\QueryBuilderFactoryInterface
+
+eloquent.factory.cache_handler:
+  class: "%eloquent.factory.cache%"
+  alias: Pandawa\Contracts\Eloquent\Factory\CacheHandlerFactoryInterface
+  arguments:
+    - '@app'
+    - "%eloquent.cache%"
+
+eloquent.factory.repository:
+  class: "%eloquent.factory.repository%"
+  alias: Pandawa\Contracts\Eloquent\Factory\RepositoryFactoryInterface

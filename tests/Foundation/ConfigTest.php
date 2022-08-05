@@ -119,6 +119,7 @@ class ConfigTest extends TestCase
     {
         ServiceProvider::$publishes = [];
         ServiceProvider::$publishGroups = [];
+        \Illuminate\Console\Application::forgetBootstrappers();
 
         $app = $this->createApp(__DIR__);
         $app->singleton(KernelContract::class, Kernel::class);

@@ -1,0 +1,6 @@
+eloquent.persistent:
+  class: "%eloquent.persistent.class%"
+  alias: Pandawa\Contracts\Eloquent\Persistent\PersistentInterface
+  arguments:
+    - '@app'
+    - "%eloquent.persistent.middlewares%"

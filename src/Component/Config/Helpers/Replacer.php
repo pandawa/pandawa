@@ -11,8 +11,14 @@ class Replacer
 {
     public static function replace(array $matches, string $value, callable $callable): mixed
     {
-        foreach ($matches[0] as $i => $config) {
-            $value = str_replace($config, self::normalize($callable($matches[1][$i])), $value);
+        foreach ($matches[0] as $i => $configKey) {
+            $configValue = $callable($matches[1][$i]);
+
+            if (is_array($configValue)) {
+                return $configValue;
+            }
+
+            $value = str_replace($configKey, self::normalize($configValue), $value);
         }
 
         return self::cast($value);

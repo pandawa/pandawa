@@ -7,6 +7,8 @@ namespace Pandawa\Bundle\EloquentBundle;
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use Illuminate\Database\Eloquent\Model;
+use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
+use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 
 /**
@@ -32,6 +34,14 @@ class EloquentBundle extends Bundle
         Model::clearBootedModels();
 
         $this->registerEloquentFactory();
+    }
+
+    protected function plugins(): array
+    {
+        return [
+            new ImportConfigurationPlugin(),
+            new ImportServicesPlugin(),
+        ];
     }
 
     protected function registerEloquentFactory(): void

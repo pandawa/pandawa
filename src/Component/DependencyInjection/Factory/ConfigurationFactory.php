@@ -25,7 +25,7 @@ final class ConfigurationFactory implements ConfigurationFactoryInterface
             ->cannotBeEmpty()
             ->end()
             ->arrayNode('arguments')
-            ->scalarPrototype()->end()
+            ->variablePrototype()->end()
             ->end()
             ->booleanNode('shared')
             ->defaultTrue()
