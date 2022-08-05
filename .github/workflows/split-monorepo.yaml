@@ -51,6 +51,8 @@ jobs:
             split_repository: 'foundation-contracts'
           - local_path:       'Contracts/Routing'
             split_repository: 'routing-contracts'
+          - local_path:       'Contracts/Eloquent'
+            split_repository: 'eloquent-contracts'
 
     steps:
       - uses: actions/checkout@v2
