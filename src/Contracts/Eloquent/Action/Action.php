@@ -17,11 +17,11 @@ final class Action
 
     public static function save(Model $model): self
     {
-        return static($model, Type::SAVE);
+        return new self($model, Type::SAVE);
     }
 
     public static function delete(Model $model): self
     {
-        return static($model, Type::DELETE);
+        return new self($model, Type::DELETE);
     }
 }
