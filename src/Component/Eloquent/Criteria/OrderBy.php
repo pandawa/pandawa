@@ -11,14 +11,14 @@ use Pandawa\Contracts\Eloquent\CriterionInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class Eager implements CriterionInterface
+class OrderBy implements CriterionInterface
 {
-    public function __construct(public readonly array $relations)
+    public function __construct(protected readonly string $column, protected string $sortBy = 'asc')
     {
     }
 
     public function apply(QueryBuilder|EloquentBuilder $query): void
     {
-        $query->with($this->relations);
+        $query->orderBy($this->column, $this->sortBy);
     }
 }
