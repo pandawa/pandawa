@@ -16,7 +16,7 @@ use ReflectionClass;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class LoadHandler implements AnnotationLoadHandlerInterface
+final class RepositoryLoadHandler implements AnnotationLoadHandlerInterface
 {
     protected BundleInterface $bundle;
 

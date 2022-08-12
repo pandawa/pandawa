@@ -1,6 +1,6 @@
 <?php
 
-use Pandawa\Bundle\EloquentBundle\Annotation\LoadHandler;
+use Pandawa\Bundle\EloquentBundle\Annotation\RepositoryLoadHandler;
 use Pandawa\Component\Eloquent;
 
 return [
@@ -27,6 +27,6 @@ return [
     ],
 
     'annotation' => [
-        'handler' => LoadHandler::class,
+        'handler' => RepositoryLoadHandler::class,
     ]
 ];
