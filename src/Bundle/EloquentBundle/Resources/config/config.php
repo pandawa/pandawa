@@ -1,5 +1,6 @@
 <?php
 
+use Pandawa\Bundle\EloquentBundle\Annotation\LoadHandler;
 use Pandawa\Component\Eloquent;
 
 return [
@@ -24,4 +25,8 @@ return [
         'ttl'     => env('ELOQUENT_CACHE_TTL', 60 * 60 * 24),
         'handler' => Eloquent\CacheHandler::class,
     ],
+
+    'annotation' => [
+        'handler' => LoadHandler::class,
+    ]
 ];

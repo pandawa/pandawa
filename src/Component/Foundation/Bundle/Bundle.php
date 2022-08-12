@@ -84,6 +84,17 @@ abstract class Bundle implements BundleContract
         return implode(DIRECTORY_SEPARATOR, $parts);
     }
 
+    public function getConfig(?string $key = null, mixed $default = null): mixed
+    {
+        $parts = [
+            $this->getName(),
+            $key,
+        ];
+        $key = implode('.', array_filter($parts));
+
+        return $this->app->get('config')->get($key, $default);
+    }
+
     /**
      * Register a booting callback to be run before the "boot" method is called.
      *

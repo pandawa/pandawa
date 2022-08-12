@@ -1,6 +1,6 @@
 {
-    "name": "pandawa/eloquent-bundle",
-    "description": "The pandawa eloquent bundle",
+    "name": "pandawa/annotation-bundle",
+    "description": "The pandawa annotation bundle",
     "license": "MIT",
     "authors": [
         {
@@ -10,15 +10,12 @@
     ],
     "require": {
         "php": ">=8.1",
-        "pandawa/eloquent": "^5.0",
-        "pandawa/eloquent-annotations": "^5.0",
-        "pandawa/database-bundle": "^5.0",
-        "pandawa/foundation-bundle": "^5.0",
-        "pandawa/dependency-injection-bundle": "^5.0"
+        "pandawa/annotation": "^5.0",
+        "pandawa/foundation-bundle": "^5.0"
     },
     "autoload": {
         "psr-4": {
-            "Pandawa\\Bundle\\EloquentBundle\\": ""
+            "Pandawa\\Bundle\\AnnotationBundle\\": ""
         }
     },
     "extra": {
@@ -27,7 +24,7 @@
         },
         "laravel": {
             "providers": [
-                "Pandawa\\Bundle\\EloquentBundle\\EloquentBundle"
+                "Pandawa\\Bundle\\AnnotationBundle\\AnnotationBundle"
             ]
         }
     },

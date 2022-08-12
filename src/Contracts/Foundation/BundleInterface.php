@@ -53,4 +53,6 @@ interface BundleInterface
     public function getPath(?string $path = null): string;
 
     public function isDeferred(): bool;
+
+    public function getConfig(?string $key = null, mixed $default = null): mixed;
 }

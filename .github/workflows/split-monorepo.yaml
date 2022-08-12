@@ -29,6 +29,8 @@ jobs:
             split_repository: 'database-bundle'
           - local_path:       'Bundle/EloquentBundle'
             split_repository: 'eloquent-bundle'
+          - local_path:       'Bundle/AnnotationBundle'
+            split_repository: 'annotation-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -41,6 +43,8 @@ jobs:
             split_repository: 'routing'
           - local_path:       'Component/Eloquent'
             split_repository: 'eloquent'
+          - local_path:       'Component/Annotation'
+            split_repository: 'annotation'
 
           # Contracts
           - local_path:       'Contracts/Config'
@@ -53,6 +57,12 @@ jobs:
             split_repository: 'routing-contracts'
           - local_path:       'Contracts/Eloquent'
             split_repository: 'eloquent-contracts'
+          - local_path:       'Contracts/Annotation'
+            split_repository: 'annotation-contracts'
+
+          # Annotations
+          - local_path:       'Annotations/Eloquent'
+            split_repository: 'eloquent-annotations'
 
     steps:
       - uses: actions/checkout@v2
