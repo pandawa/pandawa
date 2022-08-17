@@ -1,0 +1,5 @@
+redis.connection:
+  factory: ['@redis', 'connection']
+  shared: false
+  arguments:
+    - "%redis.default%"
