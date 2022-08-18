@@ -1,0 +1,16 @@
+cache:
+  class: Illuminate\Cache\CacheManager
+  arguments:
+    - '@app'
+
+cache.store:
+  factory: ['@cache', 'driver']
+
+cache.psr6:
+  class: Symfony\Component\Cache\Adapter\Psr16Adapter
+  arguments:
+    - '@cache.store'
+
+memcached.connector:
+  class: Illuminate\Cache\MemcachedConnector
+
