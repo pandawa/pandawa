@@ -29,4 +29,6 @@ return static function (TreeBuilder $treeBuilder) {
             ->end()
         ->end()
     ;
+
+    return $root;
 };
