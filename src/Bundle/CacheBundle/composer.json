@@ -12,6 +12,7 @@
         "php": ">=8.1",
         "illuminate/contracts": "^9.0",
         "illuminate/support": "^9.0",
+        "illuminate/cache": "^9.0",
         "pandawa/foundation-bundle": "^5.0",
         "pandawa/dependency-injection-bundle": "^5.0"
     },
