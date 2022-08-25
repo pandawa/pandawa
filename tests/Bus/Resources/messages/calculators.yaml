@@ -1,0 +1,8 @@
+messages:
+  Test\Bus\Command\CalculateSomething:
+    name: calculator.calculate-something
+    stamps:
+      - class: Pandawa\Component\Bus\Stamp\QueuedStamp
+        arguments:
+          connection: delayed
+          delay: 10

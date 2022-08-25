@@ -95,6 +95,13 @@ abstract class Bundle implements BundleContract
         return $this->app->get('config')->get($key, $default);
     }
 
+    public function mergeConfig(string $key, array $config): void
+    {
+        $key = sprintf('%s.%s', $this->getName(), $key);
+
+        $this->app->get('config')->set($key, [...$this->getConfig($key, []), ...$config]);
+    }
+
     /**
      * Register a booting callback to be run before the "boot" method is called.
      *

@@ -1,0 +1,2 @@
+handlers:
+  post.create: Test\Bus\Handler\CreatePostHandler

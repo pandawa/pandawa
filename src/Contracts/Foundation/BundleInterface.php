@@ -55,4 +55,6 @@ interface BundleInterface
     public function isDeferred(): bool;
 
     public function getConfig(?string $key = null, mixed $default = null): mixed;
+
+    public function mergeConfig(string $key, array $config): void;
 }

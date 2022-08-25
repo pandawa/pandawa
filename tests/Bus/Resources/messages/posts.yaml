@@ -1,0 +1,3 @@
+messages:
+  Test\Bus\Command\CreatePost:
+    name: post.create

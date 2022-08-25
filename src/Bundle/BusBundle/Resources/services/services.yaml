@@ -1,0 +1,23 @@
+bus.message.registry:
+  class: "%bus.registry%"
+  alias: Pandawa\Contracts\Bus\Message\RegistryInterface
+  arguments:
+    - '@app'
+    - "%bus.messages%"
+
+bus.factory.queue:
+  class: "%bus.queue_factory%"
+  alias: Pandawa\Contracts\Bus\QueueFactoryInterface
+
+bus.default:
+  class: "%bus.message_bus%"
+  alias:
+    - Pandawa\Contracts\Bus\BusInterface
+    - Illuminate\Contracts\Bus\Dispatcher
+    - Illuminate\Contracts\Bus\QueueingDispatcher
+  arguments:
+    - '@app'
+    - '@Pandawa\Contracts\Bus\Message\RegistryInterface'
+    - '@Pandawa\Contracts\Bus\QueueFactoryInterface'
+    - "%bus.middlewares%"
+    - "%bus.handlers%"
