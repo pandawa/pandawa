@@ -20,7 +20,7 @@ final class ChainRouteConfigurator implements RouteConfiguratorInterface
     /**
      * @var RouteConfiguratorInterface[] $configurators
      */
-    public function __construct(array $configurators)
+    public function __construct(iterable $configurators)
     {
         foreach ($configurators as $configurator) {
             $this->addConfigurator($configurator);

@@ -19,9 +19,9 @@ final class TagParser implements ParserInterface
     {
     }
 
-    public function parse(mixed $value): array
+    public function parse(mixed $value): iterable
     {
-        return iterator_to_array($this->container->tagged(substr($value, 1))->getIterator());
+        return $this->container->tagged(substr($value, 1));
     }
 
     public function supports(mixed $value): bool

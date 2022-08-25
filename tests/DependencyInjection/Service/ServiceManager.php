@@ -13,7 +13,7 @@ class ServiceManager
 {
     private array $services = [];
 
-    public function __construct(array $services = [])
+    public function __construct(iterable $services = [])
     {
         foreach ($services as $service) {
             $this->addService($service);
