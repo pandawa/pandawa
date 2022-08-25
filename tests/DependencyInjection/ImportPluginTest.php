@@ -10,6 +10,7 @@ use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,8 +22,8 @@ class ImportPluginTest extends TestCase
     {
         $app = $this->createApp();
         $app->register(
-            new class($app) extends Bundle {
-                protected function plugins(): array
+            new class($app) extends Bundle implements HasPluginInterface {
+                public function plugins(): array
                 {
                     return [
                         new ImportServicesPlugin(),
@@ -42,8 +43,8 @@ class ImportPluginTest extends TestCase
     {
         $app = $this->createApp();
         $app->register(
-            new class($app) extends Bundle implements DeferrableProvider {
-                protected function plugins(): array
+            new class($app) extends Bundle implements HasPluginInterface, DeferrableProvider {
+                public function plugins(): array
                 {
                     return [
                         new ImportServicesPlugin(),

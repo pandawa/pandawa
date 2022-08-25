@@ -11,11 +11,12 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class BusBundle extends Bundle implements DeferrableProvider
+class BusBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
     public function register(): void
     {
@@ -30,7 +31,7 @@ class BusBundle extends Bundle implements DeferrableProvider
         });
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new ImportConfigurationPlugin(),

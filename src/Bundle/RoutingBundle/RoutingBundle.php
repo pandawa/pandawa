@@ -10,11 +10,12 @@ use Illuminate\Foundation\Console\RouteClearCommand;
 use Illuminate\Foundation\Console\RouteListCommand;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class RoutingBundle extends Bundle
+class RoutingBundle extends Bundle implements HasPluginInterface
 {
     protected array $commands = [
         'RouteCache' => RouteCacheCommand::class,
@@ -72,7 +73,7 @@ class RoutingBundle extends Bundle
         });
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new ImportServicesPlugin(),

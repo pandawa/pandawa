@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\Str;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Contracts\Foundation\BundleInterface as BundleContract;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 use Pandawa\Contracts\Foundation\PluginInterface;
 use ReflectionClass;
 
@@ -45,11 +46,13 @@ abstract class Bundle implements BundleContract
 
     public function __construct(protected Application $app)
     {
-        foreach ($this->plugins() as $plugin) {
-            $this->initializedPlugins[] = tap(
-                $plugin,
-                fn(PluginInterface $plugin) => $plugin->setBundle($this)
-            );
+        if ($this instanceof HasPluginInterface) {
+            foreach ($this->plugins() as $plugin) {
+                $this->initializedPlugins[] = tap(
+                    $plugin,
+                    fn(PluginInterface $plugin) => $plugin->setBundle($this)
+                );
+            }
         }
     }
 
@@ -207,15 +210,5 @@ abstract class Bundle implements BundleContract
         }
 
         return $this->reflection;
-    }
-
-    /**
-     * Get the plugins provided by the bundle.
-     *
-     * @return PluginInterface[]
-     */
-    protected function plugins(): array
-    {
-        return [];
     }
 }

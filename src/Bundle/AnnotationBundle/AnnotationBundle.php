@@ -11,18 +11,19 @@ use Pandawa\Component\Annotation\Factory\ReaderFactory;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Annotation\Factory\AnnotationLoaderFactoryInterface;
 use Pandawa\Contracts\Annotation\Factory\ReaderFactoryInterface;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class AnnotationBundle extends Bundle
+class AnnotationBundle extends Bundle implements HasPluginInterface
 {
     public function register(): void
     {
         $this->registerFactories();
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new ImportConfigurationPlugin(),

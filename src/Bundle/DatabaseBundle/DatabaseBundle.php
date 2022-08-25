@@ -15,11 +15,12 @@ use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class DatabaseBundle extends Bundle
+class DatabaseBundle extends Bundle implements HasPluginInterface
 {
     protected array $commands = [
         DbCommand::class,
@@ -42,7 +43,7 @@ class DatabaseBundle extends Bundle
         $this->app->loadConsoles([...$this->devCommands, ...$this->commands]);
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new RegisterBundlesPlugin($this->providers),

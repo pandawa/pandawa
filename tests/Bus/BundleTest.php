@@ -15,6 +15,7 @@ use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Bus\BusInterface;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use Pandawa\Contracts\Bus\QueueFactoryInterface;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 use PHPUnit\Framework\TestCase;
 use Test\Bus\Command\CalculateSomething;
 use Test\Bus\Command\CreatePost;
@@ -48,7 +49,7 @@ class BundleTest extends TestCase
     public function testPlugin(): void
     {
         $app = $this->createApp();
-        $app->register(new class($app) extends Bundle {
+        $app->register(new class($app) extends Bundle implements HasPluginInterface {
             public function plugins(): array
             {
                 return [

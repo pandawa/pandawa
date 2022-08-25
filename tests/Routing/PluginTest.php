@@ -12,6 +12,7 @@ use Pandawa\Bundle\RoutingBundle\Plugin\ImportRoutesPlugin;
 use Pandawa\Bundle\RoutingBundle\RoutingBundle;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,8 +24,8 @@ class PluginTest extends TestCase
     {
         $app = $this->createApp();
         $app->register(
-            new class($app) extends Bundle {
-                protected function plugins(): array
+            new class($app) extends Bundle implements HasPluginInterface {
+                public function plugins(): array
                 {
                     return [
                         new ImportRoutesPlugin(),

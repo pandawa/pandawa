@@ -16,6 +16,7 @@ use Pandawa\Component\Foundation\Application;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Component\Foundation\Bundle\Plugin;
 use Pandawa\Component\Foundation\Console\Kernel;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Finder\Finder;
@@ -148,7 +149,7 @@ class ConfigTest extends TestCase
 
     protected function createBundle(Application $app, ImportConfigurationPlugin $plugin): Bundle
     {
-        return new class ($app, $plugin) extends Bundle {
+        return new class ($app, $plugin) extends Bundle implements HasPluginInterface {
             public function __construct(Application $app, protected Plugin $plugin)
             {
                 parent::__construct($app);
@@ -159,7 +160,7 @@ class ConfigTest extends TestCase
                 return 'pandawa';
             }
 
-            protected function plugins(): array
+            public function plugins(): array
             {
                 return [
                     $this->plugin,

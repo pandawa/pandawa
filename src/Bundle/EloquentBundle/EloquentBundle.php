@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class EloquentBundle extends Bundle
+class EloquentBundle extends Bundle implements HasPluginInterface
 {
     /**
      * The array of resolved Faker instances.
@@ -36,7 +37,7 @@ class EloquentBundle extends Bundle
         $this->registerEloquentFactory();
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new ImportConfigurationPlugin(),

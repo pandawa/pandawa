@@ -10,11 +10,12 @@ use Illuminate\Support\Arr;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class RedisBundle extends Bundle implements DeferrableProvider
+class RedisBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
     public function register(): void
     {
@@ -30,7 +31,7 @@ class RedisBundle extends Bundle implements DeferrableProvider
         });
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new ImportConfigurationPlugin(),

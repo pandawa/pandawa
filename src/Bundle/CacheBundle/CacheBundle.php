@@ -13,11 +13,12 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class CacheBundle extends Bundle implements DeferrableProvider
+class CacheBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
     protected array $commands = [
         'CacheClear'  => CacheClearCommand::class,
@@ -41,7 +42,7 @@ class CacheBundle extends Bundle implements DeferrableProvider
         $this->registerCommands();
     }
 
-    protected function plugins(): array
+    public function plugins(): array
     {
         return [
             new ImportConfigurationPlugin(),

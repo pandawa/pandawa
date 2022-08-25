@@ -13,11 +13,12 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Testing\LoggedExceptionCollection;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class FoundationBundle extends Bundle
+class FoundationBundle extends Bundle implements HasPluginInterface
 {
     protected array $registerBundles = [
         ServiceProvider\ConsoleServiceProvider::class,
@@ -32,6 +33,13 @@ class FoundationBundle extends Bundle
         $this->registerRequestSignatureValidation();
         $this->registerExceptionTracking();
         $this->registerMaintenanceModeManager();
+    }
+
+    public function plugins(): array
+    {
+        return [
+            new RegisterBundlesPlugin($this->registerBundles),
+        ];
     }
 
     protected function registerRequestSignatureValidation(): void
@@ -76,12 +84,5 @@ class FoundationBundle extends Bundle
             MaintenanceModeContract::class,
             fn() => $this->app->make(MaintenanceModeManager::class)->driver()
         );
-    }
-
-    public function plugins(): array
-    {
-        return [
-            new RegisterBundlesPlugin($this->registerBundles),
-        ];
     }
 }
