@@ -17,6 +17,8 @@ final class Metadata
     public function __construct(
         public readonly string $class,
         public readonly ?string $name = null,
+        public readonly ?string $normalizer = null,
+        public readonly ?string $denormalizer = null,
         public readonly array $stamps = [],
     ) {
     }

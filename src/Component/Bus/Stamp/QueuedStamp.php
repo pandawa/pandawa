@@ -20,7 +20,10 @@ final class QueuedStamp implements StampInterface
         ?string $connection = null,
         ?string $queue = null,
         DateTimeInterface|DateInterval|array|int|null $delay = null,
-        ?bool $afterCommit = null,
+        public readonly ?int $tries = null,
+        public readonly ?int $maxExceptions = null,
+        public readonly ?bool $failOnTimeout = false,
+        public readonly ?int $timeout = null,
         ?array $chain = [],
     )
     {
@@ -30,13 +33,5 @@ final class QueuedStamp implements StampInterface
             ->delay($delay)
             ->chain($chain)
         ;
-
-        if (true === $afterCommit) {
-            $this->afterCommit();
-        }
-
-        if (false === $afterCommit) {
-            $this->beforeCommit();
-        }
     }
 }

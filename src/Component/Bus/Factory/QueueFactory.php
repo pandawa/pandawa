@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pandawa\Component\Bus\Factory;
 
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Contracts\Queue\Factory;
 use Illuminate\Contracts\Queue\Queue;
 use Pandawa\Contracts\Bus\QueueFactoryInterface;
 use RuntimeException;
@@ -21,15 +20,15 @@ final class QueueFactory implements QueueFactoryInterface
 
     public function create(?string $connection = null): Queue
     {
-        if (!$this->container->has(Factory::class)) {
+        if (!$this->container->bound('queue')) {
             throw new RuntimeException('Please install pandawa/queue-bundle to enable queue.');
         }
 
-        return $this->container->get(Factory::class)->connection($connection);
+        return $this->container->get('queue')->connection($connection);
     }
 
     public function supports(): bool
     {
-        return $this->container->has(Factory::class);
+        return $this->container->has('queue');
     }
 }

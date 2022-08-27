@@ -28,7 +28,7 @@ class BundleTest extends TestCase
     public function testServicesAreRegistered(): void
     {
         $services = [
-            'bus.message.registry',
+            'bus.registry',
             'bus.factory.queue',
             'bus.default',
             RegistryInterface::class,

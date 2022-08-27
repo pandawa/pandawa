@@ -1,0 +1,37 @@
+{
+    "name": "pandawa/queue",
+    "description": "The pandawa queue component",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/bus": "^5.0",
+        "illuminate/contracts": "^9.0",
+        "illuminate/support": "^9.0",
+        "illuminate/database": "^9.0",
+        "illuminate/container": "^9.0",
+        "illuminate/pipeline": "^9.0",
+        "illuminate/queue": "^9.0",
+        "symfony/serializer": "^6.1",
+        "symfony/property-access": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Component\\Queue\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

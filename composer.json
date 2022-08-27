@@ -21,6 +21,8 @@
         "spiral/attributes": "^3.0",
         "spiral/tokenizer": "^2.13",
         "symfony/config": "^6.0",
+        "symfony/property-access": "^6.1",
+        "symfony/serializer": "^6.1",
         "symfony/yaml": "^6.1"
     },
     "require-dev": {

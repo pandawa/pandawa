@@ -1,4 +1,4 @@
-bus.message.registry:
+bus.registry:
   class: "%bus.registry%"
   alias: Pandawa\Contracts\Bus\Message\RegistryInterface
   arguments:

@@ -12,4 +12,6 @@ use Illuminate\Contracts\Bus\QueueingDispatcher;
 interface BusInterface extends QueueingDispatcher
 {
     public function mergePipes(array $pipes): static;
+
+    public function wrap(object $message): Envelope;
 }

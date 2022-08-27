@@ -15,8 +15,10 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Support\Collection;
+use Pandawa\Component\Bus\Stamp\DenormalizerStamp;
 use Pandawa\Component\Bus\Stamp\MessageIdentifiedStamp;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
+use Pandawa\Component\Bus\Stamp\NormalizerStamp;
 use Pandawa\Component\Bus\Stamp\QueuedStamp;
 use Pandawa\Contracts\Bus\BusInterface;
 use Pandawa\Contracts\Bus\Envelope;
@@ -114,7 +116,9 @@ class MessageBus implements BusInterface
 
     public function batch($jobs): PendingBatch
     {
-        return new PendingBatch($this->container, Collection::wrap($jobs));
+        return new PendingBatch($this->container, Collection::wrap($jobs)->map(
+            fn($job) => $this->wrap($job),
+        ));
     }
 
     public function hasCommandHandler($command): bool
@@ -158,7 +162,7 @@ class MessageBus implements BusInterface
         return $this;
     }
 
-    protected function wrap(object $message): Envelope
+    public function wrap(object $message): Envelope
     {
         $envelope = Envelope::wrap($message);
 
@@ -171,8 +175,16 @@ class MessageBus implements BusInterface
         if ($this->messageRegistry->has($messageClass = get_class($envelope->message))) {
             $metadata = $this->messageRegistry->get($messageClass);
 
-            if (!$envelope->last(MessageNameStamp::class) && $metadata->name) {
-                $envelope = $envelope->with(new MessageNameStamp($metadata->name));
+            if (!$envelope->last(MessageNameStamp::class) && $name = $metadata->name) {
+                $envelope = $envelope->with(new MessageNameStamp($name));
+            }
+
+            if (!$envelope->last(NormalizerStamp::class) && $normalizer = $metadata->normalizer) {
+                $envelope = $envelope->with(new NormalizerStamp($normalizer));
+            }
+
+            if (!$envelope->last(DenormalizerStamp::class) && $denormalizer = $metadata->denormalizer) {
+                $envelope = $envelope->with(new DenormalizerStamp($denormalizer));
             }
 
             if (count($metadata->stamps)) {

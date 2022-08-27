@@ -6,6 +6,8 @@ namespace Pandawa\Component\Bus;
 
 use Illuminate\Contracts\Container\Container;
 use Pandawa\Component\Bus\Exception\MessageNotFoundException;
+use Pandawa\Component\Bus\Normalizer\ObjectDenormalizerFactory;
+use Pandawa\Component\Bus\Normalizer\ObjectNormalizerFactory;
 use Pandawa\Contracts\Bus\Message\Metadata;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
 
@@ -88,6 +90,8 @@ class MessageRegistry implements RegistryInterface
         return new Metadata(
             class: $class,
             name: $message['name'] ?? null,
+            normalizer: $message['normalizer'] ?? ObjectNormalizerFactory::class,
+            denormalizer: $message['denormalizer'] ?? ObjectDenormalizerFactory::class,
             stamps: array_map(
                 function (array $stamp) {
                     return $this->container->make($stamp['class'], $stamp['arguments'] ?? []);

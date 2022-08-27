@@ -37,6 +37,8 @@ jobs:
             split_repository: 'cache-bundle'
           - local_path:       'Bundle/BusBundle'
             split_repository: 'bus-bundle'
+          - local_path:       'Bundle/QueueBundle'
+            split_repository: 'queue-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -53,6 +55,8 @@ jobs:
             split_repository: 'annotation'
           - local_path:       'Component/Bus'
             split_repository: 'bus'
+          - local_path:       'Component/Queue'
+            split_repository: 'queue'
 
           # Contracts
           - local_path:       'Contracts/Config'
