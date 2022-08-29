@@ -18,6 +18,9 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class BusBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
+    const MESSAGE_CONFIG_KEY = 'bus.messages';
+    const HANDLER_CONFIG_KEY = 'bus.handlers';
+
     public function register(): void
     {
         $this->app->singleton(BatchRepository::class, DatabaseBatchRepository::class);

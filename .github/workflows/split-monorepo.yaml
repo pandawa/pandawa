@@ -77,6 +77,8 @@ jobs:
           # Annotations
           - local_path:       'Annotations/Eloquent'
             split_repository: 'eloquent-annotations'
+          - local_path:       'Annotations/Bus'
+            split_repository: 'bus-annotations'
 
     steps:
       - uses: actions/checkout@v2

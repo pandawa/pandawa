@@ -1,6 +1,6 @@
 {
-    "name": "pandawa/bus-bundle",
-    "description": "The pandawa bus bundle",
+    "name": "pandawa/bus-annotations",
+    "description": "The pandawa bus annotations",
     "license": "MIT",
     "authors": [
         {
@@ -10,24 +10,16 @@
     ],
     "require": {
         "php": ">=8.1",
-        "pandawa/dependency-injection-bundle": "^5.0",
-        "pandawa/foundation-bundle": "^5.0",
-        "pandawa/bus-annotations": "^5.0",
-        "pandawa/bus": "^5.0"
+        "spiral/attributes": "^3.0"
     },
     "autoload": {
         "psr-4": {
-            "Pandawa\\Bundle\\BusBundle\\": ""
+            "Pandawa\\Annotations\\Bus\\": ""
         }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "5.x-dev"
-        },
-        "laravel": {
-            "providers": [
-                "Pandawa\\Bundle\\BusBundle\\BusBundle"
-            ]
         }
     },
     "config": {

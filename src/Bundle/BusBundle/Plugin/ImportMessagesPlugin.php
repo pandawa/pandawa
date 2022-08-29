@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\BusBundle\Plugin;
 
+use Pandawa\Bundle\BusBundle\BusBundle;
 use Pandawa\Component\Foundation\Bundle\Plugin;
 use Pandawa\Contracts\Bus\BusInterface;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
@@ -26,12 +27,20 @@ class ImportMessagesPlugin extends Plugin
         }
 
         $this->bundle->getApp()->booted(function () {
+            $config = $this->bundle->getService('config');
+
             foreach ($this->getMessages() as $messages) {
                 $this->registry()->load($messages['messages'] ?? []);
                 $this->bus()->map($messages['handlers'] ?? []);
 
-                $this->bundle->mergeConfig('messages', $messages['messages'] ?? []);
-                $this->bundle->mergeConfig('handlers', $messages['handlers'] ?? []);
+                $config->set(BusBundle::MESSAGE_CONFIG_KEY, [
+                    ...$config->get(BusBundle::MESSAGE_CONFIG_KEY, []),
+                    ...($messages['messages'] ?? [])
+                ]);
+                $config->set(BusBundle::HANDLER_CONFIG_KEY, [
+                    ...$config->get(BusBundle::HANDLER_CONFIG_KEY, []),
+                    ...($messages['handlers'] ?? [])
+                ]);
             }
         });
     }
