@@ -41,6 +41,8 @@ jobs:
             split_repository: 'queue-bundle'
           - local_path:       'Bundle/TranslationBundle'
             split_repository: 'translation-bundle'
+          - local_path:       'Bundle/ValidationBundle'
+            split_repository: 'validation-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -59,6 +61,8 @@ jobs:
             split_repository: 'bus'
           - local_path:       'Component/Queue'
             split_repository: 'queue'
+          - local_path:       'Component/Validation'
+            split_repository: 'validation'
 
           # Contracts
           - local_path:       'Contracts/Config'
@@ -75,6 +79,8 @@ jobs:
             split_repository: 'annotation-contracts'
           - local_path:       'Contracts/Bus'
             split_repository: 'bus-contracts'
+          - local_path:       'Contracts/Validation'
+            split_repository: 'validation-contracts'
 
           # Annotations
           - local_path:       'Annotations/Eloquent'

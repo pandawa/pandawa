@@ -1,0 +1,14 @@
+validation.parser.resolver:
+  class: Pandawa\Component\Validation\Parser\ParserResolver
+  alias: Pandawa\Contracts\Validation\Parser\ParserResolverInterface
+  arguments: ['#ValidationParsers']
+
+validation.parser.request:
+  class: Pandawa\Component\Validation\Parser\RequestParser
+  tag: ValidationParsers
+  arguments: ['@app']
+
+validation.parser.auth:
+  class: Pandawa\Component\Validation\Parser\AuthParser
+  tag: ValidationParsers
+  arguments: ['@app']

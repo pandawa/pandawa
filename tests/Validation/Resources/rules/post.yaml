@@ -1,0 +1,5 @@
+post.store:
+  constraints:
+    title: "required"
+  messages:
+    title.required: "Title can't be empty"

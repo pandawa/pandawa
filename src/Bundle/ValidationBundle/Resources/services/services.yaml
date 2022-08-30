@@ -1,0 +1,13 @@
+validation.rule_registry:
+  class: "%validation.rule_registry%"
+  alias: Pandawa\Contracts\Validation\RuleRegistryInterface
+  arguments:
+    - "%validation.rules%"
+
+validation.factory:
+  class: "%validation.validator_factory%"
+  alias: Pandawa\Contracts\Validation\FactoryInterface
+  shared: false
+  arguments:
+    - '@validation.rule_registry'
+    - '@validator'
