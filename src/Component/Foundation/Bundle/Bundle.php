@@ -105,6 +105,15 @@ abstract class Bundle implements BundleContract
         $this->app->get('config')->set($key, [...$this->getConfig($key, []), ...$config]);
     }
 
+    public function callAfterResolving(string $name, callable $callback): void
+    {
+        $this->app->afterResolving($name, $callback);
+
+        if ($this->app->resolved($name)) {
+            $callback($this->app->make($name), $this->app);
+        }
+    }
+
     /**
      * Register a booting callback to be run before the "boot" method is called.
      *

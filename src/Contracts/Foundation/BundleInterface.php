@@ -57,4 +57,6 @@ interface BundleInterface
     public function getConfig(?string $key = null, mixed $default = null): mixed;
 
     public function mergeConfig(string $key, array $config): void;
+
+    public function callAfterResolving(string $name, callable $callback): void;
 }
