@@ -13,8 +13,24 @@ use Pandawa\Contracts\Transformer\Context;
  */
 class EloquentTransformer extends Transformer
 {
+    /**
+     * @var callable
+     */
+    protected $handler;
+
+    public function setTransformHandler(callable $handler): static
+    {
+        $this->handler = $handler;
+
+        return $this;
+    }
+
     protected function transform(Context $context, Model $model): array
     {
+        if (null !== $handler = $this->handler) {
+            return $handler($context, $model, $this);
+        }
+
         return $model->toArray();
     }
 

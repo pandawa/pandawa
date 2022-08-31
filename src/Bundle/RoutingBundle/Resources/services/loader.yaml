@@ -1,6 +1,7 @@
 routing.resolver.loader:
   class: Pandawa\Component\Routing\LoaderResolver
   alias: Pandawa\Contracts\Routing\LoaderResolverInterface
+  shared: false
   arguments:
     - "#routing.loaders"
 

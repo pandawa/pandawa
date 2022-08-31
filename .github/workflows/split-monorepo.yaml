@@ -45,6 +45,8 @@ jobs:
             split_repository: 'validation-bundle'
           - local_path:       'Bundle/SerializerBundle'
             split_repository: 'serializer-bundle'
+          - local_path:       'Bundle/ResourceBundle'
+            split_repository: 'resource-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -67,6 +69,8 @@ jobs:
             split_repository: 'validation'
           - local_path:       'Component/Transformer'
             split_repository: 'transformer'
+          - local_path:       'Component/Resource'
+            split_repository: 'resource'
 
           # Contracts
           - local_path:       'Contracts/Config'
@@ -87,6 +91,8 @@ jobs:
             split_repository: 'validation-contracts'
           - local_path:       'Contracts/Transformer'
             split_repository: 'transformer-contracts'
+          - local_path:       'Contracts/Resource'
+            split_repository: 'resource-contracts'
 
           # Annotations
           - local_path:       'Annotations/Eloquent'

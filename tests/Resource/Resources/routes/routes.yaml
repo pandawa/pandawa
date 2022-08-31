@@ -1,0 +1,17 @@
+post.create:
+  uri: posts
+  type: message
+  message: posts.create
+  methods: post
+  options:
+    transformer:
+      class: Test\Resource\Transformer\PostTransformer
+
+post.find:
+  uri: posts
+  type: message
+  message: posts.find
+  methods: get
+  options:
+    transformer:
+      class: Test\Resource\Transformer\PostTransformer

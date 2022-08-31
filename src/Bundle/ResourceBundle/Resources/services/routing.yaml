@@ -1,0 +1,28 @@
+__defines:
+  Loader: Pandawa\Component\Resource\Routing\Loader
+  Configurator: Pandawa\Component\Resource\Routing\Configurator
+
+resource.loader.message:
+  class: ${Loader}\MessageLoader
+  tag: routing.loaders
+  arguments:
+    - '@router'
+    - '@routing.configurator.chain'
+    - '%resource.controller.message%'
+
+resource.loader.resource:
+  class: ${Loader}\ResourceLoader
+  tag: routing.loaders
+  arguments:
+    - '@router'
+    - '@routing.configurator.chain'
+    - '%resource.controller.resource%'
+
+resource.configurator.route_message:
+  class: ${Configurator}\RouteMessageConfigurator
+  tag: routing.configurators
+
+resource.configurator.route_resource:
+  class: ${Configurator}\RouteResourceConfigurator
+  tag: routing.configurators
+

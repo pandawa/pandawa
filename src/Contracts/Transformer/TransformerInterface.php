@@ -9,5 +9,11 @@ namespace Pandawa\Contracts\Transformer;
  */
 interface TransformerInterface
 {
+    public function setWrapper(?string $wrapper): void;
+
+    public function getWrapper(): ?string;
+
     public function process(Context $context, mixed $data): mixed;
+
+    public function wrap(mixed $data): mixed;
 }

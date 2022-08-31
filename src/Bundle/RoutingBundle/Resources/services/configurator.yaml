@@ -1,6 +1,7 @@
 routing.configurator.chain:
   class: Pandawa\Component\Routing\Configurator\ChainRouteConfigurator
   alias: Pandawa\Contracts\Routing\RouteConfiguratorInterface
+  shared: false
   arguments:
     - "#routing.configurators"
 

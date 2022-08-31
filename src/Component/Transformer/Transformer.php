@@ -20,6 +20,13 @@ abstract class Transformer implements TransformerInterface
     use ConditionallyTrait;
 
     /**
+     * Data wrap.
+     *
+     * @var string|null
+     */
+    protected ?string $wrapper = null;
+
+    /**
      * Available include relations.
      *
      * @var array
@@ -75,6 +82,15 @@ abstract class Transformer implements TransformerInterface
         return $this;
     }
 
+    public function setWrapper(?string $wrapper): void
+    {
+        $this->wrapper = $wrapper;
+    }
+
+    public function getWrapper(): ?string
+    {
+        return $this->wrapper;
+    }
 
     public function process(Context $context, mixed $data): array
     {
@@ -88,6 +104,53 @@ abstract class Transformer implements TransformerInterface
         }
 
         return $this->filter($selects, $transformed);
+    }
+
+    public function wrap(mixed $data): mixed
+    {
+        if (null === $this->wrapper) {
+            return $data;
+        }
+
+        return [$this->wrapper => $data];
+    }
+
+    public function getSelects(array $selects): array
+    {
+        if (empty($selects)) {
+            return $this->defaultSelects;
+        }
+
+        if (empty($this->availableSelects)) {
+            return $selects;
+        }
+
+        return array_filter($selects, function (string $select) {
+            if ($this->isAllowed($select, $this->availableSelects)) {
+                return true;
+            }
+
+            throw new SelectNotAllowedException($select);
+        });
+    }
+
+    public function getIncludes(array $includes): array
+    {
+        if (empty($includes)) {
+            return $this->defaultIncludes;
+        }
+
+        if (empty($this->availableIncludes)) {
+            return $includes;
+        }
+
+        return array_filter($includes, function (string $include) {
+            if ($this->isAllowed($include, $this->availableIncludes)) {
+                return true;
+            }
+
+            throw new IncludeNotAllowedException($include);
+        });
     }
 
     protected function filter(array $selects, array $data): array
@@ -143,44 +206,6 @@ abstract class Transformer implements TransformerInterface
         }
 
         return $normalized;
-    }
-
-    protected function getSelects(array $selects): array
-    {
-        if (empty($selects)) {
-            return $this->defaultSelects;
-        }
-
-        if (empty($this->availableSelects)) {
-            return $selects;
-        }
-
-        return array_filter($selects, function (string $select) {
-            if ($this->isAllowed($select, $this->availableSelects)) {
-                return true;
-            }
-
-            throw new SelectNotAllowedException($select);
-        });
-    }
-
-    protected function getIncludes(array $includes): array
-    {
-        if (empty($includes)) {
-            return $this->defaultIncludes;
-        }
-
-        if (empty($this->availableIncludes)) {
-            return $includes;
-        }
-
-        return array_filter($includes, function (string $include) {
-            if ($this->isAllowed($include, $this->availableIncludes)) {
-                return true;
-            }
-
-            throw new IncludeNotAllowedException($include);
-        });
     }
 
     protected function isAllowed(string $select, array $stack): bool

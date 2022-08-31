@@ -1,0 +1,11 @@
+resource.renderer:
+  class: Pandawa\Component\Resource\Renderer
+  alias: Pandawa\Contracts\Resource\RendererInterface
+  arguments:
+    - '@app'
+    - '@resource.formatter.resolver'
+    - '@serializer.default'
+    - '%resource.default_content_type%'
+    - '%resource.default_wrapper%'
+    - '%resource.middlewares%'
+    - '%resource.allowed_formats%'

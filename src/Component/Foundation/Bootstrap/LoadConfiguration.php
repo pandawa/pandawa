@@ -67,6 +67,10 @@ class LoadConfiguration extends LaravelLoadConfiguration
         }
 
         foreach ($files as $key => $path) {
+            if (!file_exists($path)) {
+                continue;
+            }
+
             $repository->set($key, $this->loader->load($path));
         }
     }
@@ -79,6 +83,10 @@ class LoadConfiguration extends LaravelLoadConfiguration
         $files = [];
 
         $configPath = realpath($app->configPath());
+
+        if (false === $configPath) {
+            return [];
+        }
 
         foreach (Finder::create()->files()->in($configPath) as $file) {
             if (!$this->loader->supports($file->getRealPath())) {

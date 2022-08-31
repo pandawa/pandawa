@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\DependencyInjection\Parser;
 
 use Illuminate\Contracts\Container\Container;
+use InvalidArgumentException;
 use Pandawa\Component\DependencyInjection\Traits\ParserResolverTrait;
 use Pandawa\Contracts\Config\Parser\ParserInterface;
 
@@ -21,7 +22,15 @@ final class ServiceParser implements ParserInterface
 
     public function parse(mixed $value): mixed
     {
-        return $this->container->get(substr($value, 1));
+        $service = substr($value, 1);
+
+        if (!$this->container->has($service)) {
+            throw new InvalidArgumentException(
+                sprintf('Service "%s" is not defined.', $service)
+            );
+        }
+
+        return $this->container->get($service);
     }
 
     public function supports(mixed $value): bool

@@ -1,0 +1,24 @@
+__defines:
+  Formatter: Pandawa\Component\Resource\Formatter
+
+resource.formatter.resolver:
+  class: ${Formatter}\FormatterResolver
+  alias: Pandawa\Contracts\Resource\Formatter\FormatterResolverInterface
+  arguments: ['#resource.formatter']
+  shared: false
+
+resource.formatter.csv:
+  class: ${Formatter}\CsvFormatter
+  tag: resource.formatter
+
+resource.formatter.json:
+  class: ${Formatter}\JsonFormatter
+  tag: resource.formatter
+
+resource.formatter.xml:
+  class: ${Formatter}\XmlFormatter
+  tag: resource.formatter
+
+resource.formatter.yaml:
+  class: ${Formatter}\YamlFormatter
+  tag: resource.formatter

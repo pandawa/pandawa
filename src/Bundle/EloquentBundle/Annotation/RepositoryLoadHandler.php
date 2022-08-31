@@ -40,7 +40,7 @@ final class RepositoryLoadHandler implements AnnotationLoadHandlerInterface
         $class = $options['class'];
 
         $this->serviceRegistry->register($serviceClass = $class->getName(), $repo = [
-            'alias'     => $annotation->alias,
+            'alias'     => [$annotation->alias, sprintf('Eloquent.%sRepository', $annotation->model)],
             'factory'   => [
                 '@' . RepositoryFactoryInterface::class,
                 'create',

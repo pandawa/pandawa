@@ -9,7 +9,7 @@ namespace Pandawa\Component\Transformer;
  */
 trait ConditionallyTrait
 {
-    protected function when(bool $condition, mixed $value, mixed $default = null): mixed
+    public function when(bool $condition, mixed $value, mixed $default = null): mixed
     {
         if ($condition) {
             return value($value);
@@ -18,17 +18,17 @@ trait ConditionallyTrait
         return 3 === func_num_args() ? value($default) : new MissingValue();
     }
 
-    protected function merge(iterable|callable $value): MergeValue|MissingValue
+    public function merge(iterable|callable $value): MergeValue|MissingValue
     {
         return $this->mergeWhen(true, $value);
     }
 
-    protected function mergeUnless(bool $condition, iterable|callable $value): MergeValue|MissingValue
+    public function mergeUnless(bool $condition, iterable|callable $value): MergeValue|MissingValue
     {
         return $this->mergeWhen(!$condition, $value);
     }
 
-    protected function mergeWhen(bool $condition, iterable|callable $value): MergeValue|MissingValue
+    public function mergeWhen(bool $condition, iterable|callable $value): MergeValue|MissingValue
     {
         return $condition ? new MergeValue(value($value)) : new MissingValue();
     }

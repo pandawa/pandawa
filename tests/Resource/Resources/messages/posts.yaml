@@ -1,0 +1,6 @@
+messages:
+  Test\Resource\Command\CreatePost:
+    name: posts.create
+
+  Test\Resource\Command\FindPost:
+    name: posts.find

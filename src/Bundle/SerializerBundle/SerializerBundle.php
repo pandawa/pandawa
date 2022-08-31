@@ -10,6 +10,7 @@ use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -38,6 +39,11 @@ class SerializerBundle extends Bundle implements HasPluginInterface, DeferrableP
             sprintf('serializer.%s', $this->getConfig('default')),
             SerializerInterface::class
         );
+
+        $this->app->alias(
+            sprintf('serializer.%s', $this->getConfig('default')),
+            Serializer::class
+        );
     }
 
     public function plugins(): array
@@ -53,6 +59,7 @@ class SerializerBundle extends Bundle implements HasPluginInterface, DeferrableP
         return [
             ...$this->deferred,
             SerializerInterface::class,
+            Serializer::class,
         ];
     }
 }

@@ -1,0 +1,13 @@
+__defines:
+  ModelHandler: Pandawa\Component\Resource\Model
+
+resource.model_handler.factory_resolver:
+  class: ${ModelHandler}\HandlerFactoryResolver
+  alias: Pandawa\Contracts\Resource\Model\FactoryResolverInterface
+  shared: false
+  arguments:
+    - '@app'
+    - '#resource.model_handler_factory'
+
+resource.model_handler.eloquent.handler_factory:
+  class: ${ModelHandler}\Eloquent\EloquentHandlerFactory
