@@ -63,6 +63,8 @@ jobs:
             split_repository: 'queue'
           - local_path:       'Component/Validation'
             split_repository: 'validation'
+          - local_path:       'Component/Transformer'
+            split_repository: 'transformer'
 
           # Contracts
           - local_path:       'Contracts/Config'
@@ -81,6 +83,8 @@ jobs:
             split_repository: 'bus-contracts'
           - local_path:       'Contracts/Validation'
             split_repository: 'validation-contracts'
+          - local_path:       'Contracts/Transformer'
+            split_repository: 'transformer-contracts'
 
           # Annotations
           - local_path:       'Annotations/Eloquent'
