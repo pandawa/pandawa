@@ -1,5 +1,8 @@
+__defines:
+  Service: Test\DependencyInjection\Service
+
 single:
-  class: Test\DependencyInjection\Service\SingleService
+  class: ${Service}\SingleService
   arguments:
     - "%debug%"
 

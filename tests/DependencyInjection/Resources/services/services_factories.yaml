@@ -1,2 +1,5 @@
+__defines:
+  Factory: Test\DependencyInjection\Factory
+
 my_factory:
-  class: Test\DependencyInjection\Factory\MyFactory
+  class: ${Factory}\MyFactory
