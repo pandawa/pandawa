@@ -1,0 +1,37 @@
+{
+    "name": "pandawa/serializer-bundle",
+    "description": "The pandawa serializer bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/dependency-injection-bundle": "^5.0",
+        "pandawa/foundation-bundle": "^5.0",
+        "symfony/property-access": "^6.1",
+        "symfony/serializer": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\SerializerBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\SerializerBundle\\SerializerBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

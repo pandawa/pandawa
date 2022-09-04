@@ -43,6 +43,8 @@ jobs:
             split_repository: 'translation-bundle'
           - local_path:       'Bundle/ValidationBundle'
             split_repository: 'validation-bundle'
+          - local_path:       'Bundle/SerializerBundle'
+            split_repository: 'serializer-bundle'
 
           # Components
           - local_path:       'Component/Config'

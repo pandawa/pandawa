@@ -1,0 +1,18 @@
+__defines:
+  Encoder: Symfony\Component\Serializer\Encoder
+
+serializer.encoder.json:
+  class: ${Encoder}\JsonEncoder
+  shared: false
+
+serializer.encoder.xml:
+  class: ${Encoder}\XmlEncoder
+  shared: false
+
+serializer.encoder.yaml:
+  class: ${Encoder}\YamlEncoder
+  shared: false
+
+serializer.encoder.csv:
+  class: ${Encoder}\CsvEncoder
+  shared: false

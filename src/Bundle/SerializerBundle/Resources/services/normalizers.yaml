@@ -1,0 +1,17 @@
+__defines:
+  Serializer: Symfony\Component\Serializer
+
+serializer.name_converter.camel_to_snake:
+  class: ${Serializer}\NameConverter\CamelCaseToSnakeCaseNameConverter
+  shared: false
+
+serializer.normalizer.object:
+  class: ${Serializer}\Normalizer\ObjectNormalizer
+  shared: false
+  arguments:
+    - ~
+    - '@serializer.name_converter.camel_to_snake'
+
+serializer.normalizer.date_time:
+  class: ${Serializer}\Normalizer\DateTimeNormalizer
+  shared: false

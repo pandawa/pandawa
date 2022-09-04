@@ -1,0 +1,2 @@
+serializer.factory:
+  class: Pandawa\Bundle\SerializerBundle\Factory\SerializerFactory
