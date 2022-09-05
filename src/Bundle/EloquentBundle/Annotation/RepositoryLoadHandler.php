@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\EloquentBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
-use Pandawa\Annotations\Eloquent\Repository;
+use Pandawa\Annotations\Eloquent\AsRepository;
 use Pandawa\Bundle\EloquentBundle\Plugin\ImportRepositoryAnnotationPlugin;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
 use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
@@ -32,7 +32,7 @@ final class RepositoryLoadHandler implements AnnotationLoadHandlerInterface
     }
 
     /**
-     * @param  array{class: ReflectionClass, annotation: Repository}  $options
+     * @param  array{class: ReflectionClass, annotation: AsRepository}  $options
      */
     public function handle(array $options): void
     {

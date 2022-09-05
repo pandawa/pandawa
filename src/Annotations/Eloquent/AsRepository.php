@@ -11,10 +11,8 @@ use Spiral\Attributes\NamedArgumentConstructor;
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 #[Attribute(Attribute::TARGET_CLASS), NamedArgumentConstructor]
-final class Repository
+final class AsRepository
 {
-    public string $repository;
-
     public function __construct(
         public readonly string $model,
         public readonly array|string $alias = []
