@@ -117,6 +117,6 @@ class MessageController
             return $this->messageRegistry->getByName($resource)->class;
         }
 
-        return $this->messageRegistry->get($resource)->class;
+        return $resource;
     }
 }
