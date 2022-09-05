@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Resource\Model\Eloquent;
 
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use Pandawa\Component\Eloquent\Criteria\Criteria;
@@ -36,7 +37,7 @@ class EloquentHandler implements HandlerInterface
     public function setModel(string $model): static
     {
         $this->model = $model;
-        $this->repository = $this->repositoryFactory->create($model);
+        $this->repository = $this->createRepository($model);
 
         return $this;
     }
@@ -74,7 +75,7 @@ class EloquentHandler implements HandlerInterface
         );
     }
 
-    public function find(array $options = []): iterable
+    public function find(array $options = []): LengthAwarePaginator|iterable
     {
         if (false !== $paginate = $options['paginate'] ?? false) {
             return $this->repository->paginate($paginate);
@@ -162,5 +163,16 @@ class EloquentHandler implements HandlerInterface
         $parts = explode('_', Str::snake($reflection->getName()));
 
         return implode(' ', $parts);
+    }
+
+    protected function createRepository(string $model): RepositoryInterface
+    {
+        $alias = sprintf('Eloquent.%s', $model);
+
+        if ($this->container->has($alias)) {
+            return $this->container->get($alias);
+        }
+
+        return $this->repositoryFactory->create($model);
     }
 }

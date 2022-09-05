@@ -25,12 +25,6 @@ final class RepositoryFactory implements RepositoryFactoryInterface
 
     public function create(string $modelClass, string $repositoryClass = Repository::class): RepositoryInterface
     {
-        $repositoryService = sprintf('Eloquent::%s', $modelClass);
-
-        if ($this->container->has($repositoryService)) {
-            return $this->container->get($repositoryService);
-        }
-
         return new $repositoryClass(
             $this->queryBuilderFactory->create($modelClass),
             $this->persistent,

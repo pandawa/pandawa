@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Contracts\Resource\Model;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pandawa\Contracts\Transformer\TransformerInterface;
 
 /**
@@ -44,7 +45,7 @@ interface HandlerInterface
     /**
      * Find collection of models
      */
-    public function find(array $options = []): iterable;
+    public function find(array $options = []): LengthAwarePaginator|iterable;
 
     /**
      * @template TModel
