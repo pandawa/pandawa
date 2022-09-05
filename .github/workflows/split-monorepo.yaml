@@ -47,6 +47,8 @@ jobs:
             split_repository: 'serializer-bundle'
           - local_path:       'Bundle/ResourceBundle'
             split_repository: 'resource-bundle'
+          - local_path:       'Bundle/ConsoleBundle'
+            split_repository: 'console-bundle'
 
           # Components
           - local_path:       'Component/Config'
