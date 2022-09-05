@@ -9,7 +9,6 @@ use Illuminate\Cache\Console\ClearCommand as CacheClearCommand;
 use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
@@ -18,7 +17,7 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class CacheBundle extends Bundle implements HasPluginInterface, DeferrableProvider
+class CacheBundle extends Bundle implements HasPluginInterface
 {
     protected array $commands = [
         'CacheClear'  => CacheClearCommand::class,
@@ -48,11 +47,6 @@ class CacheBundle extends Bundle implements HasPluginInterface, DeferrableProvid
             new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
         ];
-    }
-
-    public function provides(): array
-    {
-        return [RateLimiter::class];
     }
 
     protected function registerCommands(): void
