@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\ConsoleBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
+use Pandawa\Annotations\Console\AsConsole;
 use Pandawa\Bundle\ConsoleBundle\ConsoleBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
 use Pandawa\Contracts\Foundation\BundleInterface;
 use ReflectionClass;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -28,13 +28,15 @@ final class ConsoleLoadHandler implements AnnotationLoadHandlerInterface
     }
 
     /**
-     * @param  array{class: ReflectionClass, annotation: AsCommand}  $options
+     * @param  array{class: ReflectionClass, annotation: AsConsole}  $options
      */
     public function handle(array $options): void
     {
+        $className = $options['class']->getName();
+
         $this->config->set($this->getConsoleConfigKey(), [
             ...$this->config->get($this->getConsoleConfigKey(), []),
-            $options['annotation']->name => $options['class']->getName()
+            md5($className) => $className
         ]);
     }
 
