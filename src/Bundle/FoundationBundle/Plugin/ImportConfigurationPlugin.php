@@ -53,11 +53,13 @@ class ImportConfigurationPlugin extends Plugin
                     continue;
                 }
 
+                $bundleName = $this->bundle->getName();
+
                 $this->publishes([
                     $bundleConfig => $this->getPackageConfigPath(
-                        $this->bundle->getName().'.'.pathinfo($bundleConfig, PATHINFO_EXTENSION)
+                        $bundleName.'.'.pathinfo($bundleConfig, PATHINFO_EXTENSION)
                     ),
-                ], 'config');
+                ], [$bundleName . '-config', $bundleName, 'config']);
             }
         }
     }
@@ -149,7 +151,7 @@ class ImportConfigurationPlugin extends Plugin
     /**
      * Register paths to be published by the publish command.
      */
-    protected function publishes(array $paths, string $groups = null): void
+    protected function publishes(array $paths, string|array $groups = null): void
     {
         $this->ensurePublishArrayInitialized($class = $this->bundle::class);
 
