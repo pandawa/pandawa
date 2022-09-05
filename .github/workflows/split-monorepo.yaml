@@ -99,6 +99,8 @@ jobs:
             split_repository: 'eloquent-annotations'
           - local_path:       'Annotations/Bus'
             split_repository: 'bus-annotations'
+          - local_path:       'Annotations/DependencyInjection'
+            split_repository: 'dependency-injection-annotations'
 
     steps:
       - uses: actions/checkout@v2

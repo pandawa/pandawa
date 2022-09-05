@@ -29,12 +29,20 @@ class AnnotationLoader implements AnnotationLoaderInterface
      */
     public function load(string $annotationClass, ?string $targetClass = null): array
     {
-        return array_map(
-            fn(ReflectionClass $class) => [
-                'class'      => $class,
-                'annotation' => $this->makeAnnotation($class, $annotationClass),
-            ],
-            $this->classLocator->getClasses($targetClass),
+        return array_filter(
+            array_map(
+                function (ReflectionClass $class) use ($annotationClass) {
+                    if (null !== $annotation = $this->makeAnnotation($class, $annotationClass)) {
+                        return [
+                            'class'      => $class,
+                            'annotation' => $annotation,
+                        ];
+                    }
+
+                    return null;
+                },
+                $this->classLocator->getClasses($targetClass),
+            )
         );
     }
 
@@ -42,9 +50,9 @@ class AnnotationLoader implements AnnotationLoaderInterface
      * @param  ReflectionClass  $class
      * @param  class-string<TAnnotation>  $annotationClass
      *
-     * @return TAnnotation
+     * @return TAnnotation|null
      */
-    protected function makeAnnotation(ReflectionClass $class, string $annotationClass): object
+    protected function makeAnnotation(ReflectionClass $class, string $annotationClass): ?object
     {
         try {
             return $this->reader->firstClassMetadata($class, $annotationClass);

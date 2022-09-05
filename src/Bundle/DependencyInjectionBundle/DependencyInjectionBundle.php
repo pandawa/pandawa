@@ -25,6 +25,8 @@ use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
  */
 class DependencyInjectionBundle extends Bundle
 {
+    const CONFIG_CACHE_KEY = 'pandawa.services';
+
     public function register(): void
     {
         $this->registerConfigurationFactory();

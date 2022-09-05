@@ -6,6 +6,7 @@ namespace Pandawa\Bundle\DependencyInjectionBundle\Plugin;
 
 use Generator;
 use Illuminate\Contracts\Config\Repository;
+use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
 use Pandawa\Component\Foundation\Bundle\Plugin;
 use Pandawa\Contracts\Config\LoaderInterface;
 use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
@@ -17,8 +18,6 @@ use Symfony\Component\Finder\Finder;
  */
 class ImportServicesPlugin extends Plugin
 {
-    const CACHE_KEY = 'pandawa.services';
-
     public function __construct(protected string $scanPath = 'Resources/services')
     {
     }
@@ -81,7 +80,7 @@ class ImportServicesPlugin extends Plugin
 
     protected function getConfigKey(): string
     {
-        return self::CACHE_KEY.'.'.$this->bundle->getName();
+        return DependencyInjectionBundle::CONFIG_CACHE_KEY.'.'.$this->bundle->getName();
     }
 
     protected function getServiceFiles(): Generator
