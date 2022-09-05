@@ -103,6 +103,10 @@ jobs:
             split_repository: 'bus-annotations'
           - local_path:       'Annotations/DependencyInjection'
             split_repository: 'dependency-injection-annotations'
+          - local_path:       'Annotations/Console'
+            split_repository: 'console-annotations'
+          - local_path:       'Annotations/Resource'
+            split_repository: 'resource-annotations'
 
     steps:
       - uses: actions/checkout@v2

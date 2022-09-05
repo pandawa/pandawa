@@ -7,11 +7,11 @@ namespace Pandawa\Bundle\ConsoleBundle\Plugin;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as Config;
+use Pandawa\Annotations\Console\AsConsole;
 use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
 use Pandawa\Bundle\ConsoleBundle\Annotation\ConsoleLoadHandler;
 use Pandawa\Bundle\ConsoleBundle\ConsoleBundle;
 use Pandawa\Component\Foundation\Bundle\Plugin;
-use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -44,7 +44,7 @@ class ImportConsolePlugin extends Plugin
     protected function importAnnotations(): void
     {
         $annotationPlugin = new ImportAnnotationPlugin(
-            annotationClasses: [AsCommand::class],
+            annotationClasses: [AsConsole::class],
             directories: $this->getDirectories(),
             classHandler: ConsoleLoadHandler::class,
             targetClass: Command::class,
