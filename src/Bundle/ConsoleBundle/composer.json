@@ -10,6 +10,7 @@
     ],
     "require": {
         "php": ">=8.1",
+        "pandawa/console-annotations": "^5.0",
         "pandawa/dependency-injection-bundle": "^5.0",
         "pandawa/foundation-bundle": "^5.0",
         "pandawa/annotation-bundle": "^5.0",
