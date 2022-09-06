@@ -70,10 +70,10 @@ class ImportBusAnnotationPlugin extends Plugin
     protected function getMessageDirectories(): array
     {
         if (empty($this->directories)) {
-            return [
-                $this->bundle->getPath('Command'),
-                $this->bundle->getPath('Query'),
-            ];
+            return array_filter([
+                $this->getPath('Command'),
+                $this->getPath('Query'),
+            ]);
         }
 
         return $this->directories;
@@ -82,13 +82,24 @@ class ImportBusAnnotationPlugin extends Plugin
     protected function getHandlerDirectories(): array
     {
         if (empty($this->directories)) {
-            return [
-                $this->bundle->getPath('Handler'),
-                $this->bundle->getPath('CommandHandler'),
-                $this->bundle->getPath('QueryHandler'),
-            ];
+            return array_filter(
+                [
+                    $this->getPath('Handler'),
+                    $this->getPath('CommandHandler'),
+                    $this->getPath('QueryHandler'),
+                ]
+            );
         }
 
         return $this->directories;
+    }
+
+    protected function getPath(string $path): ?string
+    {
+        if (is_dir($targetPath = $this->bundle->getPath($path))) {
+            return $targetPath;
+        }
+
+        return null;
     }
 }

@@ -7,7 +7,6 @@ namespace Pandawa\Bundle\BusBundle;
 use Illuminate\Bus\BatchFactory;
 use Illuminate\Bus\BatchRepository;
 use Illuminate\Bus\DatabaseBatchRepository;
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
@@ -16,7 +15,7 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class BusBundle extends Bundle implements HasPluginInterface, DeferrableProvider
+class BusBundle extends Bundle implements HasPluginInterface
 {
     const MESSAGE_CONFIG_KEY = 'bus.messages';
     const HANDLER_CONFIG_KEY = 'bus.handlers';
@@ -39,13 +38,6 @@ class BusBundle extends Bundle implements HasPluginInterface, DeferrableProvider
         return [
             new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
-        ];
-    }
-
-    public function provides(): array
-    {
-        return [
-            BatchRepository::class,
         ];
     }
 }
