@@ -17,6 +17,10 @@ trait HasUuidTrait
         static::creating(function (Model $model) {
             $key = $model->getUuidKeyName();
 
+            if (!empty($model->getAttribute($key))) {
+                return;
+            }
+
             if ($model->isAsPrimaryKey()) {
                 $model->setIncrementing(false);
             }
