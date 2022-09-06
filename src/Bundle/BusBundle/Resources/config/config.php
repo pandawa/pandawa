@@ -1,5 +1,6 @@
 <?php
 
+use Pandawa\Bundle\BusBundle\Annotation;
 use Pandawa\Component\Bus;
 
 return [
@@ -11,7 +12,7 @@ return [
     | This value is middlewares for message bus.
     |
     */
-    'middlewares' => [
+    'middlewares'   => [
         Bus\Middleware\RunInDatabaseTransactionMiddleware::class,
     ],
 
@@ -23,7 +24,7 @@ return [
     | This message registry class is used to store mapped messages.
     |
     */
-    'registry' => Bus\MessageRegistry::class,
+    'registry'      => Bus\MessageRegistry::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -43,7 +44,20 @@ return [
     | Message bus is used to dispatch any message.
     |
     */
-    'message_bus' => Bus\MessageBus::class,
+    'message_bus'   => Bus\MessageBus::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Annotation Handlers
+    |--------------------------------------------------------------------------
+    |
+    | Handlers that used to load the annotations.
+    |
+    */
+    'annotation'    => [
+        'message_handler'         => Annotation\MessageLoadHandler::class,
+        'message_handler_handler' => Annotation\MessageHandlerLoadHandler::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +67,7 @@ return [
     | Here you may register your messages.
     |
     */
-    'messages' => [],
+    'messages'      => [],
 
     /*
     |--------------------------------------------------------------------------
@@ -63,5 +77,5 @@ return [
     | This value is used to map handler for message.
     |
     */
-    'handlers' => [],
+    'handlers'      => [],
 ];
