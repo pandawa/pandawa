@@ -92,10 +92,16 @@ abstract class Transformer implements TransformerInterface
         return $this->wrapper;
     }
 
-    public function process(Context $context, mixed $data): array
+    public function process(Context $context, mixed $data): mixed
     {
+        $result = $this->processTransform($context, $data);
+
+        if (!is_array($result)) {
+            return $result;
+        }
+
         $transformed = [
-            ...$this->processTransform($context, $data),
+            ...$result,
             ...$this->processIncludes($this->getIncludes($context->includes), $data),
         ];
 
@@ -183,7 +189,7 @@ abstract class Transformer implements TransformerInterface
         return $included;
     }
 
-    protected function processTransform(Context $context, mixed $data): array
+    protected function processTransform(Context $context, mixed $data): mixed
     {
         if (!method_exists($this, 'transform')) {
             throw new RuntimeException(sprintf('Class "%s" should has transform method.', static::class));
@@ -191,7 +197,13 @@ abstract class Transformer implements TransformerInterface
 
         $normalized = [];
 
-        foreach ($this->transform($context, $data) as $key => $value) {
+        $transformed = $this->transform($context, $data);
+
+        if (!is_array($transformed)) {
+            return $transformed;
+        }
+
+        foreach ($transformed as $key => $value) {
             if ($value instanceof MissingValue) {
                 continue;
             }

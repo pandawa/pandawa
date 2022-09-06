@@ -7,7 +7,6 @@ namespace Pandawa\Component\Resource;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Enumerable;
 use InvalidArgumentException;
 use Pandawa\Component\Transformer\CollectionTransformer;
@@ -134,7 +133,7 @@ class Renderer implements RendererInterface
             return true;
         }
 
-        if (is_array($result) && Arr::isList($result)) {
+        if (is_array($result) && isset($result[0]) && is_array($result[0])) {
             return true;
         }
 

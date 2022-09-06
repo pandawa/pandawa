@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Resource\Formatter;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Pandawa\Contracts\Resource\Formatter\FormatterInterface;
 use Pandawa\Contracts\Transformer\Context;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,8 @@ final class YamlFormatter implements FormatterInterface
 
     public function supports(Request $request): bool
     {
-        return $request->accepts(['text/yaml', 'application/x-yaml']);
+        $acceptable = $request->getAcceptableContentTypes();
+
+        return isset($acceptable[0]) && Str::contains(strtolower($acceptable[0]), ['/yaml', '/x-yaml']);
     }
 }
