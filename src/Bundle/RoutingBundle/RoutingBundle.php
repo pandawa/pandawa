@@ -9,6 +9,7 @@ use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Foundation\Console\RouteClearCommand;
 use Illuminate\Foundation\Console\RouteListCommand;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
+use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
 
@@ -17,6 +18,8 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class RoutingBundle extends Bundle implements HasPluginInterface
 {
+    const MIDDLEWARE_CONFIG_KEY = 'pandawa.middlewares';
+
     protected array $commands = [
         'RouteCache' => RouteCacheCommand::class,
         'RouteClear' => RouteClearCommand::class,
@@ -76,6 +79,7 @@ class RoutingBundle extends Bundle implements HasPluginInterface
     public function plugins(): array
     {
         return [
+            new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
         ];
     }

@@ -1,0 +1,5 @@
+routing.registry.group:
+  class: Pandawa\Component\Routing\GroupRegistry
+  alias: Pandawa\Contracts\Routing\GroupRegistryInterface
+  arguments:
+    - '%routing.groups%'

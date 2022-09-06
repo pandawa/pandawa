@@ -8,6 +8,7 @@ use Illuminate\Contracts\Routing\Registrar as Router;
 use Illuminate\Routing\Route;
 use InvalidArgumentException;
 use Pandawa\Component\Routing\Traits\ResolverTrait;
+use Pandawa\Contracts\Routing\GroupRegistryInterface;
 use Pandawa\Contracts\Routing\LoaderInterface;
 use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
 
@@ -18,14 +19,28 @@ final class BasicLoader implements LoaderInterface
 {
     use ResolverTrait;
 
-    public function __construct(protected Router $router, protected RouteConfiguratorInterface $configurator)
-    {
+    public function __construct(
+        protected Router $router,
+        protected RouteConfiguratorInterface $configurator,
+        protected GroupRegistryInterface $groupRegistry,
+    ) {
     }
 
     public function load(mixed $resource): void
     {
         $this->validate($resource);
 
+        if ($group = $resource['group'] ?? null) {
+            $this->router->group($this->groupRegistry->get($group), function () use ($resource) {
+                $this->configure($resource);
+            });
+        }
+
+        $this->configure($resource);
+    }
+
+    protected function configure(array $resource): void
+    {
         $this->configurator->configure(
             $this->createRoute($resource['type'], $resource['uri'], $this->getController($resource)),
             $resource

@@ -1,29 +1,33 @@
+__defines:
+  Routing: Pandawa\Component\Routing
+
 routing.resolver.loader:
-  class: Pandawa\Component\Routing\LoaderResolver
+  class: ${Routing}\LoaderResolver
   alias: Pandawa\Contracts\Routing\LoaderResolverInterface
   shared: false
   arguments:
     - "#routing.loaders"
 
 routing.loader.array:
-  class: Pandawa\Component\Routing\Loader\ArrayLoader
+  class: ${Routing}\Loader\ArrayLoader
   tag:   "routing.loaders"
 
 routing.loader.basic:
-  class: Pandawa\Component\Routing\Loader\BasicLoader
+  class: ${Routing}\Loader\BasicLoader
   tag:   "routing.loaders"
   arguments:
     - '@router'
-    - '@Pandawa\Contracts\Routing\RouteConfiguratorInterface'
+    - '@routing.configurator.chain'
+    - '@routing.registry.group'
 
 routing.loader.file:
-  class: Pandawa\Component\Routing\Loader\FileLoader
+  class: ${Routing}\Loader\FileLoader
   tag:   "routing.loaders"
   arguments:
     - '@Pandawa\Contracts\Config\LoaderInterface'
 
 routing.loader.group:
-  class: Pandawa\Component\Routing\Loader\GroupLoader
+  class: ${Routing}\Loader\GroupLoader
   tag:   "routing.loaders"
   arguments:
     - '@router'
