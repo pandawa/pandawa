@@ -9,9 +9,11 @@ use Pandawa\Component\Foundation\Bundle\Plugin;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-abstract class AnnotationRoutePlugin extends Plugin
+abstract class AnnotationPlugin extends Plugin
 {
     protected ?string $targetClass = null;
+
+    protected ?string $defaultPath = null;
 
     public function __construct(
         protected readonly array $directories = [],
@@ -43,9 +45,19 @@ abstract class AnnotationRoutePlugin extends Plugin
         $annotationPlugin->configure();
     }
 
+    protected function getDirectories(): array
+    {
+        if (empty($this->directories)) {
+            return [$this->bundle->getPath($this->defaultPath ?? '')];
+        }
+
+        return array_map(
+            fn(string $path) => $this->bundle->getPath($path),
+            $this->directories
+        );
+    }
+
     abstract protected function getAnnotationClasses(): array;
 
     abstract protected function getHandler(): string;
-
-    abstract protected function getDirectories(): array;
 }

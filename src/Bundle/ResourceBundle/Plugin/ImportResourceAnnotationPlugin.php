@@ -6,13 +6,13 @@ namespace Pandawa\Bundle\ResourceBundle\Plugin;
 
 use Pandawa\Annotations\Resource\ApiMessage;
 use Pandawa\Annotations\Resource\ApiResource;
-use Pandawa\Bundle\AnnotationBundle\Plugin\AnnotationRoutePlugin;
+use Pandawa\Bundle\AnnotationBundle\Plugin\AnnotationPlugin;
 use Pandawa\Bundle\ResourceBundle\Annotation\ApiResourceLoadHandler;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class ImportResourceAnnotationPlugin extends AnnotationRoutePlugin
+class ImportResourceAnnotationPlugin extends AnnotationPlugin
 {
     protected function getAnnotationClasses(): array
     {
