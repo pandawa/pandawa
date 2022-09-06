@@ -31,6 +31,11 @@ trait HasUuidTrait
         });
     }
 
+    public function getKeyType(): string
+    {
+        return 'string';
+    }
+
     public function getUuidKeyName(): string
     {
         if (property_exists($this, 'uuidKeyName')) {
