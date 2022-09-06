@@ -34,6 +34,8 @@ final class BasicLoader implements LoaderInterface
             $this->router->group($this->groupRegistry->get($group), function () use ($resource) {
                 $this->configure($resource);
             });
+
+            return;
         }
 
         $this->configure($resource);
