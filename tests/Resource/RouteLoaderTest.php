@@ -21,11 +21,13 @@ use Pandawa\Component\Routing\Configurator\RouteMiddlewareConfigurator;
 use Pandawa\Component\Routing\Configurator\RouteNameConfigurator;
 use Pandawa\Component\Routing\Configurator\RouteOptionsConfigurator;
 use Pandawa\Component\Routing\Configurator\RouteParamsConfigurator;
+use Pandawa\Component\Routing\GroupRegistry;
 use Pandawa\Component\Routing\Loader\ArrayLoader;
 use Pandawa\Component\Routing\Loader\FileLoader;
 use Pandawa\Component\Routing\Loader\GroupLoader;
 use Pandawa\Component\Routing\LoaderResolver;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
+use Pandawa\Contracts\Routing\GroupRegistryInterface;
 use Pandawa\Contracts\Routing\LoaderResolverInterface;
 use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
 use PHPUnit\Framework\TestCase;
@@ -195,6 +197,7 @@ class RouteLoaderTest extends TestCase
         $app = new Application();
         $app->bind(Registrar::class, Router::class);
         $app->bind(RegistryInterface::class, MessageRegistry::class);
+        $app->bind(GroupRegistryInterface::class, GroupRegistry::class);
 
         $this->registerConfigurator($app);
         $this->registerLoader($app);
