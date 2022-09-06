@@ -49,6 +49,8 @@ jobs:
             split_repository: 'resource-bundle'
           - local_path:       'Bundle/ConsoleBundle'
             split_repository: 'console-bundle'
+          - local_path:       'Bundle/AuthBundle'
+            split_repository: 'auth-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -109,6 +111,8 @@ jobs:
             split_repository: 'resource-annotations'
           - local_path:       'Annotations/Route'
             split_repository: 'route-annotations'
+          - local_path:       'Annotations/Auth'
+            split_repository: 'auth-annotations'
 
     steps:
       - uses: actions/checkout@v2
