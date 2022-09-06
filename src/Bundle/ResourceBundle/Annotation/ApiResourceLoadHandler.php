@@ -27,25 +27,29 @@ final class ApiResourceLoadHandler extends RouteLoadHandler
     protected function makeRouteMessage(ApiMessage $resource, ReflectionClass $class): array
     {
         return [
-            'name'    => $resource->routeName ?? $this->getRouteName($class),
-            'type'    => 'message',
-            'message' => $class->getName(),
-            'uri'     => $resource->uri,
-            'methods' => $resource->methods,
-            'options' => $resource->options,
+            'name'       => $resource->routeName ?? $this->getRouteName($class),
+            'type'       => 'message',
+            'message'    => $class->getName(),
+            'group'      => $resource->routeGroup,
+            'middleware' => $resource->middleware,
+            'uri'        => $resource->uri,
+            'methods'    => $resource->methods,
+            'options'    => $resource->options,
         ];
     }
 
     protected function makeRouteResource(ApiResource $resource, ReflectionClass $class): array
     {
         return [
-            'name'     => $resource->routeName ?? $this->getRouteName($class),
-            'type'     => 'resource',
-            'resource' => $class->getName(),
-            'uri'      => $resource->uri,
-            'only'     => $resource->only,
-            'except'   => $resource->except,
-            'options'  => $resource->options,
+            'name'       => $resource->routeName ?? $this->getRouteName($class),
+            'type'       => 'resource',
+            'resource'   => $class->getName(),
+            'group'      => $resource->routeGroup,
+            'middleware' => $resource->middleware,
+            'uri'        => $resource->uri,
+            'only'       => $resource->only,
+            'except'     => $resource->except,
+            'options'    => $resource->options,
         ];
     }
 

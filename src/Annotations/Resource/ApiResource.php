@@ -99,6 +99,8 @@ final class ApiResource
     public function __construct(
         public readonly string $uri,
         public readonly ?string $routeName = null,
+        public readonly ?string $routeGroup = null,
+        public readonly array $middleware = [],
         public readonly array $only = [],
         public readonly array $except = [],
         public readonly array $options = [],

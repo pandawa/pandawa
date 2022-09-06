@@ -8,6 +8,7 @@ use Illuminate\Contracts\Routing\Registrar as Router;
 use Illuminate\Routing\Route;
 use Pandawa\Component\Resource\Routing\Loader\Configuration\MessageConfiguration;
 use Pandawa\Component\Routing\Traits\ResolverTrait;
+use Pandawa\Contracts\Routing\GroupRegistryInterface;
 use Pandawa\Contracts\Routing\LoaderInterface;
 use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -25,6 +26,7 @@ final class MessageLoader implements LoaderInterface
     public function __construct(
         protected readonly Router $router,
         protected readonly RouteConfiguratorInterface $configurator,
+        protected readonly GroupRegistryInterface $groupRegistry,
         protected readonly string $controller,
     ) {
         $this->processor = new Processor();
@@ -34,6 +36,19 @@ final class MessageLoader implements LoaderInterface
     {
         $resource = $this->validate($resource);
 
+        if ($group = $resource['group'] ?? null) {
+            $this->router->group($this->groupRegistry->get($group), function () use ($resource) {
+                $this->configure($resource);
+            });
+
+            return;
+        }
+
+        $this->configure($resource);
+    }
+
+    protected function configure(array $resource): void
+    {
         $this->configurator->configure(
             $this->createRoute($resource['uri'], (array) $resource['methods']),
             $resource

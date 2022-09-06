@@ -36,6 +36,8 @@ final class ApiMessage
         public readonly string $uri,
         public readonly array|string $methods,
         public readonly ?string $routeName = null,
+        public readonly ?string $routeGroup = null,
+        public readonly array $middleware = [],
         public readonly array $options = [],
     ) {
     }

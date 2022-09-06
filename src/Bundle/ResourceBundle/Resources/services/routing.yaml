@@ -8,6 +8,7 @@ resource.loader.message:
   arguments:
     - '@router'
     - '@routing.configurator.chain'
+    - '@routing.registry.group'
     - '%resource.controller.message%'
 
 resource.loader.resource:
@@ -16,6 +17,7 @@ resource.loader.resource:
   arguments:
     - '@router'
     - '@routing.configurator.chain'
+    - '@routing.registry.group'
     - '%resource.controller.resource%'
 
 resource.configurator.route_message:

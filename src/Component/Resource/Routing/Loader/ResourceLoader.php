@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pandawa\Component\Resource\Routing\Loader\Configuration\ResourceConfiguration;
 use Pandawa\Component\Routing\Traits\ResolverTrait;
+use Pandawa\Contracts\Routing\GroupRegistryInterface;
 use Pandawa\Contracts\Routing\LoaderInterface;
 use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
 use ReflectionClass;
@@ -38,6 +39,7 @@ final class ResourceLoader implements LoaderInterface
     public function __construct(
         protected readonly Router $router,
         protected readonly RouteConfiguratorInterface $configurator,
+        protected readonly GroupRegistryInterface $groupRegistry,
         protected readonly string $controller,
     ) {
         $this->processor = new Processor();
@@ -47,11 +49,30 @@ final class ResourceLoader implements LoaderInterface
     {
         $resource = $this->validate($resource);
 
+        if ($group = $resource['group'] ?? null) {
+            $this->router->group($this->groupRegistry->get($group), function () use ($resource) {
+                $this->configure($resource);
+            });
+
+            return;
+        }
+
+        $this->configure($resource);
+    }
+
+    protected function configure(array $resource): void
+    {
         foreach ($this->getResourceTypes($resource) as $type) {
             $config = [
-                ...Arr::except($resource, ['name', 'options']),
+                ...Arr::except($resource, ['name', 'options', 'middleware']),
                 'name'    => $resource['name'].'.'.$type,
-                'options' => $resource['options'][$type] ?? [],
+                'options' => [
+                    ...($resource['options'][$type] ?? []),
+                    'middleware' => [
+                        ...($resource['middleware'] ?? []),
+                        ...($resource['options'][$type]['middleware'] ?? [])
+                    ]
+                ],
             ];
 
             $this->configurator->configure(
