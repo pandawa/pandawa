@@ -14,6 +14,8 @@ use Pandawa\Component\Foundation\Application;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Component\Validation\Validator;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
+use Pandawa\Contracts\Validation\FactoryInterface;
+use Pandawa\Contracts\Validation\RuleRegistryInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -27,6 +29,8 @@ class ValidationBundle extends Bundle implements HasPluginInterface, DeferrableP
         'validation.parser.resolver',
         'validation.rule_registry',
         'validation.factory',
+        RuleRegistryInterface::class,
+        FactoryInterface::class,
     ];
 
     public function configure(): void
