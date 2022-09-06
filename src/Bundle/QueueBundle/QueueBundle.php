@@ -25,6 +25,10 @@ use RuntimeException;
  */
 class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
+    protected array $deferred = [
+        'queue',
+    ];
+
     public function configure(): void
     {
         $this->app->singleton('queue', function ($app) {
@@ -42,11 +46,6 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
                 QueueServiceProvider::class,
             ]),
         ];
-    }
-
-    public function provides(): array
-    {
-        return ['queue'];
     }
 
     protected function registerConnectors(QueueManager $manager): void

@@ -33,6 +33,20 @@ abstract class Bundle implements BundleContract
     protected array $bootedCallbacks = [];
 
     /**
+     * Register deferred
+     *
+     * @var array
+     */
+    protected array $deferred = [];
+
+    /**
+     * Deferred from plugins.
+     *
+     * @var array
+     */
+    private array $pluginDeferred = [];
+
+    /**
      * Reflection cache.
      *
      * @var ReflectionClass|null
@@ -52,6 +66,13 @@ abstract class Bundle implements BundleContract
                     $plugin,
                     fn(PluginInterface $plugin) => $plugin->setBundle($this)
                 );
+
+                if ($plugin instanceof DeferrableProvider) {
+                    $this->pluginDeferred = [
+                        ...$this->pluginDeferred,
+                        ...array_flip($plugin->provides()),
+                    ];
+                }
             }
         }
     }
@@ -103,6 +124,14 @@ abstract class Bundle implements BundleContract
         $key = sprintf('%s.%s', $this->getName(), $key);
 
         $this->app->get('config')->set($key, [...$this->getConfig($key, []), ...$config]);
+    }
+
+    public function provides(): array
+    {
+        return [
+            ...$this->deferred,
+            ...array_keys($this->pluginDeferred),
+        ];
     }
 
     public function callAfterResolving(string $name, callable $callback): void
@@ -174,11 +203,6 @@ abstract class Bundle implements BundleContract
     public function isDeferred(): bool
     {
         return $this instanceof DeferrableProvider;
-    }
-
-    public function provides(): array
-    {
-        return [];
     }
 
     public function configurePlugin(): void

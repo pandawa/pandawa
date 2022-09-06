@@ -17,7 +17,6 @@ final class Injectable
         public readonly ?string $name = null,
         public readonly array|string $alias = [],
         public readonly ?string $tag = null,
-        public readonly bool $deffer = false,
     ) {
     }
 }

@@ -18,7 +18,19 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class SerializerBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
-    protected array $deferred = [];
+    protected array $deferred = [
+        SerializerInterface::class,
+        Serializer::class,
+        'serializer.default',
+        'serializer.factory',
+        'serializer.encoder.json',
+        'serializer.encoder.xml',
+        'serializer.encoder.yaml',
+        'serializer.encoder.csv',
+        'serializer.name_converter.camel_to_snake',
+        'serializer.normalizer.object',
+        'serializer.normalizer.date_time',
+    ];
 
     public function configure(): void
     {
@@ -51,15 +63,6 @@ class SerializerBundle extends Bundle implements HasPluginInterface, DeferrableP
         return [
             new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
-        ];
-    }
-
-    public function provides(): array
-    {
-        return [
-            ...$this->deferred,
-            SerializerInterface::class,
-            Serializer::class,
         ];
     }
 }

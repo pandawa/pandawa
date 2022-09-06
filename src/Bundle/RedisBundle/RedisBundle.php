@@ -17,6 +17,8 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class RedisBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
+    protected array $deferred = ['redis', 'redis.connection'];
+
     public function register(): void
     {
         $this->app->singleton('redis', function ($app) {
@@ -37,10 +39,5 @@ class RedisBundle extends Bundle implements HasPluginInterface, DeferrableProvid
             new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
         ];
-    }
-
-    public function provides(): array
-    {
-        return ['redis'];
     }
 }

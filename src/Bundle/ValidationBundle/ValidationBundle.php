@@ -22,6 +22,13 @@ class ValidationBundle extends Bundle implements HasPluginInterface, DeferrableP
 {
     const RULE_CONFIG_KEY = 'validation.rules';
 
+    protected array $deferred = [
+        'validator',
+        'validation.parser.resolver',
+        'validation.rule_registry',
+        'validation.factory',
+    ];
+
     public function configure(): void
     {
         $this->app->singleton('validator', function (Application $app) {
