@@ -11,7 +11,7 @@ use Spiral\Attributes\NamedArgumentConstructor;
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 #[Attribute(Attribute::TARGET_CLASS), NamedArgumentConstructor]
-final class Message
+final class AsMessage
 {
     public function __construct(
         public readonly ?string $name = null,

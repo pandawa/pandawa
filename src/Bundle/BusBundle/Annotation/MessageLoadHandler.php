@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\BusBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
-use Pandawa\Annotations\Bus\Message;
+use Pandawa\Annotations\Bus\AsMessage;
 use Pandawa\Bundle\BusBundle\BusBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
@@ -31,7 +31,7 @@ final class MessageLoadHandler implements AnnotationLoadHandlerInterface
     }
 
     /**
-     * @param  array{class: ReflectionClass, annotation: Message}  $options
+     * @param  array{class: ReflectionClass, annotation: AsMessage}  $options
      *
      * @return void
      */

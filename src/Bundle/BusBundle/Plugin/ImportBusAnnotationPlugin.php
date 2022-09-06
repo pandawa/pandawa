@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\BusBundle\Plugin;
 
 use Pandawa\Annotations\Bus\AsHandler;
-use Pandawa\Annotations\Bus\Message;
+use Pandawa\Annotations\Bus\AsMessage;
 use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
 use Pandawa\Component\Foundation\Bundle\Plugin;
 use RuntimeException;
@@ -44,7 +44,7 @@ class ImportBusAnnotationPlugin extends Plugin
     protected function importMessageAnnotations(): void
     {
         $annotationPlugin = new ImportAnnotationPlugin(
-            annotationClasses: [Message::class],
+            annotationClasses: [AsMessage::class],
             directories: $this->getMessageDirectories(),
             classHandler: $this->bundle->getService('config')->get('bus.annotation.message_handler'),
             exclude: $this->messageExclude,
