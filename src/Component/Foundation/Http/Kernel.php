@@ -30,12 +30,12 @@ class Kernel extends HttpKernel
 
     public function __construct(ApplicationInterface $app, Router $router)
     {
-        parent::__construct($app, $router);
-
         $this->bootstrappers = $app->getFoundationConfig('http.kernel.bootstrappers', $this->bootstrappers);
         $this->middleware = $app->getFoundationConfig('http.middleware.all', $this->middleware);
         $this->middlewareGroups = $app->getFoundationConfig('http.middleware.groups', $this->middlewareGroups);
-        $this->routeMiddleware = $app->getFoundationConfig('http.middleware.route', $this->routeMiddleware);
+        $this->routeMiddleware = $app->getFoundationConfig('http.middleware.routes', $this->routeMiddleware);
         $this->middlewarePriority = $app->getFoundationConfig('http.middleware.priorities', $this->middlewarePriority);
+
+        parent::__construct($app, $router);
     }
 }
