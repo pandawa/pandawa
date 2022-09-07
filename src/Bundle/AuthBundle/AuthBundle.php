@@ -7,6 +7,7 @@ namespace Pandawa\Bundle\AuthBundle;
 use Illuminate\Auth\AuthServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
+use Pandawa\Bundle\RoutingBundle\Plugin\ImportMiddlewareAnnotationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
 
@@ -32,6 +33,7 @@ class AuthBundle extends Bundle implements HasPluginInterface
             new RegisterBundlesPlugin([
                 AuthServiceProvider::class,
             ]),
+            new ImportMiddlewareAnnotationPlugin(),
         ];
     }
 
