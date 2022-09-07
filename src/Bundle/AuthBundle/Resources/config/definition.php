@@ -21,7 +21,7 @@ return static function (TreeBuilder $treeBuilder) {
                 ->useAttributeAsKey('name')
                 ->variablePrototype()->end()
             ->end()
-            ->integerNode('password_timeout')->isRequired()->cannotBeEmpty()->end()
+            ->integerNode('password_timeout')->isRequired()->end()
             ->arrayNode('policies')
                 ->useAttributeAsKey('name')
                 ->scalarPrototype()->end()
