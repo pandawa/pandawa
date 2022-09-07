@@ -29,13 +29,15 @@ class ImportMiddlewareAnnotationPlugin extends Plugin
         if ($this->bundle->getApp()->configurationIsCached()) {
             $this->loadAliasFromArray(
                 $this->config()->get(
-                    $this->getAliasConfigKey()
+                    $this->getAliasConfigKey(),
+                    []
                 )
             );
 
             $this->loadGroupFromArray(
                 $this->config()->get(
-                    $this->getGroupsConfigKey()
+                    $this->getGroupsConfigKey(),
+                    []
                 )
             );
 
@@ -67,6 +69,7 @@ class ImportMiddlewareAnnotationPlugin extends Plugin
             annotationClasses: [AsMiddleware::class],
             directories: [$this->bundle->getPath($this->directory)],
             classHandler: MiddlewareLoadHandler::class,
+            dontRunIfCached: false,
             exclude: $this->exclude,
             scopes: $this->scopes,
         );

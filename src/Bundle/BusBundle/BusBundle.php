@@ -7,9 +7,12 @@ namespace Pandawa\Bundle\BusBundle;
 use Illuminate\Bus\BatchFactory;
 use Illuminate\Bus\BatchRepository;
 use Illuminate\Bus\DatabaseBatchRepository;
+use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Bus\BusInterface;
+use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
@@ -19,6 +22,19 @@ class BusBundle extends Bundle implements HasPluginInterface
 {
     const MESSAGE_CONFIG_KEY = 'bus.messages';
     const HANDLER_CONFIG_KEY = 'bus.handlers';
+
+    public function boot(): void
+    {
+        $this->app->booted(function () {
+            $this->registry()->load(
+                $this->config()->get(static::MESSAGE_CONFIG_KEY, [])
+            );
+
+            $this->bus()->map(
+                $this->config()->get(static::HANDLER_CONFIG_KEY, [])
+            );
+        });
+    }
 
     public function register(): void
     {
@@ -39,5 +55,20 @@ class BusBundle extends Bundle implements HasPluginInterface
             new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
         ];
+    }
+
+    protected function config(): Config
+    {
+        return $this->app['config'];
+    }
+
+    protected function registry(): RegistryInterface
+    {
+        return $this->app[RegistryInterface::class];
+    }
+
+    protected function bus(): BusInterface
+    {
+        return $this->app[BusInterface::class];
     }
 }

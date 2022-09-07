@@ -38,6 +38,7 @@ abstract class AnnotationPlugin extends Plugin
             directories: $this->getDirectories(),
             classHandler: $this->getHandler(),
             targetClass: $this->targetClass,
+            dontRunIfCached: false,
             exclude: $this->exclude,
             scopes: $this->scopes,
         );
