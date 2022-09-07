@@ -16,4 +16,8 @@ interface RendererInterface
     public function setDefaultWrapper(?string $defaultWrapper): void;
 
     public function render(Context $context, mixed $result, TransformerInterface $resourceTransformer): Response;
+
+    public function format(Context $context, array $data): Response;
+
+    public function toArray(Context $context, mixed $data): array;
 }

@@ -51,6 +51,14 @@ class Renderer implements RendererInterface
             $transformer->setWrapper($this->defaultWrapper);
         }
 
+        return $this->format($context, $this->toArray(
+            $context,
+            $transformer->wrap($transformer->process($context, $result))
+        ));
+    }
+
+    public function format(Context $context, array $data): Response
+    {
         $formatter = $this->getFormatter($context);
 
         return $formatter->toResponse(
@@ -58,9 +66,17 @@ class Renderer implements RendererInterface
             $this->serialize(
                 $formatter->getFormat(),
                 $context,
-                $this->toArray($context, $result, $transformer)
+                $data
             )
         );
+    }
+
+    public function toArray(Context $context, mixed $data): array
+    {
+        return $this->pipeline
+            ->send(new Rendering($data, $context))
+            ->through($this->middlewares)
+            ->then(fn(Rendering $rendering) => $rendering->data);
     }
 
     protected function serialize(string $format, Context $context, array $data): string
@@ -70,19 +86,6 @@ class Renderer implements RendererInterface
         }
 
         return $this->serializer->serialize($data, $format, array_get($context->options, 'serialize.context', []));
-    }
-
-    protected function toArray(Context $context, mixed $result, TransformerInterface $transformer): array
-    {
-        return $this->pipeline
-            ->send(
-                new Rendering(
-                    $transformer->wrap($transformer->process($context, $result)),
-                    $context
-                )
-            )
-            ->through($this->middlewares)
-            ->then(fn(Rendering $rendering) => $rendering->data);
     }
 
     protected function getFormatter(Context $context): FormatterInterface
