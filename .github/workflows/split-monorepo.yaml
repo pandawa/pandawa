@@ -109,7 +109,7 @@ jobs:
             split_repository: 'console-annotations'
           - local_path:       'Annotations/Resource'
             split_repository: 'resource-annotations'
-          - local_path:       'Annotations/Route'
+          - local_path:       'Annotations/Routing'
             split_repository: 'routing-annotations'
           - local_path:       'Annotations/Auth'
             split_repository: 'auth-annotations'
