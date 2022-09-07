@@ -1,0 +1,35 @@
+{
+    "name": "pandawa/octane-bundle",
+    "description": "The pandawa octane bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/foundation-bundle": "^5.0",
+        "laravel/octane": "^1.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\OctaneBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\OctaneBundle\\OctaneBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

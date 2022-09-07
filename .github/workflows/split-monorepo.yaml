@@ -51,6 +51,8 @@ jobs:
             split_repository: 'console-bundle'
           - local_path:       'Bundle/AuthBundle'
             split_repository: 'auth-bundle'
+          - local_path:       'Bundle/OctaneBundle'
+            split_repository: 'octane-bundle'
 
           # Components
           - local_path:       'Component/Config'
