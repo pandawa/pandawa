@@ -21,7 +21,7 @@ class AuthBundle extends Bundle implements HasPluginInterface
     public function register(): void
     {
         $this->app->booted(function () {
-            foreach ($this->app['config']->get(static::POLICY_CONFIG_KEY) as $model => $policy) {
+            foreach ($this->app['config']->get(static::POLICY_CONFIG_KEY, []) as $model => $policy) {
                 $this->gate()->policy($model, $policy);
             }
         });
