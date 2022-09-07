@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\AuthBundle;
 
+use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\AuthServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Contracts\Auth\Factory;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Bundle\RoutingBundle\Plugin\ImportMiddlewareAnnotationPlugin;
@@ -26,6 +28,12 @@ class AuthBundle extends Bundle implements HasPluginInterface
                 $this->gate()->policy($model, $policy);
             }
         });
+    }
+
+    public function configure(): void
+    {
+        $this->app->alias('auth', Factory::class);
+        $this->app->alias('auth', AuthManager::class);
     }
 
     public function plugins(): array
