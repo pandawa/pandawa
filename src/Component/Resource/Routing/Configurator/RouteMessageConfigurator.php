@@ -8,13 +8,14 @@ use Illuminate\Routing\Route;
 use InvalidArgumentException;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
+use RuntimeException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class RouteMessageConfigurator implements RouteConfiguratorInterface
 {
-    public function __construct(protected readonly RegistryInterface $registry)
+    public function __construct(protected readonly ?RegistryInterface $registry = null)
     {
     }
 
@@ -34,6 +35,10 @@ final class RouteMessageConfigurator implements RouteConfiguratorInterface
 
     protected function validateMessage(string $message): void
     {
+        if (null === $this->registry) {
+            throw new RuntimeException('Please install pandawa/bus-bundle to enable api message.');
+        }
+
         if (!$this->registry->hasName($message) && !$this->registry->has($message) && !class_exists($message)) {
             throw new InvalidArgumentException(
                 sprintf('Message "%s" is not supported.', $message)
