@@ -19,7 +19,7 @@ class AddClientIpMiddleware implements RendererMiddlewareInterface
             $rendering = $rendering->merge([
                 'meta' => [
                     ...($rendering->data['meta'] ?? []),
-                    'client_id' => $ip,
+                    'client_ip' => $ip,
                 ],
             ]);
         }
