@@ -29,33 +29,30 @@ class AnnotationLoader implements AnnotationLoaderInterface
      */
     public function load(string $annotationClass, ?string $targetClass = null): array
     {
-        return array_filter(
-            array_map(
-                function (ReflectionClass $class) use ($annotationClass) {
-                    if (null !== $annotation = $this->makeAnnotation($class, $annotationClass)) {
-                        return [
-                            'class'      => $class,
-                            'annotation' => $annotation,
-                        ];
-                    }
+        $annotations = [];
 
-                    return null;
-                },
-                $this->classLocator->getClasses($targetClass),
-            )
-        );
+        foreach ($this->classLocator->getClasses($targetClass) as $class) {
+            foreach ($this->loadAnnotations($class, $annotationClass) as $annotation) {
+                $annotations[] = [
+                    'class'      => $class,
+                    'annotation' => $annotation,
+                ];
+            }
+        }
+
+        return $annotations;
     }
 
     /**
      * @param  ReflectionClass  $class
      * @param  class-string<TAnnotation>  $annotationClass
      *
-     * @return TAnnotation|null
+     * @return array<TAnnotation>
      */
-    protected function makeAnnotation(ReflectionClass $class, string $annotationClass): ?object
+    protected function loadAnnotations(ReflectionClass $class, string $annotationClass): iterable
     {
         try {
-            return $this->reader->firstClassMetadata($class, $annotationClass);
+            return $this->reader->getClassMetadata($class, $annotationClass);
         } catch (\Exception $e) {
             throw new AnnotationException($e->getMessage(), $e->getCode(), $e);
         }
