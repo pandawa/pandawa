@@ -131,11 +131,21 @@ final class ResourceLoader implements LoaderInterface
     protected function getResourceTypes(array $resource): array
     {
         if ($only = $resource['only'] ?? null) {
-            return Arr::only(self::AVAILABLE_TYPES, $only);
+            return array_keys(
+                Arr::only(
+                    array_flip(self::AVAILABLE_TYPES),
+                    $only
+                )
+            );
         }
 
         if ($except = $resource['except'] ?? null) {
-            return Arr::except(self::AVAILABLE_TYPES, $except);
+            return array_keys(
+                Arr::except(
+                    array_flip(self::AVAILABLE_TYPES),
+                    $except
+                )
+            );
         }
 
         return self::AVAILABLE_TYPES;
