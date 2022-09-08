@@ -10,7 +10,7 @@ return [
     |
     | 'group_name' => [
     |     'namespace' => 'App\\',
-    |     'middlewares' => ['Middleware'],
+    |     'middleware' => ['Middleware'],
     |     'prefix' => '/api/{version}',
     |     'where' => ['version' => 'v2']
     |  ]
