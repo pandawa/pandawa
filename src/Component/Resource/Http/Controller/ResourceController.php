@@ -49,10 +49,13 @@ class ResourceController
     {
         return $this->view($request, function (HandlerInterface $handler) use ($request) {
             $pagination = $this->getRouteOption('paginate', $request, false);
+            $params = [];
 
-            return $handler->find([
-                'paginate' => is_int($pagination) ? $pagination : static::$defaultPagination,
-            ]);
+            if ($pagination) {
+                $params['paginate'] = is_int($pagination) ? $pagination : static::$defaultPagination;
+            }
+
+            return $handler->find($params);
         });
     }
 
@@ -166,7 +169,7 @@ class ResourceController
         return $fallback($handler);
     }
 
-    protected function getRepository(Request $request): array
+    protected function getRepository(Request $request): ?array
     {
         return $this->getRouteOption('repository', $request);
     }
