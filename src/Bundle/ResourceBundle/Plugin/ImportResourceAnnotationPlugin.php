@@ -32,13 +32,4 @@ class ImportResourceAnnotationPlugin extends AnnotationPlugin
     {
         return ApiResourceLoadHandler::class;
     }
-
-    protected function getDirectories(): array
-    {
-        if (empty($this->directories)) {
-            return [$this->bundle->getPath()];
-        }
-
-        return $this->directories;
-    }
 }
