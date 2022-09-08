@@ -11,3 +11,4 @@ resource.model_handler.factory_resolver:
 
 resource.model_handler.eloquent.handler_factory:
   class: ${ModelHandler}\Eloquent\EloquentHandlerFactory
+  tag: 'resource.model_handler_factory'
