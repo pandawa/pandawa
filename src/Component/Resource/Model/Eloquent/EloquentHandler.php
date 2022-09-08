@@ -44,7 +44,7 @@ class EloquentHandler implements HandlerInterface
 
     public function getModelKey(): string
     {
-        return $this->model::resourceName;
+        return $this->model::resourceName();
     }
 
     public function store(array $data): Model
