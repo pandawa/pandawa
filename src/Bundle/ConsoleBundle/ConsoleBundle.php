@@ -18,7 +18,7 @@ class ConsoleBundle extends Bundle
     {
         $this->app->booted(function () {
             $this->loadConsoles(
-                $this->getConfig()->get(
+                $this->app['config']->get(
                     self::CONSOLE_CONFIG_KEY,
                     []
                 )
