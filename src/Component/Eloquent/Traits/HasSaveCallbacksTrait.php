@@ -47,12 +47,14 @@ trait HasSaveCallbacksTrait
 
     protected function fireCallbacks(string $type): void
     {
-        $callbacks = $this->saveCallbacks[$type];
+        do {
+            $callbacks = $this->saveCallbacks[$type];
 
-        $this->saveCallbacks[$type] = [];
+            $this->saveCallbacks[$type] = [];
 
-        foreach ($callbacks as $callback) {
-            $callback($this);
-        }
+            foreach ($callbacks as $callback) {
+                $callback($this);
+            }
+        } while(count($this->saveCallbacks[$type]));
     }
 }
