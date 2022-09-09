@@ -23,6 +23,9 @@ class BusBundle extends Bundle implements HasPluginInterface
     const MESSAGE_CONFIG_KEY = 'bus.messages';
     const HANDLER_CONFIG_KEY = 'bus.handlers';
 
+    const PANDAWA_MESSAGE_CONFIG_KEY = 'pandawa.messages';
+    const PANDAWA_HANDLER_CONFIG_KEY = 'pandawa.handlers';
+
     public function boot(): void
     {
         $this->app->booted(function () {

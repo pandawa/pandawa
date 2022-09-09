@@ -25,7 +25,7 @@ class ImportAnnotationPlugin extends Plugin
     ) {
     }
 
-    public function boot(): void
+    public function configure(): void
     {
         if ($this->dontRunIfCached && $this->bundle->getApp()->configurationIsCached()) {
             return;

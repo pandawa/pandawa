@@ -4,64 +4,43 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\EloquentBundle\Annotation;
 
-use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Annotations\Eloquent\AsRepository;
+use Pandawa\Bundle\AnnotationBundle\Handler\ServiceLoadHandler;
 use Pandawa\Bundle\EloquentBundle\EloquentBundle;
-use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
-use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use Pandawa\Contracts\Eloquent\Factory\RepositoryFactoryInterface;
-use Pandawa\Contracts\Foundation\BundleInterface;
 use ReflectionClass;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class RepositoryLoadHandler implements AnnotationLoadHandlerInterface
+final class RepositoryLoadHandler extends ServiceLoadHandler
 {
-    protected BundleInterface $bundle;
-
-    public function __construct(
-        protected readonly ServiceRegistryInterface $serviceRegistry,
-        protected readonly Config $config,
-    ) {
-    }
-
-    public function setBundle(BundleInterface $bundle): void
-    {
-        $this->bundle = $bundle;
-    }
-
     /**
-     * @param  array{class: ReflectionClass, annotation: AsRepository}  $options
+     * @param  AsRepository  $annotation
+     * @param  ReflectionClass  $class
+     *
+     * @return array
      */
-    public function handle(array $options): void
+    protected function makeServiceConfig(mixed $annotation, ReflectionClass $class): array
     {
-        $annotation = $options['annotation'];
-        $class = $options['class'];
-
-        $this->serviceRegistry->register($serviceClass = $class->getName(), $repo = [
-            'alias'     => [$annotation->alias, sprintf('Eloquent.%s', $annotation->model)],
+        return [
+            'alias'     => [
+                ...((array) $annotation->alias),
+                sprintf('Eloquent.%s', $annotation->model)
+            ],
             'factory'   => [
                 '@' . RepositoryFactoryInterface::class,
                 'create',
             ],
             'arguments' => [
                 $annotation->model,
-                $serviceClass,
+                $class->getName(),
             ],
-        ]);
-
-        $this->mergeConfig([$serviceClass => $repo]);
+        ];
     }
 
-    protected function mergeConfig(array $config): void
+    protected function getConfigCacheKey(): string
     {
-        $this->config->set(
-            EloquentBundle::REPOSITORY_CONFIG_KEY,
-            [
-                ...$this->config->get(EloquentBundle::REPOSITORY_CONFIG_KEY, []),
-                ...$config
-            ]
-        );
+        return EloquentBundle::REPOSITORY_CONFIG_KEY . '.' . $this->bundle->getName();
     }
 }

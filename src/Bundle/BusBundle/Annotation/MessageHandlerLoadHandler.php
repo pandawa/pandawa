@@ -8,7 +8,6 @@ use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Annotations\Bus\AsHandler;
 use Pandawa\Bundle\BusBundle\BusBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
-use Pandawa\Contracts\Bus\BusInterface;
 use Pandawa\Contracts\Foundation\BundleInterface;
 use ReflectionClass;
 
@@ -19,10 +18,8 @@ final class MessageHandlerLoadHandler implements AnnotationLoadHandlerInterface
 {
     private BundleInterface $bundle;
 
-    public function __construct(
-        private readonly BusInterface $bus,
-        private readonly Config $config,
-    ) {
+    public function __construct(private readonly Config $config)
+    {
     }
 
     public function setBundle(BundleInterface $bundle): void
@@ -40,11 +37,14 @@ final class MessageHandlerLoadHandler implements AnnotationLoadHandlerInterface
         $annotation = $options['annotation'];
         $class = $options['class'];
 
-        $this->bus->map($map = [ $annotation->message => $class->getName() ]);
-
-        $this->config->set(BusBundle::HANDLER_CONFIG_KEY, [
-            ...$this->config->get(BusBundle::HANDLER_CONFIG_KEY, []),
-            ...$map
+        $this->config->set($this->getConfigKey(), [
+            ...$this->config->get($this->getConfigKey(), []),
+            $annotation->message => $class->getName(),
         ]);
+    }
+
+    protected function getConfigKey(): string
+    {
+        return BusBundle::PANDAWA_HANDLER_CONFIG_KEY . '.' . $this->bundle->getName() . '.annotations';
     }
 }

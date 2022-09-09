@@ -34,9 +34,14 @@ final class ConsoleLoadHandler implements AnnotationLoadHandlerInterface
     {
         $className = $options['class']->getName();
 
-        $this->config->set(ConsoleBundle::CONSOLE_CONFIG_KEY, [
-            ...$this->config->get(ConsoleBundle::CONSOLE_CONFIG_KEY, []),
+        $this->config->set($this->getConfigKey(), [
+            ...$this->config->get($this->getConfigKey(), []),
             md5($className) => $className
         ]);
+    }
+
+    protected function getConfigKey(): string
+    {
+        return ConsoleBundle::CONSOLE_CONFIG_KEY . '.' . $this->bundle->getName();
     }
 }

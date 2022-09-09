@@ -6,7 +6,6 @@ namespace Pandawa\Bundle\AuthBundle;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\AuthServiceProvider;
-use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Auth\Factory;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
@@ -20,15 +19,6 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
 class AuthBundle extends Bundle implements HasPluginInterface
 {
     const POLICY_CONFIG_KEY = 'auth.policies';
-
-    public function register(): void
-    {
-        $this->app->booted(function () {
-            foreach ($this->app['config']->get(static::POLICY_CONFIG_KEY, []) as $model => $policy) {
-                $this->gate()->policy($model, $policy);
-            }
-        });
-    }
 
     public function configure(): void
     {
@@ -45,10 +35,5 @@ class AuthBundle extends Bundle implements HasPluginInterface
             new ImportConfigurationPlugin(),
             new ImportMiddlewareAnnotationPlugin(),
         ];
-    }
-
-    protected function gate(): Gate
-    {
-        return $this->app[Gate::class];
     }
 }

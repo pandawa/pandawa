@@ -58,6 +58,10 @@ abstract class Bundle implements BundleContract
      */
     private array $initializedPlugins = [];
 
+    private bool $pluginConfigured = false;
+
+    private bool $pluginBooted = false;
+
     public function __construct(protected Application $app)
     {
         if ($this instanceof HasPluginInterface) {
@@ -207,6 +211,12 @@ abstract class Bundle implements BundleContract
 
     public function configurePlugin(): void
     {
+        if ($this->pluginConfigured) {
+            return;
+        }
+
+        $this->pluginConfigured = true;
+
         foreach ($this->initializedPlugins as $plugin) {
             $plugin->configure();
         }
@@ -222,6 +232,12 @@ abstract class Bundle implements BundleContract
 
     public function bootPlugin(): void
     {
+        if ($this->pluginBooted) {
+            return;
+        }
+
+        $this->pluginBooted = true;
+
         foreach ($this->initializedPlugins as $plugin) {
             $plugin->boot();
         }

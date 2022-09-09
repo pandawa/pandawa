@@ -14,7 +14,7 @@ use Pandawa\Bundle\ResourceBundle\Annotation\ApiResourceLoadHandler;
  */
 class ImportResourceAnnotationPlugin extends AnnotationPlugin
 {
-    public function boot(): void
+    public function configure(): void
     {
         if ($this->bundle->getApp()->routesAreCached()) {
             return;

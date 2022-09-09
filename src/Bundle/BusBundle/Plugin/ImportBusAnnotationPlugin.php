@@ -9,7 +9,10 @@ use Pandawa\Annotations\Bus\AsMessage;
 use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
 use Pandawa\Bundle\BusBundle\Annotation\MessageHandlerLoadHandler;
 use Pandawa\Bundle\BusBundle\Annotation\MessageLoadHandler;
+use Pandawa\Bundle\BusBundle\BusBundle;
 use Pandawa\Component\Foundation\Bundle\Plugin;
+use Pandawa\Contracts\Bus\BusInterface;
+use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use RuntimeException;
 
 /**
@@ -35,6 +38,25 @@ class ImportBusAnnotationPlugin extends Plugin
 
     public function boot(): void
     {
+        // Load messages
+        $this->registry()->load(
+            $this->bundle->getService('config')->get(
+                $this->getMessageConfigKey(),
+                []
+            )
+        );
+
+        // Load handlers
+        $this->bus()->map(
+            $this->bundle->getService('config')->get(
+                $this->getHandlerConfigKey(),
+                []
+            )
+        );
+    }
+
+    public function configure(): void
+    {
         if ($this->bundle->getApp()->configurationIsCached()) {
             return;
         }
@@ -53,7 +75,7 @@ class ImportBusAnnotationPlugin extends Plugin
             scopes: $this->messageScopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->boot();
+        $annotationPlugin->configure();
     }
 
     protected function importHandlerAnnotations(): void
@@ -66,7 +88,7 @@ class ImportBusAnnotationPlugin extends Plugin
             scopes: $this->handlerScopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->boot();
+        $annotationPlugin->configure();
     }
 
     protected function getMessageDirectories(): array
@@ -103,5 +125,25 @@ class ImportBusAnnotationPlugin extends Plugin
         }
 
         return null;
+    }
+
+    protected function registry(): RegistryInterface
+    {
+        return $this->bundle->getService(RegistryInterface::class);
+    }
+
+    protected function bus(): BusInterface
+    {
+        return $this->bundle->getService(BusInterface::class);
+    }
+
+    protected function getMessageConfigKey(): string
+    {
+        return BusBundle::PANDAWA_MESSAGE_CONFIG_KEY . '.' . $this->bundle->getName() . '.annotations';
+    }
+
+    protected function getHandlerConfigKey(): string
+    {
+        return BusBundle::PANDAWA_HANDLER_CONFIG_KEY . '.' . $this->bundle->getName() . '.annotations';
     }
 }

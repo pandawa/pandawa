@@ -14,6 +14,7 @@ use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 abstract class AnnotationServicePlugin extends Plugin
 {
     protected ?string $targetClass = null;
+    protected ?string $defaultPath = null;
 
     public function __construct(
         protected readonly array $directories = [],
@@ -22,7 +23,7 @@ abstract class AnnotationServicePlugin extends Plugin
     ) {
     }
 
-    public function boot(): void
+    public function configure(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
             $this->loadFromConfig();
@@ -31,12 +32,13 @@ abstract class AnnotationServicePlugin extends Plugin
         }
 
         $this->importAnnotations();
+        $this->loadFromConfig();
     }
 
     protected function loadFromConfig(): void
     {
         $this->serviceRegistry()->load(
-            $this->config()->get($this->getConfigCacheKey())
+            $this->config()->get($this->getConfigCacheKey(), [])
         );
     }
 
@@ -51,7 +53,7 @@ abstract class AnnotationServicePlugin extends Plugin
             scopes: $this->scopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->boot();
+        $annotationPlugin->configure();
     }
 
     protected function serviceRegistry(): ServiceRegistryInterface
@@ -64,11 +66,21 @@ abstract class AnnotationServicePlugin extends Plugin
         return $this->bundle->getService('config');
     }
 
+    protected function getDirectories(): array
+    {
+        if (empty($this->directories)) {
+            return [$this->bundle->getPath($this->defaultPath ?? '')];
+        }
+
+        return array_map(
+            fn(string $path) => $this->bundle->getPath($path),
+            $this->directories
+        );
+    }
+
     abstract protected function getAnnotationClasses(): array;
 
     abstract protected function getHandler(): string;
-
-    abstract protected function getDirectories(): array;
 
     abstract protected function getConfigCacheKey(): string;
 }

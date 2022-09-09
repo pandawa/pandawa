@@ -24,15 +24,6 @@ class ImportInjectableAnnotationPlugin extends AnnotationServicePlugin
         return InjectableLoadHandler::class;
     }
 
-    protected function getDirectories(): array
-    {
-        if (empty($this->directories)) {
-            return [$this->bundle->getPath()];
-        }
-
-        return $this->directories;
-    }
-
     protected function getConfigCacheKey(): string
     {
         return DependencyInjectionBundle::CONFIG_CACHE_KEY . '.injectable.' . $this->bundle->getName();

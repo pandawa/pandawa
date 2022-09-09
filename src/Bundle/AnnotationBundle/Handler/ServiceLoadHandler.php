@@ -8,7 +8,6 @@ use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\Arr;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
 use Pandawa\Contracts\Annotation\Factory\ReaderFactoryInterface;
-use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use Pandawa\Contracts\Foundation\BundleInterface;
 use ReflectionClass;
 use Spiral\Attributes\ReaderInterface;
@@ -24,7 +23,6 @@ abstract class ServiceLoadHandler implements AnnotationLoadHandlerInterface
     protected ReaderInterface $reader;
 
     public function __construct(
-        protected readonly ServiceRegistryInterface $serviceRegistry,
         protected readonly Config $config,
         ReaderFactoryInterface $readerFactory,
     ) {
@@ -47,9 +45,7 @@ abstract class ServiceLoadHandler implements AnnotationLoadHandlerInterface
         $service = $this->makeServiceConfig($annotation, $class);
         $name = $service['service_name'] ?? $class->getName();
 
-        $this->serviceRegistry->register($name, $service = Arr::except($service, ['service_name']));
-
-        $this->mergeConfig([$name => $service]);
+        $this->mergeConfig([$name => Arr::except($service, ['service_name'])]);
     }
 
     protected function mergeConfig(array $config): void

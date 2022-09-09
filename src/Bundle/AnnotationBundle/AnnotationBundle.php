@@ -20,6 +20,9 @@ class AnnotationBundle extends Bundle implements HasPluginInterface
 {
     public function register(): void
     {
+        // Configure plugin immediately
+        $this->configurePlugin();
+
         $this->registerFactories();
     }
 

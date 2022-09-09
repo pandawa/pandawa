@@ -35,9 +35,14 @@ final class PolicyLoadHandler implements AnnotationLoadHandlerInterface
         $model = $options['class'];
         $annotation = $options['annotation'];
 
-        $this->config->set(AuthBundle::POLICY_CONFIG_KEY, [
-            ...$this->config->get(AuthBundle::POLICY_CONFIG_KEY, []),
+        $this->config->set($this->getConfigKey(), [
+            ...$this->config->get($this->getConfigKey(), []),
             $model->getName() => $annotation->policy,
         ]);
+    }
+
+    protected function getConfigKey(): string
+    {
+        return AuthBundle::POLICY_CONFIG_KEY . '.' . $this->bundle->getName();
     }
 }

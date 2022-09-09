@@ -8,7 +8,6 @@ use Illuminate\Console\Application as Artisan;
 use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Foundation\Console\RouteClearCommand;
 use Illuminate\Foundation\Console\RouteListCommand;
-use Illuminate\Routing\Router;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
@@ -19,8 +18,8 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class RoutingBundle extends Bundle implements HasPluginInterface
 {
-    const MIDDLEWARE_ALIASES_CONFIG_KEY = 'routing.middleware.aliases';
-    const MIDDLEWARE_GROUPS_CONFIG_KEY = 'routing.middleware.groups';
+    const MIDDLEWARE_ALIASES_CONFIG_KEY = 'pandawa.middleware.aliases';
+    const MIDDLEWARE_GROUPS_CONFIG_KEY = 'pandawa.middleware.groups';
 
     protected array $commands = [
         'RouteCache' => RouteCacheCommand::class,
@@ -36,20 +35,6 @@ class RoutingBundle extends Bundle implements HasPluginInterface
                     require $this->app->getCachedRoutesPath();
                 });
             }
-
-            $this->loadMiddlewareAliasFromArray(
-                $this->app['config']->get(
-                    self::MIDDLEWARE_ALIASES_CONFIG_KEY,
-                    []
-                )
-            );
-
-            $this->loadMiddlewareGroupFromArray(
-                $this->app['config']->get(
-                    self::MIDDLEWARE_GROUPS_CONFIG_KEY,
-                    []
-                )
-            );
         });
 
         $this->registerCommands();
@@ -61,27 +46,6 @@ class RoutingBundle extends Bundle implements HasPluginInterface
             new ImportConfigurationPlugin(),
             new ImportServicesPlugin(),
         ];
-    }
-
-    protected function loadMiddlewareAliasFromArray(array $aliases): void
-    {
-        foreach ($aliases as $name => $middleware) {
-            $this->router()->aliasMiddleware($name, $middleware);
-        }
-    }
-
-    protected function loadMiddlewareGroupFromArray(array $groups): void
-    {
-        foreach ($groups as $group => $middlewares) {
-            foreach ($middlewares as $middleware) {
-                $this->router()->pushMiddlewareToGroup($group, $middleware);
-            }
-        }
-    }
-
-    protected function router(): Router
-    {
-        return $this->getService('router');
     }
 
     protected function registerCommands(): void

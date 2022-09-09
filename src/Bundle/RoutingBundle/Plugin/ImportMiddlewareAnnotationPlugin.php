@@ -4,43 +4,76 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\RoutingBundle\Plugin;
 
+use Illuminate\Routing\Router;
 use Pandawa\Annotations\Routing\AsMiddleware;
-use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
+use Pandawa\Bundle\AnnotationBundle\Plugin\AnnotationPlugin;
 use Pandawa\Bundle\RoutingBundle\Annotation\MiddlewareLoadHandler;
-use Pandawa\Component\Foundation\Bundle\Plugin;
+use Pandawa\Bundle\RoutingBundle\RoutingBundle;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class ImportMiddlewareAnnotationPlugin extends Plugin
+class ImportMiddlewareAnnotationPlugin extends AnnotationPlugin
 {
-    public function __construct(
-        protected readonly string $directory = 'Http/Middleware',
-        protected readonly array $exclude = [],
-        protected readonly array $scopes = [],
-    ) {
-    }
+    protected ?string $defaultPath = 'Http/Middleware';
 
     public function boot(): void
     {
-        if ($this->bundle->getApp()->configurationIsCached()) {
-            return;
-        }
+        $config = $this->bundle->getService('config');
 
-        $this->importAnnotations();
+        $this->loadMiddlewareAliasFromArray(
+            $config->get(
+                $this->getAliasConfigKey(),
+                []
+            )
+        );
+
+        $this->loadMiddlewareGroupFromArray(
+            $config->get(
+                $this->getGroupsConfigKey(),
+                []
+            )
+        );
     }
 
-    protected function importAnnotations(): void
+    protected function getAnnotationClasses(): array
     {
-        $annotationPlugin = new ImportAnnotationPlugin(
-            annotationClasses: [AsMiddleware::class],
-            directories: [$this->bundle->getPath($this->directory)],
-            classHandler: MiddlewareLoadHandler::class,
-            dontRunIfCached: false,
-            exclude: $this->exclude,
-            scopes: $this->scopes,
-        );
-        $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->boot();
+        return [AsMiddleware::class];
+    }
+
+    protected function getHandler(): string
+    {
+        return MiddlewareLoadHandler::class;
+    }
+
+    protected function loadMiddlewareAliasFromArray(array $aliases): void
+    {
+        foreach ($aliases as $name => $middleware) {
+            $this->router()->aliasMiddleware($name, $middleware);
+        }
+    }
+
+    protected function loadMiddlewareGroupFromArray(array $groups): void
+    {
+        foreach ($groups as $group => $middlewares) {
+            foreach ($middlewares as $middleware) {
+                $this->router()->pushMiddlewareToGroup($group, $middleware);
+            }
+        }
+    }
+
+    protected function router(): Router
+    {
+        return $this->bundle->getService('router');
+    }
+
+    protected function getAliasConfigKey(): string
+    {
+        return RoutingBundle::MIDDLEWARE_ALIASES_CONFIG_KEY . '.' . $this->bundle->getName() . '.aliases';
+    }
+
+    protected function getGroupsConfigKey(): string
+    {
+        return RoutingBundle::MIDDLEWARE_GROUPS_CONFIG_KEY . '.' . $this->bundle->getName() . '.groups';
     }
 }

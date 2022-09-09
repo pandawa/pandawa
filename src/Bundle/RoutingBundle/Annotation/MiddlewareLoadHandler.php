@@ -36,8 +36,8 @@ final class MiddlewareLoadHandler implements AnnotationLoadHandlerInterface
         $class = $options['class'];
         $annotation = $options['annotation'];
 
-        $this->config->set(RoutingBundle::MIDDLEWARE_ALIASES_CONFIG_KEY, [
-            ...$this->config->get(RoutingBundle::MIDDLEWARE_ALIASES_CONFIG_KEY, []),
+        $this->config->set($this->getAliasConfigKey(), [
+            ...$this->config->get($this->getAliasConfigKey(), []),
             $annotation->name => $class->getName(),
         ]);
 
@@ -49,8 +49,13 @@ final class MiddlewareLoadHandler implements AnnotationLoadHandlerInterface
         }
     }
 
+    protected function getAliasConfigKey(): string
+    {
+        return RoutingBundle::MIDDLEWARE_ALIASES_CONFIG_KEY . '.' . $this->bundle->getName() . '.aliases';
+    }
+
     protected function getGroupsConfigKey(string $group): string
     {
-        return RoutingBundle::MIDDLEWARE_GROUPS_CONFIG_KEY . '.groups.' . $group;
+        return RoutingBundle::MIDDLEWARE_GROUPS_CONFIG_KEY . '.' . $this->bundle->getName() . '.groups.' . $group;
     }
 }

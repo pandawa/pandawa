@@ -5,59 +5,29 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\EloquentBundle\Plugin;
 
 use Pandawa\Annotations\Eloquent\AsRepository;
-use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
+use Pandawa\Bundle\AnnotationBundle\Plugin\AnnotationServicePlugin;
 use Pandawa\Bundle\EloquentBundle\Annotation\RepositoryLoadHandler;
-use Pandawa\Component\Foundation\Bundle\Plugin;
-use Pandawa\Contracts\Eloquent\RepositoryInterface;
-use RuntimeException;
+use Pandawa\Bundle\EloquentBundle\EloquentBundle;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-class ImportRepositoryAnnotationPlugin extends Plugin
+class ImportRepositoryAnnotationPlugin extends AnnotationServicePlugin
 {
-    public function __construct(
-        protected readonly array $directories = [],
-        protected readonly array $exclude = [],
-        protected readonly array $scopes = [],
-    ) {
-        if (!class_exists(ImportAnnotationPlugin::class)) {
-            throw new RuntimeException(sprintf(
-                'Please install package "pandawa/annotation-bundle" to use plugin "%s".',
-                (new \ReflectionClass(static::class))->getShortName()
-            ));
-        }
+    protected ?string $defaultPath = 'Repository';
+
+    protected function getAnnotationClasses(): array
+    {
+        return [AsRepository::class];
     }
 
-    public function boot(): void
+    protected function getHandler(): string
     {
-        if ($this->bundle->getApp()->configurationIsCached()) {
-            return;
-        }
-
-        $this->importAnnotations();
+        return RepositoryLoadHandler::class;
     }
 
-    protected function importAnnotations(): void
+    protected function getConfigCacheKey(): string
     {
-        $annotationPlugin = new ImportAnnotationPlugin(
-            annotationClasses: [AsRepository::class],
-            directories: $this->getDirectories(),
-            classHandler: RepositoryLoadHandler::class,
-            targetClass: RepositoryInterface::class,
-            exclude: $this->exclude,
-            scopes: $this->scopes,
-        );
-        $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->boot();
-    }
-
-    protected function getDirectories(): array
-    {
-        if (empty($this->directories)) {
-            return [$this->bundle->getPath('Repository')];
-        }
-
-        return $this->directories;
+        return EloquentBundle::REPOSITORY_CONFIG_KEY . '.' . $this->bundle->getName();
     }
 }

@@ -20,29 +20,37 @@ class ImportMessagesPlugin extends Plugin
     {
     }
 
+    public function boot(): void
+    {
+        $config = $this->bundle->getService('config');
+
+        $this->registry()->load(
+            $config->get($this->getMessageConfigKey())
+        );
+
+        $this->bus()->map(
+            $config->get($this->getHandlerConfigKey())
+        );
+    }
+
     public function configure(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
             return;
         }
 
-        $this->bundle->getApp()->booted(function () {
-            $config = $this->bundle->getService('config');
+        $config = $this->bundle->getService('config');
 
-            foreach ($this->getMessages() as $messages) {
-                $this->registry()->load($messages['messages'] ?? []);
-                $this->bus()->map($messages['handlers'] ?? []);
-
-                $config->set(BusBundle::MESSAGE_CONFIG_KEY, [
-                    ...$config->get(BusBundle::MESSAGE_CONFIG_KEY, []),
-                    ...($messages['messages'] ?? [])
-                ]);
-                $config->set(BusBundle::HANDLER_CONFIG_KEY, [
-                    ...$config->get(BusBundle::HANDLER_CONFIG_KEY, []),
-                    ...($messages['handlers'] ?? [])
-                ]);
-            }
-        });
+        foreach ($this->getMessages() as $messages) {
+            $config->set($this->getMessageConfigKey(), [
+                ...$config->get($this->getMessageConfigKey(), []),
+                ...($messages['messages'] ?? [])
+            ]);
+            $config->set($this->getHandlerConfigKey(), [
+                ...$config->get($this->getHandlerConfigKey(), []),
+                ...($messages['handlers'] ?? [])
+            ]);
+        }
     }
 
     protected function getMessages(): iterable
@@ -65,5 +73,15 @@ class ImportMessagesPlugin extends Plugin
     protected function bus(): BusInterface
     {
         return $this->bundle->getService(BusInterface::class);
+    }
+
+    protected function getMessageConfigKey(): string
+    {
+        return BusBundle::PANDAWA_MESSAGE_CONFIG_KEY . '.' . $this->bundle->getName() . '.registries';
+    }
+
+    protected function getHandlerConfigKey(): string
+    {
+        return BusBundle::PANDAWA_HANDLER_CONFIG_KEY . '.' . $this->bundle->getName() . '.registries';
     }
 }
