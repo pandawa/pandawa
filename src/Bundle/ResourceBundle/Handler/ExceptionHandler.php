@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\ResourceBundle\Handler;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use InvalidArgumentException;
@@ -21,6 +22,7 @@ class ExceptionHandler extends FoundationExceptionHandler
     protected array $errorCodeMaps = [
         InvalidArgumentException::class => 400,
         AuthenticationException::class => 401,
+        AuthorizationException::class => 403,
         ModelNotFoundException::class => 404,
     ];
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\AuthBundle\Plugin;
 
 use Illuminate\Contracts\Auth\Access\Gate;
-use Pandawa\Annotations\Auth\UsePolicy;
+use Pandawa\Annotations\Auth\AsPolicy;
 use Pandawa\Bundle\AnnotationBundle\Plugin\AnnotationPlugin;
 use Pandawa\Bundle\AuthBundle\Annotation\PolicyLoadHandler;
 use Pandawa\Bundle\AuthBundle\AuthBundle;
@@ -28,7 +28,7 @@ class ImportPolicyAnnotationPlugin extends AnnotationPlugin
 
     protected function getAnnotationClasses(): array
     {
-        return [UsePolicy::class];
+        return [AsPolicy::class];
     }
 
     protected function getHandler(): string

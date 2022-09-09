@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\AuthBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
-use Pandawa\Annotations\Auth\UsePolicy;
+use Pandawa\Annotations\Auth\AsPolicy;
 use Pandawa\Bundle\AuthBundle\AuthBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
 use Pandawa\Contracts\Foundation\BundleInterface;
@@ -28,16 +28,16 @@ final class PolicyLoadHandler implements AnnotationLoadHandlerInterface
     }
 
     /**
-     * @param  array{class: ReflectionClass, annotation: UsePolicy}  $options
+     * @param  array{class: ReflectionClass, annotation: AsPolicy}  $options
      */
     public function handle(array $options): void
     {
-        $model = $options['class'];
+        $policy = $options['class'];
         $annotation = $options['annotation'];
 
         $this->config->set($this->getConfigKey(), [
             ...$this->config->get($this->getConfigKey(), []),
-            $model->getName() => $annotation->policy,
+            $annotation->model => $policy->getName(),
         ]);
     }
 
