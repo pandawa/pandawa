@@ -7,6 +7,7 @@ namespace Pandawa\Bundle\EloquentBundle\Plugin;
 use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Annotations\Eloquent\AsRepository;
 use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
+use Pandawa\Bundle\EloquentBundle\Annotation\RepositoryLoadHandler;
 use Pandawa\Component\Foundation\Bundle\Plugin;
 use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use Pandawa\Contracts\Eloquent\RepositoryInterface;
@@ -55,7 +56,7 @@ class ImportRepositoryAnnotationPlugin extends Plugin
         $annotationPlugin = new ImportAnnotationPlugin(
             annotationClasses: [AsRepository::class],
             directories: $this->getDirectories(),
-            classHandler: $this->bundle->getService('config')->get('eloquent.annotation.handler'),
+            classHandler: RepositoryLoadHandler::class,
             targetClass: RepositoryInterface::class,
             exclude: $this->exclude,
             scopes: $this->scopes,

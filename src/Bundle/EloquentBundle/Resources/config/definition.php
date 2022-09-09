@@ -48,11 +48,6 @@ return static function (TreeBuilder $treeBuilder): TreeBuilder {
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode('annotation')
-                ->children()
-                    ->scalarNode('handler')->isRequired()->cannotBeEmpty()->end()
-                ->end()
-            ->end()
         ->end();
 
     return $treeBuilder;
