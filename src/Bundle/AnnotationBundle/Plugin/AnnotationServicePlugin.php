@@ -22,7 +22,7 @@ abstract class AnnotationServicePlugin extends Plugin
     ) {
     }
 
-    public function configure(): void
+    public function boot(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
             $this->loadFromConfig();
@@ -51,7 +51,7 @@ abstract class AnnotationServicePlugin extends Plugin
             scopes: $this->scopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->configure();
+        $annotationPlugin->boot();
     }
 
     protected function serviceRegistry(): ServiceRegistryInterface

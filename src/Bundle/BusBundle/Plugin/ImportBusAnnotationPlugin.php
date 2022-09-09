@@ -33,7 +33,7 @@ class ImportBusAnnotationPlugin extends Plugin
         }
     }
 
-    public function configure(): void
+    public function boot(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
             return;
@@ -53,7 +53,7 @@ class ImportBusAnnotationPlugin extends Plugin
             scopes: $this->messageScopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->configure();
+        $annotationPlugin->boot();
     }
 
     protected function importHandlerAnnotations(): void
@@ -66,7 +66,7 @@ class ImportBusAnnotationPlugin extends Plugin
             scopes: $this->handlerScopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->configure();
+        $annotationPlugin->boot();
     }
 
     protected function getMessageDirectories(): array

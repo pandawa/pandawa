@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\ConsoleBundle\Plugin;
 
-use Illuminate\Console\Application as Artisan;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Annotations\Console\AsConsole;
 use Pandawa\Bundle\AnnotationBundle\Plugin\ImportAnnotationPlugin;
 use Pandawa\Bundle\ConsoleBundle\Annotation\ConsoleLoadHandler;
-use Pandawa\Bundle\ConsoleBundle\ConsoleBundle;
 use Pandawa\Component\Foundation\Bundle\Plugin;
 
 /**
@@ -26,13 +23,6 @@ class ImportConsolePlugin extends Plugin
     }
 
     public function boot(): void
-    {
-        $this->loadConsoles(
-            $this->getConfig()->get($this->getConsoleConfigKey(), [])
-        );
-    }
-
-    public function configure(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
             return;
@@ -52,7 +42,7 @@ class ImportConsolePlugin extends Plugin
             scopes: $this->scopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->configure();
+        $annotationPlugin->boot();
     }
 
     protected function getDirectories(): array
@@ -63,22 +53,5 @@ class ImportConsolePlugin extends Plugin
             },
             $this->directories
         );
-    }
-
-    protected function loadConsoles(array $commands): void
-    {
-        Artisan::starting(function (Artisan $artisan) use ($commands) {
-            $artisan->resolveCommands($commands);
-        });
-    }
-
-    protected function getConsoleConfigKey(): string
-    {
-        return ConsoleBundle::CONSOLE_CONFIG_KEY . '.' . $this->bundle->getName();
-    }
-
-    protected function getConfig(): Config
-    {
-        return $this->bundle->getService('config');
     }
 }

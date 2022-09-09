@@ -22,7 +22,7 @@ abstract class AnnotationPlugin extends Plugin
     ) {
     }
 
-    public function configure(): void
+    public function boot(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
             return;
@@ -43,7 +43,7 @@ abstract class AnnotationPlugin extends Plugin
             scopes: $this->scopes,
         );
         $annotationPlugin->setBundle($this->bundle);
-        $annotationPlugin->configure();
+        $annotationPlugin->boot();
     }
 
     protected function getDirectories(): array

@@ -6,7 +6,7 @@ namespace Pandawa\Bundle\EloquentBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Annotations\Eloquent\AsRepository;
-use Pandawa\Bundle\EloquentBundle\Plugin\ImportRepositoryAnnotationPlugin;
+use Pandawa\Bundle\EloquentBundle\EloquentBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
 use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use Pandawa\Contracts\Eloquent\Factory\RepositoryFactoryInterface;
@@ -57,16 +57,11 @@ final class RepositoryLoadHandler implements AnnotationLoadHandlerInterface
     protected function mergeConfig(array $config): void
     {
         $this->config->set(
-            $this->getConfigKey(),
+            EloquentBundle::REPOSITORY_CONFIG_KEY,
             [
-                ...$this->config->get($this->getConfigKey(), []),
+                ...$this->config->get(EloquentBundle::REPOSITORY_CONFIG_KEY, []),
                 ...$config
             ]
         );
-    }
-
-    protected function getConfigKey(): string
-    {
-        return ImportRepositoryAnnotationPlugin::CACHE_KEY . '.' . $this->bundle->getName();
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\RoutingBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
-use Illuminate\Routing\Router;
 use Pandawa\Annotations\Routing\AsMiddleware;
 use Pandawa\Bundle\RoutingBundle\RoutingBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
@@ -20,7 +19,6 @@ final class MiddlewareLoadHandler implements AnnotationLoadHandlerInterface
     protected BundleInterface $bundle;
 
     public function __construct(
-        protected readonly Router $router,
         protected readonly Config $config,
     ) {
     }
@@ -38,16 +36,12 @@ final class MiddlewareLoadHandler implements AnnotationLoadHandlerInterface
         $class = $options['class'];
         $annotation = $options['annotation'];
 
-        $this->router->aliasMiddleware($annotation->name, $class->getName());
-
-        $this->config->set($this->getAliasConfigKey(), [
-            ...$this->config->get($this->getAliasConfigKey(), []),
+        $this->config->set(RoutingBundle::MIDDLEWARE_ALIASES_CONFIG_KEY, [
+            ...$this->config->get(RoutingBundle::MIDDLEWARE_ALIASES_CONFIG_KEY, []),
             $annotation->name => $class->getName(),
         ]);
 
         if ($group = $annotation->group) {
-            $this->router->pushMiddlewareToGroup($group, $annotation->name);
-
             $this->config->set($this->getGroupsConfigKey($group), [
                 ...$this->config->get($this->getGroupsConfigKey($group), []),
                 $annotation->name
@@ -55,13 +49,8 @@ final class MiddlewareLoadHandler implements AnnotationLoadHandlerInterface
         }
     }
 
-    protected function getAliasConfigKey(): string
-    {
-        return RoutingBundle::MIDDLEWARE_CONFIG_KEY . '.' . $this->bundle->getName() . '.aliases';
-    }
-
     protected function getGroupsConfigKey(string $group): string
     {
-        return RoutingBundle::MIDDLEWARE_CONFIG_KEY . '.' . $this->bundle->getName() . '.groups.' . $group;
+        return RoutingBundle::MIDDLEWARE_GROUPS_CONFIG_KEY . '.groups.' . $group;
     }
 }

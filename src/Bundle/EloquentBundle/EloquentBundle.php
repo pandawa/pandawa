@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\DependencyInjection\ServiceRegistryInterface;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
@@ -17,6 +18,8 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class EloquentBundle extends Bundle implements HasPluginInterface
 {
+    const REPOSITORY_CONFIG_KEY = 'eloquent.repositories';
+
     /**
      * The array of resolved Faker instances.
      *
@@ -28,6 +31,15 @@ class EloquentBundle extends Bundle implements HasPluginInterface
     {
         Model::setConnectionResolver($this->app['db']);
         Model::setEventDispatcher($this->app['events']);
+
+        $this->app->booted(function () {
+            $this->serviceRegistry()->load(
+                $this->app['config']->get(
+                    self::REPOSITORY_CONFIG_KEY,
+                    []
+                )
+            );
+        });
     }
 
     public function register(): void
@@ -58,5 +70,10 @@ class EloquentBundle extends Bundle implements HasPluginInterface
 
             return static::$fakers[$locale];
         });
+    }
+
+    protected function serviceRegistry(): ServiceRegistryInterface
+    {
+        return $this->getService(ServiceRegistryInterface::class);
     }
 }
