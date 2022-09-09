@@ -1,6 +1,5 @@
 <?php
 
-use Pandawa\Bundle\BusBundle\Annotation;
 use Pandawa\Component\Bus;
 
 return [
@@ -45,19 +44,6 @@ return [
     |
     */
     'message_bus'   => Bus\MessageBus::class,
-
-    /*
-    |--------------------------------------------------------------------------
-    | Annotation Handlers
-    |--------------------------------------------------------------------------
-    |
-    | Handlers that used to load the annotations.
-    |
-    */
-    'annotation'    => [
-        'message_handler'         => Annotation\MessageLoadHandler::class,
-        'message_handler_handler' => Annotation\MessageHandlerLoadHandler::class,
-    ],
 
     /*
     |--------------------------------------------------------------------------
