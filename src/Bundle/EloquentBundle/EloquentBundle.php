@@ -17,7 +17,7 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class EloquentBundle extends Bundle implements HasPluginInterface
 {
-    const REPOSITORY_CONFIG_KEY = 'eloquent.repositories';
+    const REPOSITORY_CONFIG_KEY = 'pandawa.repositories';
 
     /**
      * The array of resolved Faker instances.
