@@ -26,10 +26,11 @@ final class RepositoryLoadHandler extends ServiceLoadHandler
         return [
             'alias'     => [
                 ...((array) $annotation->alias),
-                sprintf('Eloquent.%s', $annotation->model)
+                sprintf('Eloquent.%s', $annotation->model),
             ],
+            'shared'    => false,
             'factory'   => [
-                '@' . RepositoryFactoryInterface::class,
+                '@'.RepositoryFactoryInterface::class,
                 'create',
             ],
             'arguments' => [
@@ -41,6 +42,6 @@ final class RepositoryLoadHandler extends ServiceLoadHandler
 
     protected function getConfigCacheKey(): string
     {
-        return EloquentBundle::REPOSITORY_CONFIG_KEY . '.' . $this->bundle->getName();
+        return EloquentBundle::REPOSITORY_CONFIG_KEY.'.'.$this->bundle->getName();
     }
 }
