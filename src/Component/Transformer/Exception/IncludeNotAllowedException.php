@@ -12,7 +12,7 @@ use Throwable;
  */
 class IncludeNotAllowedException extends Exception
 {
-    public function __construct(string $include, ?int $code = null, ?Throwable $previous = null)
+    public function __construct(string $include, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct(sprintf('Include "%s" is not allowed', $include), $code, $previous);
     }
