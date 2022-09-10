@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Resource\Helper;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pandawa\Contracts\Resource\Model\HandlerInterface;
 
@@ -33,14 +34,28 @@ trait CriteriaTrait
                 return $this->container->make(
                     $criterion['class'],
                     !empty($arguments = $criterion['arguments'] ?? [])
-                        ? $request->only(array_map(
-                            fn(string $key) => Str::camel($key),
-                            $arguments
-                          ))
+                        ? $this->onlyData(
+                            $request,
+                            array_map(
+                                fn(string $key) => Str::camel($key),
+                                $arguments
+                            )
+                          )
                         : []
                 );
             },
             $criteria
+        );
+    }
+
+    private function onlyData(Request $request, array $keys): array
+    {
+        return Arr::only(
+            [
+                ...$request->all(),
+                ...$request->route()->parameters()
+            ],
+            $keys
         );
     }
 }
