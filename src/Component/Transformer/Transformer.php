@@ -109,7 +109,7 @@ abstract class Transformer implements TransformerInterface
             return $transformed;
         }
 
-        return $this->filter($selects, $transformed);
+        return $this->filter($transformed, $selects);
     }
 
     public function wrap(mixed $data): mixed
@@ -157,16 +157,6 @@ abstract class Transformer implements TransformerInterface
 
             throw new IncludeNotAllowedException($include);
         });
-    }
-
-    protected function filter(array $selects, array $data): array
-    {
-        return Arr::undot(
-            Arr::only(
-                Arr::dot($data),
-                $selects
-            )
-        );
     }
 
     protected function processIncludes(array $includes, mixed $data): array
@@ -217,6 +207,10 @@ abstract class Transformer implements TransformerInterface
             $normalized[$key] = $value;
         }
 
+        if (!empty($this->availableSelects)) {
+            $normalized = $this->filter($normalized, $this->availableSelects);
+        }
+
         return $normalized;
     }
 
@@ -233,5 +227,15 @@ abstract class Transformer implements TransformerInterface
         } while($temp && str_contains($temp, '.'));
 
         return false;
+    }
+
+    protected function filter(array $data, array $keys): array
+    {
+        return Arr::undot(
+            Arr::only(
+                Arr::dot($data),
+                $keys
+            )
+        );
     }
 }
