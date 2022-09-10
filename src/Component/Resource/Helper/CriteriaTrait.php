@@ -33,19 +33,25 @@ trait CriteriaTrait
             function (array $criterion) use ($request) {
                 return $this->container->make(
                     $criterion['class'],
-                    !empty($arguments = $criterion['arguments'] ?? [])
-                        ? $this->onlyData(
-                            $request,
-                            array_map(
-                                fn(string $key) => Str::camel($key),
-                                $arguments
-                            )
-                          )
-                        : []
+                    $this->getArguments($request, $criterion)
                 );
             },
             $criteria
         );
+    }
+
+    private function getArguments(Request $request, array $criteria): array
+    {
+        return [
+            ...($criteria['defaults'] ?? []),
+            ...$this->onlyData(
+                $request,
+                array_map(
+                    fn(string $key) => Str::camel($key),
+                    $criteria['arguments'] ?? []
+                )
+            ),
+        ];
     }
 
     private function onlyData(Request $request, array $keys): array
