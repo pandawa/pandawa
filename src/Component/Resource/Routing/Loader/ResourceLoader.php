@@ -65,13 +65,13 @@ final class ResourceLoader implements LoaderInterface
         foreach ($this->getResourceTypes($resource) as $type) {
             $config = [
                 ...Arr::except($resource, ['name', 'options', 'middleware']),
-                'name'    => $resource['name'].'.'.$type,
-                'options' => [
+                'name'       => $resource['name'].'.'.$type,
+                'middleware' => [
+                    ...($resource['middleware'] ?? []),
+                    ...($resource['options'][$type]['middleware'] ?? []),
+                ],
+                'options'    => [
                     ...($resource['options'][$type] ?? []),
-                    'middleware' => [
-                        ...($resource['middleware'] ?? []),
-                        ...($resource['options'][$type]['middleware'] ?? [])
-                    ]
                 ],
             ];
 
@@ -97,7 +97,7 @@ final class ResourceLoader implements LoaderInterface
             $uri = sprintf('%s/{%s}', $uri, $this->getResourceName($resource));
         }
 
-        return $this->router->{$method}($uri, $this->controller . '@' . $type);
+        return $this->router->{$method}($uri, $this->controller.'@'.$type);
     }
 
     protected function getResourceName(string $resource): string
