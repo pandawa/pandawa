@@ -1,0 +1,36 @@
+{
+    "name": "pandawa/pagination-bundle",
+    "description": "The pandawa pagination bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/dependency-injection-bundle": "^5.0",
+        "pandawa/foundation-bundle": "^5.0",
+        "illuminate/pagination": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\PaginationBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\PaginationBundle\\PaginationBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

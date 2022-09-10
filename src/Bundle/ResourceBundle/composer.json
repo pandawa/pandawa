@@ -14,6 +14,7 @@
         "pandawa/dependency-injection-bundle": "^5.0",
         "pandawa/foundation-bundle": "^5.0",
         "pandawa/routing-bundle": "^5.0",
+        "pandawa/pagination-bundle": "^5.0",
         "pandawa/validation-bundle": "^5.0",
         "pandawa/serializer-bundle": "^5.0",
         "pandawa/translation-bundle": "^5.0",
