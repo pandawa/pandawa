@@ -7,11 +7,14 @@ namespace Pandawa\Bundle\ResourceBundle\Handler;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\RelationNotFoundException;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Foundation\Handler\ExceptionHandler as FoundationExceptionHandler;
 use Pandawa\Component\Resource\Transformer\ErrorTransformer;
 use Pandawa\Contracts\Resource\RendererInterface;
 use Pandawa\Contracts\Transformer\Context;
+use ReflectionClass;
 use Throwable;
 
 /**
@@ -28,6 +31,8 @@ class ExceptionHandler extends FoundationExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        $e = $this->prepareException($this->mapException($e));
+
         $context = new Context(
             options: [Context::HTTP_CODE => $this->getErrorCode($e), 'debug' => config('app.debug')],
             request: $request
@@ -64,5 +69,28 @@ class ExceptionHandler extends FoundationExceptionHandler
         }
 
         return 500;
+    }
+
+    protected function prepareException(Throwable $e): Throwable
+    {
+        return match (true) {
+            $e instanceof RelationNotFoundException && $e->model => new RelationNotFoundException(
+                sprintf(
+                    'Relation "%s" was not found on resource "%s".',
+                    Str::snake($e->relation),
+                    Str::snake((new ReflectionClass($e->model))->getShortName())
+                ),
+                $e->getCode(),
+                $e
+            ),
+            $e instanceof ModelNotFoundException && $e->getModel() => new ModelNotFoundException(
+                sprintf(
+                    'Resource "%s" with ids "%s" was not found.',
+                    Str::snake((new ReflectionClass($e->getModel()))->getShortName()),
+                    implode(',', $e->getIds() ?? [])
+                )
+            ),
+            default => $e,
+        };
     }
 }
