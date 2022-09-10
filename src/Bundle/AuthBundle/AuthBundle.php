@@ -18,7 +18,7 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class AuthBundle extends Bundle implements HasPluginInterface
 {
-    const POLICY_CONFIG_KEY = 'auth.policies';
+    const POLICY_CONFIG_KEY = 'pandawa.policies';
 
     public function configure(): void
     {
