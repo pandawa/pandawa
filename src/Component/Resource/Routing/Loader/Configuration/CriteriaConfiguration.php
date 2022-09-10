@@ -23,7 +23,8 @@ class CriteriaConfiguration implements ConfigurationInterface
                 ->children()
                     ->scalarNode('class')->isRequired()->cannotBeEmpty()->end()
                     ->arrayNode('arguments')->scalarPrototype()->end()->end()
-                    ->arrayNode('defaults')->scalarPrototype()->end()->end()
+                    ->arrayNode('defaults')->variablePrototype()->end()->end()
+                    ->arrayNode('values')->variablePrototype()->end()->end()
                 ->end()
             ->end()
         ;

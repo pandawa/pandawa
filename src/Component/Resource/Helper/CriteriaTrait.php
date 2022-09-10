@@ -43,7 +43,7 @@ trait CriteriaTrait
     private function getArguments(Request $request, array $criteria): array
     {
         return [
-            ...($criteria['defaults'] ?? []),
+            ...$this->mapKeysToCamel($criteria['defaults'] ?? []),
             ...$this->onlyData(
                 $request,
                 array_map(
@@ -51,6 +51,7 @@ trait CriteriaTrait
                     $criteria['arguments'] ?? []
                 )
             ),
+            ...$this->mapKeysToCamel($criteria['values'] ?? []),
         ];
     }
 
@@ -63,5 +64,20 @@ trait CriteriaTrait
             ],
             $keys
         );
+    }
+
+    private function mapKeysToCamel(array $data): array
+    {
+        $keys = [];
+
+        foreach ($data as $key => $value) {
+            if (is_string($key)) {
+                $key = Str::camel($key);
+            }
+
+            $keys[$key] = $value;
+        }
+
+        return $keys;
     }
 }
