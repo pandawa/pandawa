@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Pandawa\Component\Foundation\Handler\ExceptionHandler as FoundationExceptionHandler;
 use Pandawa\Component\Resource\Transformer\ErrorTransformer;
@@ -26,9 +27,10 @@ class ExceptionHandler extends FoundationExceptionHandler
 {
     protected array $errorCodeMaps = [
         InvalidArgumentException::class => 400,
-        AuthenticationException::class => 401,
-        AuthorizationException::class => 403,
-        ModelNotFoundException::class => 404,
+        AuthenticationException::class  => 401,
+        AuthorizationException::class   => 403,
+        ModelNotFoundException::class   => 404,
+        ValidationException::class      => 422,
     ];
 
     public function render($request, Throwable $e): Response
@@ -52,9 +54,12 @@ class ExceptionHandler extends FoundationExceptionHandler
         $transformer = new ErrorTransformer();
 
         return new JsonResponse(
-            $this->renderer()->toArray($context, $transformer->wrap(
-                $transformer->process($context, $e)
-            )),
+            $this->renderer()->toArray(
+                $context,
+                $transformer->wrap(
+                    $transformer->process($context, $e)
+                )
+            ),
             $this->getErrorCode($e),
         );
     }
