@@ -21,7 +21,6 @@ use Pandawa\Contracts\Transformer\Context;
 use Pandawa\Contracts\Transformer\TransformerInterface;
 use Pandawa\Contracts\Validation\FactoryInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -39,7 +38,6 @@ class MessageController
         protected readonly RegistryInterface $messageRegistry,
         protected readonly RendererInterface $renderer,
         protected readonly FactoryInterface $validationFactory,
-        protected readonly Serializer $serializer,
         protected readonly Container $container,
     ) {
     }
@@ -106,7 +104,7 @@ class MessageController
     {
         $data = $this->validateRequest($request);
 
-        return $this->serializer->denormalize($data, $this->getMessage($request));
+        return $this->container->make($this->getMessage($request), $data);
     }
 
     protected function getMessage(Request $request): string
