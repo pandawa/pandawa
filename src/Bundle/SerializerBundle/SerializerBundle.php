@@ -32,8 +32,10 @@ class SerializerBundle extends Bundle implements HasPluginInterface, DeferrableP
         'serializer.normalizer.date_time',
     ];
 
-    public function configure(): void
+    public function register(): void
     {
+        $this->configurePlugin();
+
         foreach ($this->getConfig('serializers') as $name => $config) {
             $serviceName = sprintf('serializer.%s', $name);
 
