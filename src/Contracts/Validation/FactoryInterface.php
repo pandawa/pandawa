@@ -11,5 +11,5 @@ use Illuminate\Contracts\Validation\Validator;
  */
 interface FactoryInterface
 {
-    public function create(string $rule, array $data): Validator;
+    public function create(string|array $rule, array $data): Validator;
 }

@@ -40,7 +40,7 @@ class MessageConfiguration implements ConfigurationInterface
                         ->scalarNode('default_content_type')->end()
                         ->integerNode('http_code')->defaultValue(200)->end()
                         ->integerNode('paginate')->end()
-                        ->arrayNode('rules')->scalarPrototype()->end()->end()
+                        ->arrayNode('rules')->variablePrototype()->end()->end()
                         ->append($criteria->getConfigTreeBuilder()->getRootNode())
                         ->append($transformer->getConfigTreeBuilder()->getRootNode())
                         ->append($serialize->getConfigTreeBuilder()->getRootNode())
