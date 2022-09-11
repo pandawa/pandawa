@@ -9,6 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Enumerable;
 use InvalidArgumentException;
+use Pandawa\Component\Resource\Exception\FormatNotAllowed;
 use Pandawa\Component\Transformer\CollectionTransformer;
 use Pandawa\Component\Transformer\PaginatedTransformer;
 use Pandawa\Contracts\Resource\Formatter\FormatterInterface;
@@ -82,7 +83,7 @@ class Renderer implements RendererInterface
     protected function serialize(string $format, Context $context, array $data): string
     {
         if (!empty($this->allowedFormats) && !in_array($format, $this->allowedFormats)) {
-            throw new InvalidArgumentException(sprintf('Format "%s" is not allowed.', $format));
+            throw new FormatNotAllowed($format);
         }
 
         return $this->serializer->serialize($data, $format, array_get($context->options, 'serialize.context', []));

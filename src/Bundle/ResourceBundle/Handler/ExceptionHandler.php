@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Pandawa\Component\Foundation\Handler\ExceptionHandler as FoundationExceptionHandler;
@@ -15,6 +16,7 @@ use Pandawa\Component\Resource\Transformer\ErrorTransformer;
 use Pandawa\Contracts\Resource\RendererInterface;
 use Pandawa\Contracts\Transformer\Context;
 use ReflectionClass;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
@@ -29,7 +31,7 @@ class ExceptionHandler extends FoundationExceptionHandler
         ModelNotFoundException::class => 404,
     ];
 
-    public function render($request, Throwable $e)
+    public function render($request, Throwable $e): Response
     {
         $e = $this->prepareException($this->mapException($e));
 
@@ -38,7 +40,23 @@ class ExceptionHandler extends FoundationExceptionHandler
             request: $request
         );
 
-        return $this->renderer()->render($context, $e, new ErrorTransformer());
+        try {
+            return $this->renderer()->render($context, $e, new ErrorTransformer());
+        } catch (\Exception $e) {
+            return $this->renderFatalException($context, $e);
+        }
+    }
+
+    protected function renderFatalException(Context $context, Throwable $e): JsonResponse
+    {
+        $transformer = new ErrorTransformer();
+
+        return new JsonResponse(
+            $this->renderer()->toArray($context, $transformer->wrap(
+                $transformer->process($context, $e)
+            )),
+            $this->getErrorCode($e),
+        );
     }
 
 
