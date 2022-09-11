@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\FoundationBundle\Plugin;
 
-use Illuminate\Support\ServiceProvider;
 use Pandawa\Component\Foundation\Bundle\Plugin;
+use Pandawa\Component\Foundation\ResourcePublisher;
 use Pandawa\Contracts\Config\LoaderInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;
@@ -55,11 +55,15 @@ class ImportConfigurationPlugin extends Plugin
 
                 $bundleName = $this->bundle->getName();
 
-                $this->publishes([
-                    $bundleConfig => $this->getPackageConfigPath(
-                        $bundleName.'.'.pathinfo($bundleConfig, PATHINFO_EXTENSION)
-                    ),
-                ], [$bundleName . '-config', $bundleName, 'config']);
+                ResourcePublisher::publishes(
+                    $this->bundle::class,
+                    [
+                        $bundleConfig => $this->getPackageConfigPath(
+                            $bundleName.'.'.pathinfo($bundleConfig, PATHINFO_EXTENSION)
+                        ),
+                    ],
+                    [$bundleName . '-config', $bundleName, 'config']
+                );
             }
         }
     }
@@ -146,43 +150,5 @@ class ImportConfigurationPlugin extends Plugin
     protected function configLoader(): LoaderInterface
     {
         return $this->bundle->getApp()->get(LoaderInterface::class);
-    }
-
-    /**
-     * Register paths to be published by the publish command.
-     */
-    protected function publishes(array $paths, string|array $groups = null): void
-    {
-        $this->ensurePublishArrayInitialized($class = $this->bundle::class);
-
-        ServiceProvider::$publishes[$class] = array_merge(ServiceProvider::$publishes[$class], $paths);
-
-        foreach ((array)$groups as $group) {
-            $this->addPublishGroup($group, $paths);
-        }
-    }
-
-    /**
-     * Ensure the publish array for the service provider is initialized.
-     */
-    protected function ensurePublishArrayInitialized(string $class): void
-    {
-        if (!array_key_exists($class, ServiceProvider::$publishes)) {
-            ServiceProvider::$publishes[$class] = [];
-        }
-    }
-
-    /**
-     * Add a publish group / tag to the service provider.
-     */
-    protected function addPublishGroup(string $group, array $paths): void
-    {
-        if (!array_key_exists($group, ServiceProvider::$publishGroups)) {
-            ServiceProvider::$publishGroups[$group] = [];
-        }
-
-        ServiceProvider::$publishGroups[$group] = array_merge(
-            ServiceProvider::$publishGroups[$group], $paths
-        );
     }
 }
