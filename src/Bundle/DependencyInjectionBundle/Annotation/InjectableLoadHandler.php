@@ -26,7 +26,7 @@ final class InjectableLoadHandler extends ServiceLoadHandler
     {
         $arguments = [];
 
-        foreach ($class->getConstructor()->getParameters() as $parameter) {
+        foreach (($class->getConstructor()?->getParameters() ?? []) as $parameter) {
             if (null !== $paramAnnotation = $this->getParamAnnotation($parameter)) {
                 $arguments[] = $this->parseValue($paramAnnotation);
             }

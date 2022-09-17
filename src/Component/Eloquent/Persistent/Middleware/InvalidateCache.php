@@ -9,6 +9,7 @@ use Illuminate\Contracts\Container\Container;
 use Pandawa\Component\Eloquent\Model;
 use Pandawa\Contracts\Eloquent\Action\Action;
 use Pandawa\Contracts\Eloquent\Cache\CacheHandlerInterface;
+use Pandawa\Contracts\Eloquent\Factory\CacheHandlerFactoryInterface;
 use Pandawa\Contracts\Eloquent\Persistent\MiddlewareInterface;
 
 /**
@@ -29,8 +30,8 @@ class InvalidateCache implements MiddlewareInterface
 
     protected function getCacheHandler(): ?CacheHandlerInterface
     {
-        if ($this->container->has(CacheHandlerInterface::class)) {
-            return $this->container->get(CacheHandlerInterface::class);
+        if ($this->container->has(CacheHandlerFactoryInterface::class)) {
+            return $this->container->get(CacheHandlerFactoryInterface::class)->create();
         }
 
         return null;
