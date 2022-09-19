@@ -6,6 +6,7 @@ namespace Pandawa\Component\Resource\Http\Controller;
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Pandawa\Component\Resource\Helper\ContextualTrait;
 use Pandawa\Component\Resource\Helper\CriteriaTrait;
 use Pandawa\Component\Resource\Helper\RequestValidationTrait;
@@ -103,8 +104,13 @@ class MessageController
     protected function makeMessage(Request $request): object
     {
         $data = $this->validateRequest($request);
+        $normalized = [];
 
-        return $this->container->make($this->getMessage($request), $data);
+        foreach ($data as $key => $value) {
+            $normalized[Str::camel($key)] = $value;
+        }
+
+        return $this->container->make($this->getMessage($request), $normalized);
     }
 
     protected function getMessage(Request $request): string
