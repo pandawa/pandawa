@@ -102,7 +102,11 @@ abstract class Transformer implements TransformerInterface
 
         $transformed = [
             ...$result,
-            ...$this->processIncludes($this->getIncludes($context->includes), $data),
+            ...$this->processIncludes(
+                $context,
+                $this->getIncludes($context->includes),
+                $data
+            ),
         ];
 
         if (empty($selects = $this->getSelects($context->selects))) {
@@ -159,11 +163,11 @@ abstract class Transformer implements TransformerInterface
         });
     }
 
-    protected function processIncludes(array $includes, mixed $data): array
+    protected function processIncludes(Context $context, array $includes, mixed $data): array
     {
         $included = [];
         foreach ($includes as $include) {
-            $method = 'include' . ucfirst(Str::camel($include));
+            $method = 'include' . ucfirst(Str::camel(str_replace('.', '_', $include)));
 
             if (!method_exists($this, $method)) {
                 throw new RuntimeException(sprintf(
@@ -173,7 +177,7 @@ abstract class Transformer implements TransformerInterface
                 ));
             }
 
-            $included[$include] = $this->{$method}($data);
+            $included[$include] = $this->{$method}($context, $data);
         }
 
         return $included;
