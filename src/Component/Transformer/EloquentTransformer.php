@@ -34,7 +34,7 @@ class EloquentTransformer extends Transformer
         return $model->attributesToArray();
     }
 
-    protected function processIncludes(array $includes, mixed $data): array
+    protected function processIncludes(Context $context, array $includes, mixed $data): array
     {
         $included = [];
         foreach ($includes as $include) {
