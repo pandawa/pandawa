@@ -6,6 +6,7 @@ namespace Pandawa\Component\Resource\Transformer;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use Pandawa\Component\Transformer\Transformer;
 use Pandawa\Contracts\Transformer\Context;
 use ReflectionClass;
@@ -24,7 +25,7 @@ class ErrorTransformer extends Transformer
         $reflection = new ReflectionClass(get_class($exception));
 
         if ($context->options['debug'] ?? false) {
-            return [
+            $error = [
                 'message' => $exception->getMessage(),
                 'code'    => $this->getErrorCode($context, $exception),
                 'type'    => $reflection->getShortName(),
@@ -36,19 +37,25 @@ class ErrorTransformer extends Transformer
                     }
                 )->all(),
             ];
+        } else {
+            $error = [
+                'message' => $this->getErrorMessage($context, $exception),
+                'code'    => $this->getErrorCode($context, $exception),
+                'type'    => $reflection->getShortName(),
+            ];
         }
 
-        return [
-            'message' => $this->getErrorMessage($context, $exception),
-            'code'    => $this->getErrorCode($context, $exception),
-            'type'    => $reflection->getShortName(),
-        ];
+        if ($exception instanceof ValidationException) {
+            $error['error_bag'] = $exception->errors();
+        }
+
+        return $error;
     }
 
     protected function getErrorCode(Context $context, Throwable $e): int
     {
         if (!empty($code = $e->getCode())) {
-            return (int) $code;
+            return $code;
         }
 
         return $context->options[Context::HTTP_CODE] ?? 0;
