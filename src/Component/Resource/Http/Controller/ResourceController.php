@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Resource\Http\Controller;
 
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Pandawa\Component\Resource\Helper\ContextualTrait;
 use Pandawa\Component\Resource\Helper\CriteriaTrait;
@@ -102,9 +103,15 @@ class ResourceController
 
     protected function getResourceKey(Request $request, HandlerInterface $handler): string|int
     {
-        return $request->route(
+        $key = $request->route(
             $this->getRouteOption('resource_key', $request, $handler->getModelKey())
         );
+
+        if ($key instanceof Model) {
+            return $key->getKey();
+        }
+
+        return $key;
     }
 
     protected function persist(Request $request, callable $callback): Response
