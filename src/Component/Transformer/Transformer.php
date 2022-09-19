@@ -155,7 +155,7 @@ abstract class Transformer implements TransformerInterface
         }
 
         return array_filter($includes, function (string $include) {
-            if ($this->isAllowed($include, $this->availableIncludes)) {
+            if (in_array($include, $this->availableIncludes)) {
                 return true;
             }
 

@@ -12,7 +12,7 @@ use Throwable;
  */
 class SelectNotAllowedException extends Exception
 {
-    public function __construct(string $select, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $select, int $code = 400, ?Throwable $previous = null)
     {
         parent::__construct(sprintf('Select "%s" is not allowed', $select), $code, $previous);
     }
