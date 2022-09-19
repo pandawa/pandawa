@@ -22,7 +22,7 @@ trait RequestValidationTrait
             foreach ($rules as $rule) {
                 $validator = $this->validationFactory->create($rule, $data);
 
-                $filtered = [...$filtered, ...$validator->validated()];
+                $filtered = [...$filtered, ...$validator->validate()];
             }
 
             return $filtered;
