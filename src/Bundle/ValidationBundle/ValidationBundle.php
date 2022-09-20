@@ -22,7 +22,7 @@ use Pandawa\Contracts\Validation\RuleRegistryInterface;
  */
 class ValidationBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
-    const RULE_CONFIG_KEY = 'validation.rules';
+    const RULE_CONFIG_KEY = 'pandawa.rules';
 
     protected array $deferred = [
         'validator',
