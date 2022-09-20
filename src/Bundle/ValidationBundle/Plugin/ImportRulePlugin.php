@@ -19,6 +19,18 @@ class ImportRulePlugin extends Plugin
     {
     }
 
+    public function boot(): void
+    {
+        $this->bundle->callAfterResolving(
+            'validation.rule_registry',
+            function (RuleRegistryInterface $registry) {
+                $config = $this->bundle->getService('config');
+
+                $registry->load($config->get($this->getConfigKey(), []));
+            }
+        );
+    }
+
     public function configure(): void
     {
         if ($this->bundle->getApp()->configurationIsCached()) {
@@ -32,17 +44,10 @@ class ImportRulePlugin extends Plugin
         }
 
         $config = $this->bundle->getService('config');
-        $config->set(ValidationBundle::RULE_CONFIG_KEY, [
-            ...$config->get(ValidationBundle::RULE_CONFIG_KEY, []),
+        $config->set($this->getConfigKey(), [
+            ...$config->get($this->getConfigKey(), []),
             ...$loadedRules,
         ]);
-
-        $this->bundle->callAfterResolving(
-            'validation.rule_registry',
-            function (RuleRegistryInterface $registry) use ($loadedRules) {
-                $registry->load($loadedRules);
-            }
-        );
     }
 
     protected function getRules(): iterable
@@ -55,5 +60,10 @@ class ImportRulePlugin extends Plugin
     protected function loader(): LoaderInterface
     {
         return $this->bundle->getService(LoaderInterface::class);
+    }
+
+    protected function getConfigKey(): string
+    {
+        return ValidationBundle::RULE_CONFIG_KEY . '.' . $this->bundle->getName();
     }
 }
