@@ -73,7 +73,9 @@ class QueryBuilder implements QueryBuilderInterface
     public function get(array $columns = ['*']): Collection|ModelCollection
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
-            return $results;
+            return tap($results, function () {
+                $this->refresh();
+            });
         }
 
         $query = $this;
@@ -82,31 +84,41 @@ class QueryBuilder implements QueryBuilderInterface
             if ($results->count() && $this->isCacheEnabled()) {
                 $this->cacheHandler->rememberQuery($query, $results);
             }
+
+            $this->refresh();
         });
     }
 
     public function cursor(): LazyCollection
     {
-        return $this->queryBuilder->cursor();
+        return tap($this->queryBuilder->cursor(), function () {
+            $this->refresh();
+        });
     }
 
     public function findByKey(int|string $key): ?Model
     {
         if ($this->isCacheEnabled() && null !== $model = $this->cacheHandler?->getByKey($this->model, $key)) {
-            return $model;
+            return tap($model, function () {
+                $this->refresh();
+            });
         }
 
         return tap($this->queryBuilder->whereKey($key)->first(), function (?Model $model) {
             if ($model && $this->isCacheEnabled()) {
                 $this->cacheHandler?->rememberModel($model);
             }
+
+            $this->refresh();
         });
     }
 
     public function first(array $columns = ['*']): ?Model
     {
         if ($this->isCacheEnabled() && null !== $result = $this->cacheHandler?->getByQuery($this)) {
-            return $result;
+            return tap($result, function() {
+                $this->refresh();
+            });
         }
 
         $query = $this;
@@ -115,11 +127,18 @@ class QueryBuilder implements QueryBuilderInterface
             if (null !== $model && $this->isCacheEnabled()) {
                 $this->cacheHandler?->rememberQuery($query, $model);
             }
+
+            $this->refresh();
         });
     }
 
     public function __call(string $method, array $args): mixed
     {
         return $this->queryBuilder->{$method}(...$args);
+    }
+
+    protected function refresh(): void
+    {
+        $this->setModel($this->model);
     }
 }
