@@ -134,7 +134,13 @@ class QueryBuilder implements QueryBuilderInterface
 
     public function __call(string $method, array $args): mixed
     {
-        return $this->queryBuilder->{$method}(...$args);
+        $result = $this->queryBuilder->{$method}(...$args);
+
+        if ($result instanceof Builder) {
+            return $this;
+        }
+
+        return $result;
     }
 
     protected function refresh(): void
