@@ -45,7 +45,9 @@ class Validator extends LaravelValidator
             $extra = array_merge($extra, $this->currentRule->queryCallbacks());
         }
 
-        $id = $this->parserResolver()->resolve($id)?->parse($id) ?? $id;
+        if (null !== $id) {
+            $id = $this->parserResolver()->resolve($id)?->parse($id) ?? $id;
+        }
 
         return 0 === $verifier->getCount($table, $column, $value, $id, $idColumn, $extra);
     }
