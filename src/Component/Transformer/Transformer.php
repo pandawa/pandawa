@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pandawa\Component\Transformer\Exception\IncludeNotAllowedException;
 use Pandawa\Component\Transformer\Exception\SelectNotAllowedException;
@@ -235,11 +234,39 @@ abstract class Transformer implements TransformerInterface
 
     protected function filter(array $data, array $keys): array
     {
-        return Arr::undot(
-            Arr::only(
-                Arr::dot($data),
-                $keys
-            )
-        );
+        $filtered = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value) && !empty($childKeys = $this->filterKeys($key, $keys))) {
+                if (empty($value = $this->filter($value, $childKeys))) {
+                    continue;
+                }
+
+                $filtered[$key] = $value;
+
+                continue;
+            }
+
+            if ($this->isAllowed($key, $keys)) {
+                $filtered[$key] = $value;
+            }
+        }
+
+        return $filtered;
+    }
+
+    protected function filterKeys(string|int $filter, array $keys): array
+    {
+        if (is_int($filter)) {
+            return $keys;
+        }
+
+        $filtered = [];
+        foreach ($keys as $key) {
+            if (preg_match('/^'.$filter.'\./', $key)) {
+                $filtered[] = str_replace($filter.'.', '', $key);
+            }
+        }
+
+        return $filtered;
     }
 }
