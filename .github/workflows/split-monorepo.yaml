@@ -123,6 +123,8 @@ jobs:
             split_repository: 'routing-annotations'
           - local_path:       'Annotations/Auth'
             split_repository: 'auth-annotations'
+          - local_path:       'Annotations/Event'
+            split_repository: 'event-annotations'
 
     steps:
       - uses: actions/checkout@v2
