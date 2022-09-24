@@ -8,8 +8,8 @@ use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Events\Dispatcher;
 use Pandawa\Component\Event\EventBus;
 use Pandawa\Component\Foundation\Bundle\Bundle;
-use Pandawa\Contracts\Bus\QueueFactoryInterface;
 use Pandawa\Contracts\Event\EventBusInterface;
+use RuntimeException;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -29,7 +29,11 @@ class EventBundle extends Bundle
     {
         $this->app->singleton('bus.event', function ($app) {
             return (new EventBus($app['bus.factory.envelope'], $app))->setQueueResolver(function () use ($app) {
-                return $app[QueueFactoryInterface::class]->create();
+                if (!$app->bound('queue')) {
+                    throw new RuntimeException('Please install "pandawa/queue-bundle" to enable queue.');
+                }
+
+                return $app['queue'];
             });
         });
 
