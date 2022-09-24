@@ -13,4 +13,12 @@ use Pandawa\Component\Queue\Queue;
 class RedisQueue extends LaravelRedisQueue
 {
     use Queue;
+
+    protected function additionalPayload(): array
+    {
+        return [
+            'id' => $this->getRandomId(),
+            'attempts' => 0,
+        ];
+    }
 }

@@ -193,11 +193,19 @@ trait Queue
 
     protected function createPayloadArray($job, $queue, $data = ''): array
     {
-        if (is_object($job)) {
-            return $this->createObjectPayload($job, $queue);
-        }
+        $payload = is_object($job)
+            ? $this->createObjectPayload($job, $queue)
+            : $this->createStringPayload($job, $queue, $data);
 
-        return $this->createStringPayload($job, $queue, $data);
+        return [
+            ...$payload,
+            ...$this->additionalPayload(),
+        ];
+    }
+
+    protected function additionalPayload(): array
+    {
+        return [];
     }
 
     protected function getMaxTries(Envelope $envelope): ?int
