@@ -111,11 +111,14 @@ class EventBus extends Dispatcher implements EventBusInterface
      */
     protected function parseEventAndPayload($event, $payload): array
     {
+        $eventName = is_object($event?->message) ? $this->getEventName($event) : $event;
+        $payload = [$event];
+
         if ($event->message instanceof NoneObjectEvent) {
-            return [$event->message, Arr::wrap($payload)];
+            $payload = Arr::wrap($payload);
         }
 
-        return [$this->getEventName($event), [$event]];
+        return [$eventName, $payload];
     }
 
     protected function createCallableListener(callable $callback): callable

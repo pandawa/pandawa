@@ -16,6 +16,8 @@ use Pandawa\Contracts\Event\EventBusInterface;
  */
 class ImportEventListenerAnnotationPlugin extends AnnotationPlugin
 {
+    protected ?string $defaultPath = 'Listener';
+
     public function boot(): void
     {
         foreach ($this->config()->get($this->getConfigKey()) as $event => $listeners) {
