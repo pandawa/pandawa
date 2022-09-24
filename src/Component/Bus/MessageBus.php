@@ -15,14 +15,11 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Support\Collection;
-use Pandawa\Component\Bus\Stamp\DenormalizerStamp;
-use Pandawa\Component\Bus\Stamp\MessageIdentifiedStamp;
+use Pandawa\Component\Bus\Factory\EnvelopeFactory;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
-use Pandawa\Component\Bus\Stamp\NormalizerStamp;
 use Pandawa\Component\Bus\Stamp\QueuedStamp;
 use Pandawa\Contracts\Bus\BusInterface;
 use Pandawa\Contracts\Bus\Envelope;
-use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use Pandawa\Contracts\Bus\QueueFactoryInterface;
 
 /**
@@ -34,7 +31,7 @@ class MessageBus implements BusInterface
 
     public function __construct(
         protected readonly Container $container,
-        protected readonly RegistryInterface $messageRegistry,
+        protected readonly EnvelopeFactory $envelopeFactory,
         protected readonly QueueFactoryInterface $queueFactory,
         protected array $middlewares = [],
         protected array $handlers = [],
@@ -164,35 +161,7 @@ class MessageBus implements BusInterface
 
     public function wrap(object $message): Envelope
     {
-        $envelope = Envelope::wrap($message);
-
-        if ($envelope->last(MessageIdentifiedStamp::class)) {
-            return $envelope;
-        }
-
-        $envelope = $envelope->with(new MessageIdentifiedStamp());
-
-        if ($this->messageRegistry->has($messageClass = get_class($envelope->message))) {
-            $metadata = $this->messageRegistry->get($messageClass);
-
-            if (!$envelope->last(MessageNameStamp::class) && $name = $metadata->name) {
-                $envelope = $envelope->with(new MessageNameStamp($name));
-            }
-
-            if (!$envelope->last(NormalizerStamp::class) && $normalizer = $metadata->normalizer) {
-                $envelope = $envelope->with(new NormalizerStamp($normalizer));
-            }
-
-            if (!$envelope->last(DenormalizerStamp::class) && $denormalizer = $metadata->denormalizer) {
-                $envelope = $envelope->with(new DenormalizerStamp($denormalizer));
-            }
-
-            if (count($metadata->stamps)) {
-                $envelope = $envelope->with(...$metadata->stamps);
-            }
-        }
-
-        return $envelope;
+        return $this->envelopeFactory->wrap($message);
     }
 
     protected function pushMessageToQueue(Queue $queue, object $message): mixed

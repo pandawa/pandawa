@@ -6,6 +6,7 @@ namespace Test\Bus;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\Queue;
+use Pandawa\Component\Bus\Factory\EnvelopeFactory;
 use Pandawa\Component\Bus\MessageBus;
 use Pandawa\Component\Bus\MessageRegistry;
 use Pandawa\Component\Bus\Middleware\RunInDatabaseTransactionMiddleware;
@@ -54,7 +55,7 @@ class MessageBusTest extends TestCase
     {
         return new MessageBus(
             new Container(),
-            $this->createRegistry(),
+            new EnvelopeFactory($this->createRegistry()),
             new class implements QueueFactoryInterface {
 
                 public function create(string $connection): Queue

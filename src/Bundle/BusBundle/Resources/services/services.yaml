@@ -17,7 +17,7 @@ bus.default:
     - Illuminate\Contracts\Bus\QueueingDispatcher
   arguments:
     - '@app'
-    - '@Pandawa\Contracts\Bus\Message\RegistryInterface'
+    - '@bus.factory.envelope'
     - '@Pandawa\Contracts\Bus\QueueFactoryInterface'
     - "%bus.middlewares%"
     - "%bus.handlers%"

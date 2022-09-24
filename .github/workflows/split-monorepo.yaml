@@ -55,6 +55,8 @@ jobs:
             split_repository: 'octane-bundle'
           - local_path:       'Bundle/PaginationBundle'
             split_repository: 'pagination-bundle'
+          - local_path:       'Bundle/EventBundle'
+            split_repository: 'event-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -79,6 +81,8 @@ jobs:
             split_repository: 'transformer'
           - local_path:       'Component/Resource'
             split_repository: 'resource'
+          - local_path:       'Component/Event'
+            split_repository: 'event'
 
           # Contracts
           - local_path:       'Contracts/Config'
@@ -101,6 +105,8 @@ jobs:
             split_repository: 'transformer-contracts'
           - local_path:       'Contracts/Resource'
             split_repository: 'resource-contracts'
+          - local_path:       'Contracts/Event'
+            split_repository: 'event-contracts'
 
           # Annotations
           - local_path:       'Annotations/Eloquent'
