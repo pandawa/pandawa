@@ -22,8 +22,8 @@ return [
     'serializers' => [
         'default' => [
             'normalizers' => [
-                '@serializer.normalizer.object',
                 '@serializer.normalizer.date_time',
+                '@serializer.normalizer.object',
             ],
             'encoders' => [
                 '@serializer.encoder.json',
