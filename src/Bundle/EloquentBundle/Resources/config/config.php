@@ -6,9 +6,9 @@ return [
     'persistent' => [
         'class'       => Eloquent\Persistent\DatabasePersistent::class,
         'middlewares' => [
-            Eloquent\Persistent\Middleware\DispatchEvent::class,
-            Eloquent\Persistent\Middleware\InvalidateCache::class,
             Eloquent\Persistent\Middleware\DatabaseTransaction::class,
+            Eloquent\Persistent\Middleware\InvalidateCache::class,
+            Eloquent\Persistent\Middleware\DispatchEvent::class,
         ],
     ],
 
