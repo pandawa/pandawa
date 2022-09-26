@@ -23,7 +23,7 @@ class CallQueuedListener extends LaravelCallQueuedListener
     {
         if (is_array($data)) {
             return array_map(
-                fn(mixed $value) => $this->normalizeData($data),
+                fn(mixed $value) => $this->normalizeData($value),
                 $data
             );
         }

@@ -9,9 +9,9 @@ use Pandawa\Contracts\Bus\StampInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class NormalizerStamp implements StampInterface
+final class SerializerStamp implements StampInterface
 {
-    public function __construct(public readonly string $normalizer)
+    public function __construct(public readonly string $serializer)
     {
     }
 }

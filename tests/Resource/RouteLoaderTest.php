@@ -31,6 +31,7 @@ use Pandawa\Contracts\Routing\GroupRegistryInterface;
 use Pandawa\Contracts\Routing\LoaderResolverInterface;
 use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Serializer;
 use Test\Resource\Command\CreatePost;
 use Test\Resource\Model\Post;
 
@@ -196,7 +197,9 @@ class RouteLoaderTest extends TestCase
     {
         $app = new Application();
         $app->bind(Registrar::class, Router::class);
-        $app->bind(RegistryInterface::class, MessageRegistry::class);
+        $app->bind(RegistryInterface::class, function ($app) {
+            return new MessageRegistry($app, Serializer::class);
+        });
         $app->bind(GroupRegistryInterface::class, GroupRegistry::class);
 
         $this->registerConfigurator($app);

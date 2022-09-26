@@ -15,7 +15,6 @@ use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\InteractsWithQueue;
-use Pandawa\Component\Bus\Normalizer\ObjectDenormalizerFactory;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
 use Pandawa\Component\Queue\Stamp\QueueMiddlewaresStamp;
 use Pandawa\Component\Queue\Stamp\UniqueStamp;
@@ -24,7 +23,9 @@ use Pandawa\Contracts\Bus\Envelope;
 use Pandawa\Contracts\Bus\Message\Metadata;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use ReflectionClass;
-use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
@@ -178,15 +179,38 @@ class CallQueuedHandler
 
     protected function getCommand(array $data): Envelope
     {
-        $metadata = $this->getMetadata($data);
-        $denormalizer = $this->makeDenormalizer($metadata);
-        $message = $data['command'];
-
         if (true === ($data['encrypted'] ?? false) && $this->container->bound(Encrypter::class)) {
             $message = unserialize($this->container[Encrypter::class]->decrypt($data['command']));
+        } else {
+            $message = $this->denormalize($data);
         }
 
-        return $this->messageBus->wrap($denormalizer->denormalize($message, $metadata->class));
+        return $this->messageBus->wrap($message);
+    }
+
+    protected function denormalize(array $data): mixed
+    {
+        $metadata = $this->getMetadata($data);
+        $serializer = $this->makeSerializer($metadata);
+
+        if ($metadata->class === CallQueuedListener::class) {
+            return new CallQueuedListener(
+                $data['command']['class'],
+                $data['command']['method'],
+                array_map(
+                    function (mixed $value) use ($serializer) {
+                        if (is_array($value) && $value['__normalized_class'] ?? null) {
+                            return $serializer->denormalize($value['payload'], $value['__normalized_class']);
+                        }
+
+                        return $value;
+                    },
+                    $data['command']['data'] ?? []
+                )
+            );
+        }
+
+        return $serializer->denormalize($data['command'], $metadata->class);
     }
 
     /**
@@ -238,12 +262,12 @@ class CallQueuedHandler
             return $this->registry->get($data['commandClass']);
         }
 
-        return new Metadata($data['commandClass'], denormalizer: ObjectDenormalizerFactory::class);
+        return new Metadata($data['commandClass'], serializer: Serializer::class);
     }
 
-    protected function makeDenormalizer(Metadata $metadata): DenormalizerInterface
+    protected function makeSerializer(Metadata $metadata): SerializerInterface|NormalizerInterface
     {
-        return $this->container->make($metadata->denormalizer)->create();
+        return $this->container->make($metadata->serializer);
     }
 
     protected function shouldBeUnique(Envelope $envelope): bool

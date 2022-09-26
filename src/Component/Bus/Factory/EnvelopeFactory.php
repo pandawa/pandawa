@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Bus\Factory;
 
-use Pandawa\Component\Bus\Stamp\DenormalizerStamp;
 use Pandawa\Component\Bus\Stamp\MessageIdentifiedStamp;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
-use Pandawa\Component\Bus\Stamp\NormalizerStamp;
+use Pandawa\Component\Bus\Stamp\SerializerStamp;
 use Pandawa\Contracts\Bus\Envelope;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
 
@@ -37,12 +36,8 @@ final class EnvelopeFactory
                 $envelope = $envelope->with(new MessageNameStamp($name));
             }
 
-            if (!$envelope->last(NormalizerStamp::class) && $normalizer = $metadata->normalizer) {
-                $envelope = $envelope->with(new NormalizerStamp($normalizer));
-            }
-
-            if (!$envelope->last(DenormalizerStamp::class) && $denormalizer = $metadata->denormalizer) {
-                $envelope = $envelope->with(new DenormalizerStamp($denormalizer));
+            if (!$envelope->last(SerializerStamp::class) && $serializer = $metadata->serializer) {
+                $envelope = $envelope->with(new SerializerStamp($serializer));
             }
 
             if (count($metadata->stamps)) {

@@ -3,6 +3,7 @@ bus.registry:
   alias: Pandawa\Contracts\Bus\Message\RegistryInterface
   arguments:
     - '@app'
+    - '%bus.default_serializer%'
     - "%bus.messages%"
 
 bus.factory.queue:

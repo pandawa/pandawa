@@ -13,6 +13,7 @@ use Pandawa\Bundle\QueueBundle\Queue\RedisQueue;
 use Pandawa\Bundle\QueueBundle\Queue\SyncQueue;
 use Pandawa\Bundle\QueueBundle\QueueBundle;
 use Pandawa\Bundle\RedisBundle\RedisBundle;
+use Pandawa\Bundle\SerializerBundle\SerializerBundle;
 use Pandawa\Component\Bus\Stamp\QueuedStamp;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Contracts\Bus\QueueFactoryInterface;
@@ -77,6 +78,7 @@ class BundleTest extends TestCase
         $app = new Application();
         $app->register(new DependencyInjectionBundle($app));
         $app->register(new QueueBundle($app));
+        $app->register(new SerializerBundle($app));
         $app->register(new BusBundle($app));
         $app->register(new DatabaseBundle($app));
         $app->register(new RedisBundle($app));

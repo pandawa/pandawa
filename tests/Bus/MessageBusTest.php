@@ -13,6 +13,7 @@ use Pandawa\Component\Bus\Middleware\RunInDatabaseTransactionMiddleware;
 use Pandawa\Component\Bus\Stamp\QueuedStamp;
 use Pandawa\Contracts\Bus\QueueFactoryInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Serializer;
 use Test\Bus\Command\BigCalculateSomething;
 use Test\Bus\Command\CalculateSomething;
 use Test\Bus\Command\CreateComment;
@@ -90,7 +91,10 @@ class MessageBusTest extends TestCase
 
     protected function createRegistry(): MessageRegistry
     {
-        $registry = new MessageRegistry(new Container());
+        $registry = new MessageRegistry(
+            new Container(),
+            Serializer::class
+        );
         $registry->load([
             CreatePost::class => [
                 'name' => 'post.create',

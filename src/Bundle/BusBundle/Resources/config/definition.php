@@ -13,6 +13,7 @@ return static function (TreeBuilder $treeBuilder) {
             ->arrayNode('handlers')
                 ->scalarPrototype()->end()
             ->end()
+            ->scalarNode('default_serializer')->isRequired()->cannotBeEmpty()->end()
             ->scalarNode('registry')->end()
             ->scalarNode('queue_factory')->end()
             ->scalarNode('message_bus')->end()

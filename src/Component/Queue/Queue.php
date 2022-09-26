@@ -12,9 +12,9 @@ use Illuminate\Queue\CallQueuedClosure;
 use Illuminate\Queue\Queue as LaravelQueue;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Pandawa\Component\Bus\Normalizer\ObjectNormalizerFactory;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
-use Pandawa\Component\Bus\Stamp\NormalizerStamp;
+use Pandawa\Component\Bus\Stamp\SerializerStamp;
+use Pandawa\Component\Queue\Handler\CallQueuedListener;
 use Pandawa\Component\Queue\Stamp\AfterCommitStamp;
 use Pandawa\Component\Queue\Stamp\BackoffStamp;
 use Pandawa\Component\Queue\Stamp\EncryptStamp;
@@ -24,7 +24,8 @@ use Pandawa\Component\Queue\Stamp\RetryUntilStamp;
 use Pandawa\Component\Queue\Stamp\TimeoutStamp;
 use Pandawa\Component\Queue\Stamp\TriesStamp;
 use Pandawa\Contracts\Bus\Envelope;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 
 /**
@@ -62,12 +63,10 @@ trait Queue
             'retryUntil'    => $this->getJobExpiration($envelope),
         ]);
 
-        $normalizer = $this->makeNormalizer($envelope);
-
         $encrypted = $this->jobShouldBeEncrypted($envelope) && $this->container->bound(Encrypter::class);
         $message = $encrypted
-            ? $this->container[Encrypter::class]->encrypt(serialize($normalizer->normalize($envelope->message)))
-            : $normalizer->normalize($envelope->message);
+            ? $this->container[Encrypter::class]->encrypt(serialize($this->normalize($envelope)))
+            : $this->normalize($envelope);
 
         return [
             ...$payload,
@@ -78,6 +77,40 @@ trait Queue
                 'encrypted'    => $encrypted,
             ],
         ];
+    }
+
+    protected function normalize(Envelope $envelope): array
+    {
+        $serializer = $this->makeSerializer($envelope);
+
+        if ($envelope->message instanceof CallQueuedListener) {
+            return [
+                'class'  => $envelope->message->class,
+                'method' => $envelope->message->method,
+                'data'   => array_map(
+                    function (mixed $value) use ($envelope, $serializer) {
+                        if ($value instanceof Envelope) {
+                            return [
+                                '__normalized_class' => get_class($value->message),
+                                'payload'            => $this->normalize($value),
+                            ];
+                        }
+
+                        if (is_object($value)) {
+                            return [
+                                '__normalized_class' => get_class($value),
+                                'payload'            => $serializer->normalize($value),
+                            ];
+                        }
+
+                        return $value;
+                    },
+                    $envelope->message->data
+                ),
+            ];
+        }
+
+        return $serializer->normalize($envelope->message);
     }
 
     protected function createStringPayload($job, $queue, $data): array
@@ -230,10 +263,13 @@ trait Queue
             : ($envelope->message->failOnTimeout ?? false);
     }
 
-    protected function makeNormalizer(Envelope $envelope): NormalizerInterface
+    protected function makeSerializer(Envelope $envelope): SerializerInterface
     {
-        $normalizer = $envelope->last(NormalizerStamp::class)->normalizer ?? ObjectNormalizerFactory::class;
+        return $this->container->make($this->getSerializer($envelope));
+    }
 
-        return $this->container->make($normalizer)->create();
+    protected function getSerializer(Envelope $envelope): string
+    {
+        return $envelope->last(SerializerStamp::class)->serializer ?? Serializer::class;
     }
 }

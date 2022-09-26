@@ -9,6 +9,7 @@ use Monolog\Test\TestCase;
 use Pandawa\Component\Bus\MessageRegistry;
 use Pandawa\Component\Bus\Stamp\QueuedStamp;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
+use Symfony\Component\Serializer\Serializer;
 use Test\Bus\Command\CreatePost;
 
 /**
@@ -18,7 +19,7 @@ class MessageRegistryTest extends TestCase
 {
     public function testAddMessage(): void
     {
-        $registry = new MessageRegistry(new Container());
+        $registry = new MessageRegistry(new Container(), Serializer::class);
         $registry->add($messageClass = CreatePost::class, $message = [
             'name'   => 'post.create',
             'stamps' => [
@@ -51,7 +52,7 @@ class MessageRegistryTest extends TestCase
             ],
         ];
 
-        $registry = new MessageRegistry(new Container());
+        $registry = new MessageRegistry(new Container(), Serializer::class);
         $registry->load([
             $messageClass => $message,
         ]);
