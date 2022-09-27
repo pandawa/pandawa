@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Component\Transformer;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pandawa\Component\Transformer\Exception\IncludeNotAllowedException;
 use Pandawa\Component\Transformer\Exception\SelectNotAllowedException;
@@ -179,7 +180,7 @@ abstract class Transformer implements TransformerInterface
             $included[$include] = $this->{$method}($context, $data);
         }
 
-        return $included;
+        return Arr::undot($included);
     }
 
     protected function processTransform(Context $context, mixed $data): mixed
