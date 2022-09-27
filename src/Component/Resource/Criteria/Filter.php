@@ -21,6 +21,7 @@ class Filter implements CriterionInterface
         protected readonly array $filters,
         protected readonly Request $request,
         protected readonly array $defaultFilters = [],
+        protected readonly array $skips = [],
     ) {
     }
 
@@ -30,6 +31,10 @@ class Filter implements CriterionInterface
             $keysFilter = array_keys($this->filters);
 
             foreach ($params as $key => $value) {
+                if (in_array($key, $this->skips)) {
+                    return;
+                }
+
                 if (!in_array($key, $keysFilter)) {
                     throw new InvalidArgumentException(
                         sprintf('Filter by field "%s" is not allowed.', $key)
