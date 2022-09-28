@@ -71,6 +71,8 @@ class LoadConfiguration extends LaravelLoadConfiguration
                 continue;
             }
 
+            $key = str_replace('packages.', '', $key);
+
             $repository->set($key, $this->loader->load($path));
         }
     }
