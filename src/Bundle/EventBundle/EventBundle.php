@@ -23,7 +23,7 @@ class EventBundle extends Bundle
         $this->registerAliases();
     }
 
-    public function register(): void
+    public function configure(): void
     {
         $this->app->singleton('bus.event', function ($app) {
             return (new EventBus($app['bus.factory.envelope'], $app))->setQueueResolver(function () use ($app) {
