@@ -20,9 +20,7 @@ class EventBundle extends Bundle
 
     public function boot(): void
     {
-        $this->app->alias('bus.event', DispatcherContract::class);
-        $this->app->alias('bus.event', Dispatcher::class);
-        $this->app->alias('bus.event', 'events');
+        $this->registerAliases();
     }
 
     public function register(): void
@@ -37,6 +35,14 @@ class EventBundle extends Bundle
             });
         });
 
+        $this->registerAliases();
+    }
+
+    protected function registerAliases(): void
+    {
         $this->app->alias('bus.event', EventBusInterface::class);
+        $this->app->alias('bus.event', DispatcherContract::class);
+        $this->app->alias('bus.event', Dispatcher::class);
+        $this->app->alias('bus.event', 'events');
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Bus\DatabaseBatchRepository;
 use Illuminate\Contracts\Config\Repository as Config;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
+use Pandawa\Component\Bus\Factory\EnvelopeFactory;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Bus\BusInterface;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
@@ -50,6 +51,8 @@ class BusBundle extends Bundle implements HasPluginInterface
                 $app->config->get('queue.batching.table', 'job_batches')
             );
         });
+
+        $this->app->singleton('bus.factory.envelope', EnvelopeFactory::class);
     }
 
     public function plugins(): array
