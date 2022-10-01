@@ -70,6 +70,11 @@ class Application extends LaravelApplication implements ApplicationInterface
         ],
     ];
 
+    protected array $dontRegisterProviders = [
+        'Laravel\Horizon\HorizonServiceProvider',
+        'Laravel\Octane\OctaneServiceProvider',
+    ];
+
     protected bool $configured = false;
 
     protected array $bootProviders = [
@@ -98,7 +103,12 @@ class Application extends LaravelApplication implements ApplicationInterface
                 return str_starts_with($provider, 'Illuminate\\') || str_starts_with($provider, 'Pandawa\\');
             });
 
-        $providers->splice(1, 0, [$this->make(PackageManifest::class)->providers()]);
+        $providers->splice(1, 0, [
+            array_filter(
+                $this->make(PackageManifest::class)->providers(),
+                fn(string $provider) => !in_array($provider, $this->dontRegisterProviders)
+            )
+        ]);
 
         (new ProviderRepository($this, new Filesystem, $this->getCachedServicesPath()))
             ->load($providers->collapse()->toArray());
