@@ -43,24 +43,36 @@ final class YamlLoader implements LoaderInterface
             return $config;
         }
 
-        return Arr::map($config, function (mixed $item) use ($defines) {
-            if (is_array($item)) {
-                return $this->replaces($item, $defines);
+        $replaced = [];
+        foreach ($config as $key => $value) {
+            $key = $this->replaceValue($key, $defines);
+
+            if (is_array($value)) {
+                $replaced[$key] = $this->replaces($value, $defines);
+
+                continue;
             }
 
-            if (is_string($item) && preg_match_all(self::DEFINE_REGEX, $item, $matches)) {
-                foreach ($matches[1] as $i => $key) {
-                    if (empty($replacer = $defines[$key] ?? null)) {
-                        throw new \InvalidArgumentException(
-                            sprintf('Variable "%s" is not defined.', $matches[0][$i])
-                        );
-                    }
+            $replaced[$key] = $this->replaceValue($value, $defines);
+        }
 
-                    $item = str_replace($matches[0][$i], $replacer, $item);
+        return $replaced;
+    }
+
+    protected function replaceValue(mixed $value, array $defines): mixed
+    {
+        if (is_string($value) && preg_match_all(self::DEFINE_REGEX, $value, $matches)) {
+            foreach ($matches[1] as $i => $key) {
+                if (empty($replacer = $defines[$key] ?? null)) {
+                    throw new \InvalidArgumentException(
+                        sprintf('Variable "%s" is not defined.', $matches[0][$i])
+                    );
                 }
-            }
 
-            return $item;
-        });
+                $value = str_replace($matches[0][$i], $replacer, $value);
+            }
+        }
+
+        return $value;
     }
 }
