@@ -1,0 +1,40 @@
+{
+    "name": "pandawa/horizon-bundle",
+    "description": "The Laravel Horizon bridge bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/dependency-injection-bundle": "^5.0",
+        "pandawa/foundation-bundle": "^5.0",
+        "pandawa/redis-bundle": "^5.0",
+        "pandawa/queue-bundle": "^5.0",
+        "pandawa/event-bundle": "^5.0",
+        "pandawa/cache-bundle": "^5.0",
+        "laravel/horizon": "^5.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\HorizonBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\HorizonBundle\\HorizonBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

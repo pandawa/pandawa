@@ -1,0 +1,32 @@
+__defines:
+  Events: Laravel\Horizon\Events
+  Listeners: Laravel\Horizon\Listeners
+
+${Events}\JobPushed:
+  - ${Listeners}\StoreJob
+  - ${Listeners}\StoreMonitoredTags
+
+${Events}\JobReserved:
+  - ${Listeners}\MarkJobAsReserved
+  - ${Listeners}\StartTimingJob
+
+${Events}\JobReleased:
+  - ${Listeners}\MarkJobAsReleased
+
+${Events}\JobDeleted:
+  - ${Listeners}\MarkJobAsComplete
+  - ${Listeners}\UpdateJobMetrics
+
+${Events}\JobsMigrated:
+  - ${Listeners}\MarkJobsAsMigrated
+
+Illuminate\Queue\Events\JobExceptionOccurred:
+  - ${Listeners}\ForgetJobTimer
+
+Illuminate\Queue\Events\JobFailed:
+  - ${Listeners}\ForgetJobTimer
+  - ${Listeners}\MarshalFailedEvent
+
+${Events}\JobFailed:
+  - ${Listeners}\MarkJobAsFailed
+  - ${Listeners}\StoreTagsForFailedJob

@@ -1,0 +1,26 @@
+__defines:
+  Horizon: Laravel\Horizon
+  Contracts: Laravel\Horizon\Contracts
+  Listeners: Laravel\Horizon\Listeners
+
+${Horizon}\AutoScaler:
+  class: ${Horizon}\AutoScaler
+
+${Horizon}\RedisHorizonCommandQueue:
+  class: ${Horizon}\RedisHorizonCommandQueue
+  alias: ${Contracts}\HorizonCommandQueue
+
+${Listeners}\TrimRecentJobs:
+  class: ${Listeners}\TrimRecentJobs
+
+${Listeners}\TrimFailedJobs:
+  class: ${Listeners}\TrimFailedJobs
+
+${Listeners}\TrimMonitoredJobs:
+  class: ${Listeners}\TrimMonitoredJobs
+
+${Horizon}\Lock:
+  class: ${Horizon}\Lock
+
+${Horizon}\Stopwatch:
+  class: ${Horizon}\Stopwatch

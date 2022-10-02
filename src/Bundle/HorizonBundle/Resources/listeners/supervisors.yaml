@@ -1,0 +1,18 @@
+__defines:
+  Events: Laravel\Horizon\Events
+  Listeners: Laravel\Horizon\Listeners
+
+${Events}\MasterSupervisorLooped:
+  - ${Listeners}\TrimRecentJobs
+  - ${Listeners}\TrimFailedJobs
+  - ${Listeners}\TrimMonitoredJobs
+  - ${Listeners}\ExpireSupervisors
+  - ${Listeners}\MonitorMasterSupervisorMemory
+
+${Events}\SupervisorLooped:
+  - ${Listeners}\PruneTerminatingProcesses
+  - ${Listeners}\MonitorSupervisorMemory
+  - ${Listeners}\MonitorWaitTimes
+
+${Events}\LongWaitDetected:
+  - ${Listeners}\SendNotification

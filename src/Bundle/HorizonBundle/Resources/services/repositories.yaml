@@ -1,0 +1,31 @@
+__defines:
+  Contracts: Laravel\Horizon\Contracts
+  Repositories: Laravel\Horizon\Repositories
+
+${Repositories}\RedisJobRepository:
+  class: ${Repositories}\RedisJobRepository
+  alias: ${Contracts}\JobRepository
+
+${Repositories}\RedisMasterSupervisorRepository:
+  class: ${Repositories}\RedisMasterSupervisorRepository
+  alias: ${Contracts}\MasterSupervisorRepository
+
+${Repositories}\RedisMetricsRepository:
+  class: ${Repositories}\RedisMetricsRepository
+  alias: ${Contracts}\MetricsRepository
+
+${Repositories}\RedisProcessRepository:
+  class: ${Repositories}\RedisProcessRepository
+  alias: ${Contracts}\ProcessRepository
+
+${Repositories}\RedisSupervisorRepository:
+  class: ${Repositories}\RedisSupervisorRepository
+  alias: ${Contracts}\SupervisorRepository
+
+${Repositories}\RedisTagRepository:
+  class: ${Repositories}\RedisTagRepository
+  alias: ${Contracts}\TagRepository
+
+${Repositories}\RedisWorkloadRepository:
+  class: ${Repositories}\RedisWorkloadRepository
+  alias: ${Contracts}\WorkloadRepository
