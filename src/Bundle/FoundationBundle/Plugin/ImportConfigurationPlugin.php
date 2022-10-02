@@ -41,7 +41,10 @@ class ImportConfigurationPlugin extends Plugin
         $key = $this->bundle->getName();
 
         $registry->set($key, $this->processConfiguration(
-            $this->loadConfigs()
+            [
+                ...$this->loadConfigs(),
+                ...$registry->get($key, [])
+            ]
         ));
     }
 
