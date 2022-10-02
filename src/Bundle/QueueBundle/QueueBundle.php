@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\QueueBundle;
 
 use Illuminate\Console\Application as Artisan;
+use Illuminate\Contracts\Queue\Factory as QueueFactory;
+use Illuminate\Contracts\Queue\Monitor;
+use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Queue\Connectors\NullConnector;
@@ -23,6 +26,7 @@ use Illuminate\Queue\Console\RetryBatchCommand as QueueRetryBatchCommand;
 use Illuminate\Queue\Console\RetryCommand as QueueRetryCommand;
 use Illuminate\Queue\Console\TableCommand;
 use Illuminate\Queue\Console\WorkCommand as QueueWorkCommand;
+use Illuminate\Queue\Failed\FailedJobProviderInterface;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Queue\QueueServiceProvider;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
@@ -36,6 +40,7 @@ use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
 use RuntimeException;
 
+
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
@@ -43,6 +48,19 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
 {
     protected array $deferred = [
         'queue',
+    ];
+
+    protected array $aliases = [
+        'queue' => [
+            QueueFactory::class,
+            Monitor::class,
+        ],
+        'queue.connection' => [
+            Queue::class
+        ],
+        'queue.failer' => [
+            FailedJobProviderInterface::class,
+        ]
     ];
 
     protected array $commands = [
@@ -73,6 +91,12 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
                 $this->registerConnectors($manager);
             });
         });
+
+        foreach ($this->aliases as $abstract => $aliases) {
+            foreach ($aliases as $alias) {
+                $this->app->alias($abstract, $alias);
+            }
+        }
 
         $this->registerCommands();
     }
