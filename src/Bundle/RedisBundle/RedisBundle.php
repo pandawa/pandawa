@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\RedisBundle;
 
+use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Arr;
@@ -31,6 +32,8 @@ class RedisBundle extends Bundle implements HasPluginInterface, DeferrableProvid
 
             return new RedisManager($app, $options['client'], $options);
         });
+
+        $this->app->alias('redis', Factory::class);
     }
 
     public function plugins(): array
