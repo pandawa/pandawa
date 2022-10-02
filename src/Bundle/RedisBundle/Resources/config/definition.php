@@ -24,6 +24,7 @@ return static function (TreeBuilder $treeBuilder) {
                         ->scalarNode('password')->end()
                         ->scalarNode('port')->defaultValue('6379')->end()
                         ->scalarNode('database')->defaultValue('0')->end()
+                        ->variableNode('options')->end()
                     ->end()
                 ->end()
             ->end()
