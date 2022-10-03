@@ -112,10 +112,11 @@ class EventBus extends Dispatcher implements EventBusInterface
     protected function parseEventAndPayload($event, $payload): array
     {
         $eventName = is_object($event?->message) ? $this->getEventName($event) : $event;
-        $payload = [$event];
 
         if ($event->message instanceof NoneObjectEvent) {
             $payload = Arr::wrap($payload);
+        } else {
+            $payload = [$event];
         }
 
         return [$eventName, $payload];
@@ -148,6 +149,10 @@ class EventBus extends Dispatcher implements EventBusInterface
 
     protected function getEventName(Envelope $envelope): string
     {
+        if ($envelope->message instanceof NoneObjectEvent) {
+            return $envelope->message->event;
+        }
+
         return $envelope->last(MessageNameStamp::class)?->name ?? get_class($envelope->message);
     }
 
