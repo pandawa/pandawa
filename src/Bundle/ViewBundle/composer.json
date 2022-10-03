@@ -1,0 +1,35 @@
+{
+    "name": "pandawa/view-bundle",
+    "description": "The Laravel View bridge bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/foundation-bundle": "^5.0",
+        "illuminate/view": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\ViewBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\ViewBundle\\ViewBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}

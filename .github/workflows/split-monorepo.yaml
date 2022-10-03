@@ -59,6 +59,8 @@ jobs:
             split_repository: 'event-bundle'
           - local_path:       'Bundle/HorizonBundle'
             split_repository: 'horizon-bundle'
+          - local_path:       'Bundle/ViewBundle'
+            split_repository: 'view-bundle'
 
           # Components
           - local_path:       'Component/Config'
