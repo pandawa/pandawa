@@ -19,9 +19,9 @@ trait HasAttributesTrait
      * @param  string  $key
      * @param  mixed  $value
      *
-     * @return $this
+     * @return static|null
      */
-    public function setAttribute($key, $value): static
+    public function setAttribute($key, $value): ?static
     {
         return parent::setAttribute(snake_case($key), $value);
     }
