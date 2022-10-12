@@ -174,7 +174,7 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
             $this->{"register{$command}Command"}();
         }
 
-        $this->commands(array_values($this->commands));
+        $this->commands(array_values([...$this->commands, ...$this->devCommands]));
     }
 
     protected function commands(array $commands): void
