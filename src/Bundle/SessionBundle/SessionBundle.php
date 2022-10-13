@@ -6,6 +6,7 @@ namespace Pandawa\Bundle\SessionBundle;
 
 use Illuminate\Cookie\CookieServiceProvider;
 use Illuminate\Session\SessionServiceProvider;
+use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Bundle\RoutingBundle\Plugin\ImportMiddlewareAnnotationPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
@@ -24,6 +25,7 @@ class SessionBundle extends Bundle implements HasPluginInterface
                 CookieServiceProvider::class,
             ]),
             new ImportMiddlewareAnnotationPlugin(),
+            new ImportConfigurationPlugin(),
         ];
     }
 }
