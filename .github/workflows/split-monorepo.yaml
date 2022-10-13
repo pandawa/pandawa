@@ -61,6 +61,8 @@ jobs:
             split_repository: 'horizon-bundle'
           - local_path:       'Bundle/ViewBundle'
             split_repository: 'view-bundle'
+          - local_path:       'Bundle/SessionBundle'
+            split_repository: 'session-bundle'
 
           # Components
           - local_path:       'Component/Config'
