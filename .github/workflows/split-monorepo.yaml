@@ -87,6 +87,8 @@ jobs:
             split_repository: 'resource'
           - local_path:       'Component/Event'
             split_repository: 'event'
+          - local_path:       'Component/Ddd'
+            split_repository: 'ddd'
 
           # Contracts
           - local_path:       'Contracts/Config'
@@ -111,6 +113,8 @@ jobs:
             split_repository: 'resource-contracts'
           - local_path:       'Contracts/Event'
             split_repository: 'event-contracts'
+          - local_path:       'Contracts/Ddd'
+            split_repository: 'ddd-contracts'
 
           # Annotations
           - local_path:       'Annotations/Eloquent'
