@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Component\Event;
 
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Arr;
@@ -129,6 +130,26 @@ class EventBus extends Dispatcher implements EventBusInterface
 
             return $callback(...$payload);
         };
+    }
+
+    protected function propagateListenerOptions($listener, $job): mixed
+    {
+        return tap($job, function ($job) use ($listener) {
+            $data = $this->normalizePayload(array_values($job->data));
+
+            $job->afterCommit = property_exists($listener, 'afterCommit') ? $listener->afterCommit : null;
+            $job->backoff = method_exists($listener, 'backoff') ? $listener->backoff(...$data) : ($listener->backoff ?? null);
+            $job->maxExceptions = $listener->maxExceptions ?? null;
+            $job->retryUntil = method_exists($listener, 'retryUntil') ? $listener->retryUntil(...$data) : null;
+            $job->shouldBeEncrypted = $listener instanceof ShouldBeEncrypted;
+            $job->timeout = $listener->timeout ?? null;
+            $job->tries = $listener->tries ?? null;
+
+            $job->through(array_merge(
+                method_exists($listener, 'middleware') ? $listener->middleware(...$data) : [],
+                $listener->middleware ?? []
+            ));
+        });
     }
 
     protected function normalizePayload(mixed $value): mixed
