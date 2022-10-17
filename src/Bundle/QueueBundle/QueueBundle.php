@@ -48,6 +48,12 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
 {
     protected array $deferred = [
         'queue',
+        'queue.connection',
+        'queue.failer',
+        QueueFactory::class,
+        Monitor::class,
+        Queue::class,
+        FailedJobProviderInterface::class,
     ];
 
     protected array $aliases = [
