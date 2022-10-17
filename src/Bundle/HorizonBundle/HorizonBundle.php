@@ -6,7 +6,9 @@ namespace Pandawa\Bundle\HorizonBundle;
 
 use Exception;
 use Illuminate\Console\Application as Artisan;
+use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Queue\QueueManager;
+use Illuminate\Support\Facades\Route;
 use Laravel\Horizon\Console;
 use Pandawa\Bundle\DependencyInjectionBundle\Plugin\ImportServicesPlugin;
 use Pandawa\Bundle\EventBundle\Plugin\ImportEventListenerPlugin;
@@ -23,6 +25,7 @@ class HorizonBundle extends Bundle implements HasPluginInterface
     public function boot(): void
     {
         $this->registerConsoles();
+        $this->registerRoutes();
     }
 
     public function configure(): void
@@ -42,6 +45,25 @@ class HorizonBundle extends Bundle implements HasPluginInterface
             new ImportServicesPlugin(),
             new ImportEventListenerPlugin(),
         ];
+    }
+
+    protected function registerRoutes(): void
+    {
+        Route::group([
+            'domain' => config('horizon.domain', null),
+            'prefix' => config('horizon.path'),
+            'namespace' => 'Laravel\Horizon\Http\Controllers',
+            'middleware' => config('horizon.middleware'),
+        ], function () {
+            $this->loadRoutesFrom(__DIR__.'/Resources/routes/api.php');
+        });
+    }
+
+    protected function loadRoutesFrom($path)
+    {
+        if (! ($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
+            require $path;
+        }
     }
 
     protected function registerQueueConnectors(): void
