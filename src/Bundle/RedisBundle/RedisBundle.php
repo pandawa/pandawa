@@ -18,7 +18,11 @@ use Pandawa\Contracts\Foundation\HasPluginInterface;
  */
 class RedisBundle extends Bundle implements HasPluginInterface, DeferrableProvider
 {
-    protected array $deferred = ['redis', 'redis.connection'];
+    protected array $deferred = [
+        'redis',
+        'redis.connection',
+        Factory::class,
+    ];
 
     public function register(): void
     {
