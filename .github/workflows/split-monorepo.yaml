@@ -63,6 +63,8 @@ jobs:
             split_repository: 'view-bundle'
           - local_path:       'Bundle/SessionBundle'
             split_repository: 'session-bundle'
+          - local_path:       'Bundle/SchedulingBundle'
+            split_repository: 'scheduling-bundle'
 
           # Components
           - local_path:       'Component/Config'
@@ -135,6 +137,8 @@ jobs:
             split_repository: 'auth-annotations'
           - local_path:       'Annotations/Event'
             split_repository: 'event-annotations'
+          - local_path:       'Annotations/Scheduling'
+            split_repository: 'scheduling-annotations'
 
     steps:
       - uses: actions/checkout@v2
