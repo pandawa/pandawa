@@ -39,14 +39,33 @@ trait HasAttributesTrait
     }
 
     /**
-     * Force convert key to camel case when get relation value.
+     * Force convert key to camel case when get from relation method.
      *
      * @param  string  $key
      *
      * @return mixed
      */
-    public function getRelationValue($key): mixed
+    public function getRelationshipFromMethod($key): mixed
     {
-        return parent::getRelationValue(camel_case($key));
+        return parent::getRelationshipFromMethod(camel_case($key));
+    }
+
+    /**
+     * Force convert key to camel case when relation is method.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function isRelation($key): bool
+    {
+        if ($this->hasAttributeMutator($key)) {
+            return false;
+        }
+
+        $key = camel_case($key);
+
+        return method_exists($this, $key) ||
+            (static::$relationResolvers[get_class($this)][$key] ?? null);
     }
 }
