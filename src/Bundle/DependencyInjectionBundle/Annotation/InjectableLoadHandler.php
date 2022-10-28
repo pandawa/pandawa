@@ -56,6 +56,7 @@ final class InjectableLoadHandler extends ServiceLoadHandler
         return match ($inject->type) {
             Type::CONFIG => '%'.$inject->value.'%',
             Type::SERVICE => '@'.$inject->value,
+            Type::TAG => '#'.$inject->value,
             Type::VALUE => $inject->value,
         };
     }

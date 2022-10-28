@@ -12,4 +12,5 @@ enum Type
     case SERVICE;
     case CONFIG;
     case VALUE;
+    case TAG;
 }
