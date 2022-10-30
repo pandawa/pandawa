@@ -15,6 +15,7 @@ use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Queue\InteractsWithQueue;
+use Pandawa\Component\Bus\Serializer\NativeSerializer;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
 use Pandawa\Component\Queue\Stamp\QueueMiddlewaresStamp;
 use Pandawa\Component\Queue\Stamp\UniqueStamp;
@@ -24,7 +25,6 @@ use Pandawa\Contracts\Bus\Message\Metadata;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
 use ReflectionClass;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -262,7 +262,7 @@ class CallQueuedHandler
             return $this->registry->get($data['commandClass']);
         }
 
-        return new Metadata($data['commandClass'], serializer: Serializer::class);
+        return new Metadata($data['commandClass'], serializer: NativeSerializer::class);
     }
 
     protected function makeSerializer(Metadata $metadata): SerializerInterface|NormalizerInterface

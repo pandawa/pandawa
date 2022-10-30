@@ -23,7 +23,7 @@ return [
     | Default serializer.
     |
     */
-    'default_serializer' => 'serializer.default',
+    'default_serializer' => Bus\Serializer\NativeSerializer::class,
 
     /*
     |--------------------------------------------------------------------------
