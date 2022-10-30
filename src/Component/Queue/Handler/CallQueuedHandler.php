@@ -190,22 +190,13 @@ class CallQueuedHandler
 
     protected function denormalize(array $data): mixed
     {
-        if ('serializer' === $data['command']['type']) {
-            return $this->denormalizeFromSerializer($data);
-        }
-
-        return unserialize($data['command']['serialized']);
-    }
-
-    protected function denormalizeFromSerializer(array $data): mixed
-    {
         $metadata = $this->getMetadata($data);
         $serializer = $this->makeSerializer($metadata);
 
         if ($metadata->class === CallQueuedListener::class) {
             return new CallQueuedListener(
-                $data['command']['serialized']['class'],
-                $data['command']['serialized']['method'],
+                $data['command']['class'],
+                $data['command']['method'],
                 array_map(
                     function (mixed $value) use ($serializer) {
                         if (is_array($value) && $value['__normalized_class'] ?? null) {
@@ -214,12 +205,12 @@ class CallQueuedHandler
 
                         return $value;
                     },
-                    $data['command']['serialized']['data'] ?? []
+                    $data['command']['data'] ?? []
                 )
             );
         }
 
-        return $serializer->denormalize($data['command']['serialized'], $metadata->class);
+        return $serializer->denormalize($data['command'], $metadata->class);
     }
 
     /**
