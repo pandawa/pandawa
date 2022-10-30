@@ -65,7 +65,7 @@ trait Queue
 
         $encrypted = $this->jobShouldBeEncrypted($envelope) && $this->container->bound(Encrypter::class);
         $message = $encrypted
-            ? $this->container[Encrypter::class]->encrypt(serialize($this->normalize($envelope)))
+            ? $this->container[Encrypter::class]->encrypt(serialize($envelope->message))
             : $this->normalize($envelope);
 
         return [
@@ -81,6 +81,21 @@ trait Queue
 
     protected function normalize(Envelope $envelope): array
     {
+        try {
+            return [
+                'type'       => 'serializer',
+                'serialized' => $this->normalizeFromSerializer($envelope),
+            ];
+        } catch (\Exception $e) {
+            return [
+                'type'       => 'native',
+                'serialized' => serialize($envelope->message),
+            ];
+        }
+    }
+
+    protected function normalizeFromSerializer(Envelope $envelope): array
+    {
         $serializer = $this->makeSerializer($envelope);
 
         if ($envelope->message instanceof CallQueuedListener) {
@@ -92,7 +107,7 @@ trait Queue
                         if ($value instanceof Envelope) {
                             return [
                                 '__normalized_class' => get_class($value->message),
-                                'payload'            => $this->normalize($value),
+                                'payload'            => $this->normalizeFromSerializer($value),
                             ];
                         }
 
