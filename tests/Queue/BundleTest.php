@@ -70,7 +70,7 @@ class BundleTest extends TestCase
         $app['bus.default']->dispatch(new CreatePost('Hello World'));
 
         $this->assertSame('greeting', $payload['commandName']);
-        $this->assertSame('Hello World', $payload['command']['serialized']['title']);
+        $this->assertSame('Hello World', $payload['command']['title']);
     }
 
     protected function createApp(): Application
