@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\QueueBundle;
 
 use Illuminate\Console\Application as Artisan;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Queue\Factory as QueueFactory;
 use Illuminate\Contracts\Queue\Monitor;
 use Illuminate\Contracts\Queue\Queue;
@@ -29,6 +30,8 @@ use Illuminate\Queue\Console\WorkCommand as QueueWorkCommand;
 use Illuminate\Queue\Failed\FailedJobProviderInterface;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Queue\QueueServiceProvider;
+use Illuminate\Queue\Worker;
+use Illuminate\Support\Facades\Facade;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Bundle\QueueBundle\Connector\BeanstalkdConnector;
@@ -105,6 +108,7 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
         }
 
         $this->registerCommands();
+        $this->registerWorker();
     }
 
     public function plugins(): array
@@ -115,6 +119,42 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
                 QueueServiceProvider::class,
             ]),
         ];
+    }
+
+    protected function registerWorker(): void
+    {
+        $this->app->singleton('queue.worker', function ($app) {
+            $isDownForMaintenance = function () {
+                return $this->app->isDownForMaintenance();
+            };
+
+            $resetScope = function () use ($app) {
+                if (method_exists($app['log']->driver(), 'withoutContext')) {
+                    $app['log']->withoutContext();
+                }
+
+                if ($app->bound('db')) {
+                    if (method_exists($app['db'], 'getConnections')) {
+                        foreach ($app['db']->getConnections() as $connection) {
+                            $connection->resetTotalQueryDuration();
+                            $connection->allowQueryDurationHandlersToRunAgain();
+                        }
+                    }
+                }
+
+                $app->forgetScopedInstances();
+
+                Facade::clearResolvedInstances();
+            };
+
+            return new Worker(
+                $app['queue'],
+                $app['events'],
+                $app[ExceptionHandler::class],
+                $isDownForMaintenance,
+                $resetScope
+            );
+        });
     }
 
     protected function registerConnectors(QueueManager $manager): void
