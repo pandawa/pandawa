@@ -38,14 +38,19 @@ final class ListenerLoadHandler implements AnnotationLoadHandlerInterface
         $class = $options['class'];
         $event = $annotation->event;
 
-        $this->config->set($this->getConfigKey($event), [
-            ...$this->config->get($this->getConfigKey($event), []),
-            $class->getName()
+        $current = $this->config->get($this->getConfigKey(), []);
+
+        $this->config->set($this->getConfigKey(), [
+            ...$current,
+            $event => [
+                ...($current[$event] ?? []),
+                $class->getName()
+            ]
         ]);
     }
 
-    private function getConfigKey(string $event): string
+    private function getConfigKey(): string
     {
-        return EventBundle::EVENT_CACHE_CONFIG_KEY . '.annotations.' . $this->bundle->getName() . '.' . $event;
+        return EventBundle::EVENT_CACHE_CONFIG_KEY . '.annotations.' . $this->bundle->getName();
     }
 }
