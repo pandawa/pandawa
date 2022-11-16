@@ -50,7 +50,7 @@ final class ListenerLoadHandler implements AnnotationLoadHandlerInterface
 
         $this->config->set($this->getConfigKey(), [
             ...$current,
-            $eventListeners
+            ...$eventListeners
         ]);
     }
 
