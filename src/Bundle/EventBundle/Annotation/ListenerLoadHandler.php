@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pandawa\Bundle\EventBundle\Annotation;
 
 use Illuminate\Contracts\Config\Repository as Config;
+use Illuminate\Support\Arr;
 use Pandawa\Annotations\Event\AsListener;
 use Pandawa\Bundle\EventBundle\EventBundle;
 use Pandawa\Contracts\Annotation\AnnotationLoadHandlerInterface;
@@ -36,16 +37,20 @@ final class ListenerLoadHandler implements AnnotationLoadHandlerInterface
     {
         $annotation = $options['annotation'];
         $class = $options['class'];
-        $event = $annotation->event;
-
+        $events = Arr::wrap($annotation->event);
         $current = $this->config->get($this->getConfigKey(), []);
+        $eventListeners = [];
+
+        foreach ($events as $event) {
+            $eventListeners[$event] = [
+                ...($current[$event] ?? []),
+                $class->getName()
+            ];
+        }
 
         $this->config->set($this->getConfigKey(), [
             ...$current,
-            $event => [
-                ...($current[$event] ?? []),
-                $class->getName()
-            ]
+            ...$eventListeners
         ]);
     }
 
