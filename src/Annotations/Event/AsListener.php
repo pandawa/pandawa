@@ -12,7 +12,7 @@ use Spiral\Attributes\NamedArgumentConstructor;
 #[\Attribute(\Attribute::TARGET_CLASS), NamedArgumentConstructor]
 final class AsListener
 {
-    public function __construct(public readonly string $event)
+    public function __construct(public readonly string|array $event)
     {
     }
 }
