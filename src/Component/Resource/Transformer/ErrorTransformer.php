@@ -55,7 +55,7 @@ class ErrorTransformer extends Transformer
     protected function getErrorCode(Context $context, Throwable $e): int
     {
         if (!empty($code = $e->getCode())) {
-            return $code;
+            return (int) $code;
         }
 
         return $context->options[Context::HTTP_CODE] ?? 0;
