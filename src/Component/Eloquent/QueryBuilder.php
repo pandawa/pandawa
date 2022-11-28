@@ -6,6 +6,7 @@ namespace Pandawa\Component\Eloquent;
 
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection as ModelCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -26,9 +27,7 @@ class QueryBuilder implements QueryBuilderInterface
     protected Model $model;
     protected bool $cacheEnabled = false;
 
-    public function __construct(protected readonly ?CacheHandlerInterface $cacheHandler = null)
-    {
-    }
+    public function __construct(protected readonly ?CacheHandlerInterface $cacheHandler = null) {}
 
     protected function isCacheEnabled(): bool
     {
@@ -89,13 +88,6 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function cursor(): LazyCollection
-    {
-        return tap($this->queryBuilder->cursor(), function () {
-            $this->refresh();
-        });
-    }
-
     public function findByKey(int|string $key): ?Model
     {
         if ($this->isCacheEnabled() && null !== $model = $this->cacheHandler?->getByKey($this->model, $key)) {
@@ -116,20 +108,153 @@ class QueryBuilder implements QueryBuilderInterface
     public function first(array $columns = ['*']): ?Model
     {
         if ($this->isCacheEnabled() && null !== $result = $this->cacheHandler?->getByQuery($this)) {
-            return tap($result, function() {
+            return tap($result, function () {
                 $this->refresh();
             });
         }
 
         $query = $this;
 
-        return tap($this->queryBuilder->first(), function (?Model $model) use ($query) {
+        return tap($this->queryBuilder->first($columns), function (?Model $model) use ($query) {
             if (null !== $model && $this->isCacheEnabled()) {
                 $this->cacheHandler?->rememberQuery($query, $model);
             }
 
             $this->refresh();
         });
+    }
+
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
+            return tap($results, function () {
+                $this->refresh();
+            });
+        }
+
+        $query = $this;
+
+        return tap($this->queryBuilder->paginate($perPage, $columns, $pageName, $page), function (LengthAwarePaginator $page) use ($query) {
+            if ($this->isCacheEnabled()) {
+                $this->cacheHandler->rememberQuery($query, $page);
+            }
+
+            $this->refresh();
+        });
+    }
+
+    public function cursor(): LazyCollection
+    {
+        return tap($this->queryBuilder->cursor(), function () {
+            $this->refresh();
+        });
+    }
+
+    public function chunk($count, callable $callback)
+    {
+        return tap($this->queryBuilder->chunk($count, $callback), function () {
+            $this->refresh();
+        });
+    }
+
+    public function count($columns = '*')
+    {
+        if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
+            return tap($results, function () {
+                $this->refresh();
+            });
+        }
+
+        $query = $this;
+
+        return tap($this->queryBuilder->count($columns), function (int $count) use ($query) {
+            if ($this->isCacheEnabled()) {
+                $this->cacheHandler->rememberQuery($query, $count);
+            }
+
+            $this->refresh();
+        });
+    }
+
+    public function min($column)
+    {
+        if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
+            return tap($results, function () {
+                $this->refresh();
+            });
+        }
+
+        $query = $this;
+
+        return tap($this->queryBuilder->min($column), function (mixed $min) use ($query) {
+            if ($this->isCacheEnabled()) {
+                $this->cacheHandler->rememberQuery($query, $min);
+            }
+
+            $this->refresh();
+        });
+    }
+
+    public function max($column)
+    {
+        if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
+            return tap($results, function () {
+                $this->refresh();
+            });
+        }
+
+        $query = $this;
+
+        return tap($this->queryBuilder->max($column), function (mixed $max) use ($query) {
+            if ($this->isCacheEnabled()) {
+                $this->cacheHandler->rememberQuery($query, $max);
+            }
+
+            $this->refresh();
+        });
+    }
+
+    public function sum($column)
+    {
+        if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
+            return tap($results, function () {
+                $this->refresh();
+            });
+        }
+
+        $query = $this;
+
+        return tap($this->queryBuilder->sum($column), function (mixed $sum) use ($query) {
+            if ($this->isCacheEnabled()) {
+                $this->cacheHandler->rememberQuery($query, $sum);
+            }
+
+            $this->refresh();
+        });
+    }
+
+    public function avg($column)
+    {
+        if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
+            return tap($results, function () {
+                $this->refresh();
+            });
+        }
+
+        $query = $this;
+
+        return tap($this->queryBuilder->avg($column), function (mixed $avg) use ($query) {
+            if ($this->isCacheEnabled()) {
+                $this->cacheHandler->rememberQuery($query, $avg);
+            }
+
+            $this->refresh();
+        });
+    }
+
+    public function average($column)
+    {
+        return $this->avg($column);
     }
 
     public function __call(string $method, array $args): mixed
