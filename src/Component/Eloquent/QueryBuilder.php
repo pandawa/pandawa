@@ -27,7 +27,9 @@ class QueryBuilder implements QueryBuilderInterface
     protected Model $model;
     protected bool $cacheEnabled = false;
 
-    public function __construct(protected readonly ?CacheHandlerInterface $cacheHandler = null) {}
+    public function __construct(protected readonly ?CacheHandlerInterface $cacheHandler = null)
+    {
+    }
 
     protected function isCacheEnabled(): bool
     {
@@ -124,7 +126,7 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null): LengthAwarePaginator
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
             return tap($results, function () {
@@ -150,14 +152,14 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function chunk($count, callable $callback)
+    public function chunk($count, callable $callback): bool
     {
         return tap($this->queryBuilder->chunk($count, $callback), function () {
             $this->refresh();
         });
     }
 
-    public function count($columns = '*')
+    public function count($columns = '*'): int
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
             return tap($results, function () {
@@ -176,7 +178,7 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function min($column)
+    public function min($column): mixed
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
             return tap($results, function () {
@@ -195,7 +197,7 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function max($column)
+    public function max($column): mixed
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
             return tap($results, function () {
@@ -214,7 +216,7 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function sum($column)
+    public function sum($column): mixed
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
             return tap($results, function () {
@@ -233,7 +235,7 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function avg($column)
+    public function avg($column): mixed
     {
         if ($this->isCacheEnabled() && null !== $results = $this->cacheHandler?->getByQuery($this)) {
             return tap($results, function () {
@@ -252,7 +254,7 @@ class QueryBuilder implements QueryBuilderInterface
         });
     }
 
-    public function average($column)
+    public function average($column): mixed
     {
         return $this->avg($column);
     }
