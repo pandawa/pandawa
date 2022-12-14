@@ -13,7 +13,7 @@ trait PersistentTrait
 {
     protected function persist(Model $model, array $data): Model
     {
-        $this->appendRelations($model, $data);
+        $data = $this->appendRelations($model, $data);
 
         return tap($model->fill($data), function (Model $model) {
             $this->repository->save($model);
