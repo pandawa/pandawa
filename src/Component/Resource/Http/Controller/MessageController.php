@@ -82,11 +82,7 @@ class MessageController
     protected function setupQueryPagination(Query $query, Request $request): static
     {
         if ($pagination = $this->getRouteOption('paginate', $request, false)) {
-            $query->paginate(
-                is_int($pagination)
-                    ? $pagination
-                    : ResourceController::$defaultPagination
-            );
+            $query->paginate((int) $request->query('limit', is_int($pagination) ? $pagination : ResourceController::$defaultPagination));
         }
 
         return $this;
