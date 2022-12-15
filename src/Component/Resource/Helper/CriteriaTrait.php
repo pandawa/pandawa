@@ -23,10 +23,10 @@ trait CriteriaTrait
         return $this;
     }
 
-    protected function getCriteria(Request $request): ?array
+    protected function getCriteria(Request $request): array
     {
         if (empty($criteria = $this->getRouteOption('criteria', $request))) {
-            return null;
+            return [];
         }
 
         return array_map(
