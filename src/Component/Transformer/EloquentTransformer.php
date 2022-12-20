@@ -36,11 +36,8 @@ class EloquentTransformer extends Transformer
 
     protected function processIncludes(Context $context, array $includes, mixed $data): array
     {
-        $included = [];
-        foreach ($includes as $include) {
-            $included[$include] = $data->{Str::camel($include)};
-        }
+        $data->load($includes);
 
-        return $included;
+        return $data->relationsToArray();
     }
 }
