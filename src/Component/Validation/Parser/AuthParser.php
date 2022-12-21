@@ -27,7 +27,7 @@ final class AuthParser implements ParserInterface
         return null;
     }
 
-    public function supports(string $value): bool
+    public function supports(string $value): int|bool
     {
         return preg_match(self::REGEX, $value);
     }
