@@ -14,7 +14,9 @@ final class RequestParser implements ParserInterface
 {
     const REGEX = '/^req\((\w+)\)$/';
 
-    public function __construct(private readonly Container $container) {}
+    public function __construct(private readonly Container $container)
+    {
+    }
 
     public function parse(string $value): mixed
     {

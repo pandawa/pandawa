@@ -14,7 +14,9 @@ final class AuthParser implements ParserInterface
 {
     const REGEX = '/^auth\((\w+)\)$/';
 
-    public function __construct(private readonly Container $container) {}
+    public function __construct(private readonly Container $container)
+    {
+    }
 
     public function parse(string $value): mixed
     {
