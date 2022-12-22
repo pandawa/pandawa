@@ -90,9 +90,9 @@ class MessageController
 
     protected function setupQueryCriteria(Query $query, Request $request): static
     {
-        $query->withCriteria(
-            $this->getCriteria($request)
-        );
+        if (null !== $criteria = $this->getCriteria($request)) {
+            $query->withCriteria($criteria);
+        }
 
         return $this;
     }
