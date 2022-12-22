@@ -17,5 +17,5 @@ interface ParserInterface
     /**
      * Check if given value support for parser.
      */
-    public function supports(string $value): int|bool;
+    public function supports(string $value): bool;
 }

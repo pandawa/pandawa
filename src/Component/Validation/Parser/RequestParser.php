@@ -14,9 +14,7 @@ final class RequestParser implements ParserInterface
 {
     const REGEX = '/^req\((\w+)\)$/';
 
-    public function __construct(private readonly Container $container)
-    {
-    }
+    public function __construct(private readonly Container $container) {}
 
     public function parse(string $value): mixed
     {
@@ -27,8 +25,8 @@ final class RequestParser implements ParserInterface
         return null;
     }
 
-    public function supports(string $value): int|bool
+    public function supports(string $value): bool
     {
-        return preg_match(self::REGEX, $value);
+        return (bool)preg_match(self::REGEX, $value);
     }
 }
