@@ -29,6 +29,6 @@ final class RequestParser implements ParserInterface
 
     public function supports(string $value): bool
     {
-        return preg_match(self::REGEX, $value);
+        return (bool)preg_match(self::REGEX, $value);
     }
 }

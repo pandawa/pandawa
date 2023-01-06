@@ -82,11 +82,7 @@ class MessageController
     protected function setupQueryPagination(Query $query, Request $request): static
     {
         if ($pagination = $this->getRouteOption('paginate', $request, false)) {
-            $query->paginate(
-                is_int($pagination)
-                    ? $pagination
-                    : ResourceController::$defaultPagination
-            );
+            $query->paginate((int) $request->query('limit', is_int($pagination) ? $pagination : ResourceController::$defaultPagination));
         }
 
         return $this;
@@ -94,9 +90,9 @@ class MessageController
 
     protected function setupQueryCriteria(Query $query, Request $request): static
     {
-        $query->withCriteria(
-            $this->getCriteria($request)
-        );
+        if (null !== $criteria = $this->getCriteria($request)) {
+            $query->withCriteria($criteria);
+        }
 
         return $this;
     }
