@@ -53,7 +53,7 @@ class ResourceController
             $params = [];
 
             if ($pagination) {
-                $params['paginate'] = $request->query('limit', is_int($pagination) ? $pagination : static::$defaultPagination);
+                $params['paginate'] = (int) $request->query('limit', is_int($pagination) ? $pagination : static::$defaultPagination);
             }
 
             return $handler->find($params);
