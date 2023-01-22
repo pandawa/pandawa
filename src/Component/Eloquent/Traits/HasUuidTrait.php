@@ -17,15 +17,15 @@ trait HasUuidTrait
         static::creating(function (Model $model) {
             $key = $model->getUuidKeyName();
 
-            if (!empty($model->getAttribute($key))) {
-                return;
-            }
-
             if ($model->isAsPrimaryKey()) {
                 $model->setIncrementing(false);
             }
 
             $model->mergeCasts([$key => 'string']);
+
+            if (!empty($model->getAttribute($key))) {
+                return;
+            }
 
             $model->setAttribute($key, (string) Str::uuid());
         });
