@@ -141,9 +141,7 @@ jobs:
             split_repository: 'scheduling-annotations'
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          set-safe-directory: '*'
+      - uses: actions/checkout@v3
 
       # no tag
       - if:   "!startsWith(github.ref, 'refs/tags/')"
