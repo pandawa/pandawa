@@ -143,6 +143,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Mark github workspace as safe
+        run: |
+          git config --global --add safe.directory /github/workspace
+
+      - name: Mark mono repo build directory as safe
+        run: |
+          git config --global --add safe.directory /tmp/monorepo_split/build_directory
+
       # no tag
       - if:   "!startsWith(github.ref, 'refs/tags/')"
         name: Monorepo Split of ${{ matrix.package }}
