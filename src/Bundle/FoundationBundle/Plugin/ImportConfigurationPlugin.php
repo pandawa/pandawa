@@ -17,8 +17,6 @@ use Symfony\Component\Config\Definition\Processor;
  */
 class ImportConfigurationPlugin extends Plugin
 {
-    const PACKAGE_CONFIG_PATH = 'packages';
-
     public function __construct(
         protected string $basePath = 'Resources/config',
         protected string $definitionFilename = 'definition',
@@ -145,9 +143,7 @@ class ImportConfigurationPlugin extends Plugin
 
     protected function getPackageConfigPath(string $filename): string
     {
-        return $this->bundle->getApp()->configPath(
-            static::PACKAGE_CONFIG_PATH.DIRECTORY_SEPARATOR.$filename
-        );
+        return $this->bundle->getApp()->configPath($filename);
     }
 
     protected function configLoader(): LoaderInterface
