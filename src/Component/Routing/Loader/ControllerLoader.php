@@ -62,7 +62,7 @@ final class ControllerLoader implements LoaderInterface
     private function configure(array $resource): void
     {
         $this->configurator->configure(
-            $this->createRoute($resource['type'], $resource['uri'], $resource['controller']),
+            $this->createRoute($resource['uri'], $resource['methods'], $resource['controller']),
             $resource
         );
     }
