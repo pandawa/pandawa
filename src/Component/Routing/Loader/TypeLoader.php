@@ -15,7 +15,7 @@ use Pandawa\Contracts\Routing\RouteConfiguratorInterface;
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
-final class BasicLoader implements LoaderInterface
+final class TypeLoader implements LoaderInterface
 {
     use ResolverTrait;
 

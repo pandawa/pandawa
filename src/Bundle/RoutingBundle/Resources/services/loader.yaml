@@ -12,8 +12,16 @@ routing.loader.array:
   class: ${Routing}\Loader\ArrayLoader
   tag:   "routing.loaders"
 
-routing.loader.basic:
-  class: ${Routing}\Loader\BasicLoader
+routing.loader.type:
+  class: ${Routing}\Loader\TypeLoader
+  tag:   "routing.loaders"
+  arguments:
+    - '@router'
+    - '@routing.configurator.chain'
+    - '@routing.registry.group'
+
+routing.loader.controller:
+  class: ${Routing}\Loader\ControllerLoader
   tag:   "routing.loaders"
   arguments:
     - '@router'

@@ -15,9 +15,9 @@ use Pandawa\Component\Routing\Configurator\RouteNameConfigurator;
 use Pandawa\Component\Routing\Configurator\RouteParamsConfigurator;
 use Pandawa\Component\Routing\GroupRegistry;
 use Pandawa\Component\Routing\Loader\ArrayLoader;
-use Pandawa\Component\Routing\Loader\BasicLoader;
 use Pandawa\Component\Routing\Loader\FileLoader;
 use Pandawa\Component\Routing\Loader\GroupLoader;
+use Pandawa\Component\Routing\Loader\TypeLoader;
 use Pandawa\Component\Routing\LoaderResolver;
 use Pandawa\Contracts\Routing\GroupRegistryInterface;
 use Pandawa\Contracts\Routing\LoaderResolverInterface;
@@ -144,7 +144,7 @@ class LoadRouteTest extends TestCase
     {
         $app->bind(LoaderResolverInterface::class, fn(Container $container) => new LoaderResolver([
             $app->make(ArrayLoader::class),
-            $app->make(BasicLoader::class),
+            $app->make(TypeLoader::class),
             $app->make(FileLoader::class),
             $app->make(GroupLoader::class),
         ]));
