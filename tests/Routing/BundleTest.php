@@ -101,7 +101,8 @@ class BundleTest extends TestCase
                 [
                     'routing.resolver.loader',
                     'routing.loader.array',
-                    'routing.loader.basic',
+                    'routing.loader.type',
+                    'routing.loader.controller',
                     'routing.loader.file',
                     'routing.loader.group',
                     LoaderResolverInterface::class,
