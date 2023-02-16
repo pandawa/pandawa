@@ -22,6 +22,7 @@ return [
     'serializers' => [
         'default' => [
             'normalizers' => [
+                '@serializer.normalizer.enum',
                 '@serializer.normalizer.date_time',
                 '@serializer.normalizer.object',
             ],

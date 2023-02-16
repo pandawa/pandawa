@@ -15,3 +15,7 @@ serializer.normalizer.object:
 serializer.normalizer.date_time:
   class: ${Serializer}\Normalizer\DateTimeNormalizer
   shared: false
+
+serializer.normalizer.enum:
+  class: ${Serializer}\Normalizer\BackedEnumNormalizer
+  shared: false
