@@ -97,6 +97,7 @@ class ImportBusAnnotationPlugin extends Plugin
             return array_filter([
                 $this->getPath('Command'),
                 $this->getPath('Query'),
+                $this->getPath('Event'),
             ]);
         }
 
