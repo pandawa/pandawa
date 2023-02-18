@@ -67,9 +67,13 @@ class ImportBusAnnotationPlugin extends Plugin
 
     protected function importMessageAnnotations(): void
     {
+        if (!count($directories = $this->getMessageDirectories())) {
+            return;
+        }
+
         $annotationPlugin = new ImportAnnotationPlugin(
             annotationClasses: [AsMessage::class],
-            directories: $this->getMessageDirectories(),
+            directories: $directories,
             classHandler: MessageLoadHandler::class,
             exclude: $this->messageExclude,
             scopes: $this->messageScopes,
@@ -80,9 +84,13 @@ class ImportBusAnnotationPlugin extends Plugin
 
     protected function importHandlerAnnotations(): void
     {
+        if (!count($directories = $this->getHandlerDirectories())) {
+            return;
+        }
+
         $annotationPlugin = new ImportAnnotationPlugin(
             annotationClasses: [AsHandler::class],
-            directories: $this->getHandlerDirectories(),
+            directories: $directories,
             classHandler: MessageHandlerLoadHandler::class,
             exclude: $this->handlerExclude,
             scopes: $this->handlerScopes,
