@@ -56,7 +56,7 @@ class MessageBusTest extends TestCase
     {
         return new MessageBus(
             new Container(),
-            new EnvelopeFactory($this->createRegistry()),
+            new EnvelopeFactory($this->createRegistry(), new Serializer()),
             new class implements QueueFactoryInterface {
 
                 public function create(string $connection): Queue

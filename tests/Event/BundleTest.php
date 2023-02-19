@@ -9,6 +9,7 @@ use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
 use Pandawa\Bundle\EventBundle\EventBundle;
 use Pandawa\Bundle\EventBundle\Plugin\ImportEventListenerPlugin;
 use Pandawa\Bundle\FoundationBundle\FoundationBundle;
+use Pandawa\Bundle\SerializerBundle\SerializerBundle;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Event\EventBusInterface;
@@ -44,6 +45,7 @@ class BundleTest extends TestCase
         $app->register(new DependencyInjectionBundle($app));
         $app->register(new BusBundle($app));
         $app->register(new EventBundle($app));
+        $app->register(new SerializerBundle($app));
 
         $app->register(new class($app) extends Bundle implements HasPluginInterface{
             public function plugins(): array

@@ -136,7 +136,7 @@ class ConfigTest extends TestCase
 
         $artisan->call('vendor:publish', ['--tag' => 'config']);
 
-        $this->assertFileExists(config_path('packages/'.$bundle->getName().'.yaml'));
+        $this->assertFileExists(config_path($bundle->getName().'.yaml'));
     }
 
     protected function createApp(?string $path = null): Application

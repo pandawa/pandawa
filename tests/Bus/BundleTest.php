@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\Queue;
 use Pandawa\Bundle\BusBundle\BusBundle;
 use Pandawa\Bundle\BusBundle\Plugin\ImportMessagesPlugin;
 use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
+use Pandawa\Bundle\SerializerBundle\SerializerBundle;
 use Pandawa\Component\Foundation\Application;
 use Pandawa\Component\Foundation\Bundle\Bundle;
 use Pandawa\Contracts\Bus\BusInterface;
@@ -92,6 +93,7 @@ class BundleTest extends TestCase
         $app = new Application();
         $app->register(new DependencyInjectionBundle($app));
         $app->register(new BusBundle($app));
+        $app->register(new SerializerBundle($app));
 
         return $app;
     }
