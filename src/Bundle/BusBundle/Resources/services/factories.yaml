@@ -1,5 +1,6 @@
 bus.factory.envelope:
   class: Pandawa\Component\Bus\Factory\EnvelopeFactory
+  alias: Pandawa\Component\Bus\Factory\EnvelopeFactory
   arguments:
     - '@bus.registry'
     - '@serializer.default'
