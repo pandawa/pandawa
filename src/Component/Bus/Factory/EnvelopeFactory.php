@@ -7,16 +7,20 @@ namespace Pandawa\Component\Bus\Factory;
 use Pandawa\Component\Bus\Stamp\MessageIdentifiedStamp;
 use Pandawa\Component\Bus\Stamp\MessageNameStamp;
 use Pandawa\Component\Bus\Stamp\SerializerStamp;
+use Pandawa\Component\Event\NoneObjectEvent;
 use Pandawa\Contracts\Bus\Envelope;
 use Pandawa\Contracts\Bus\Message\RegistryInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 /**
  * @author  Iqbal Maulana <iq.bluejack@gmail.com>
  */
 final class EnvelopeFactory
 {
-    public function __construct(protected readonly RegistryInterface $messageRegistry)
-    {
+    public function __construct(
+        private readonly RegistryInterface $messageRegistry,
+        private readonly DenormalizerInterface $denormalizer,
+    ) {
     }
 
     public function wrap(object $message): Envelope
@@ -46,5 +50,18 @@ final class EnvelopeFactory
         }
 
         return $envelope;
+    }
+
+    public function wrapByName(string $messageName, array $attributes = []): Envelope
+    {
+        if ($this->messageRegistry->hasName($messageName)) {
+            $metadata = $this->messageRegistry->getByName($messageName);
+
+            return $this->wrap(
+                $this->denormalizer->denormalize($attributes, $metadata->class)
+            );
+        }
+
+        return $this->wrap(new NoneObjectEvent($messageName));
     }
 }

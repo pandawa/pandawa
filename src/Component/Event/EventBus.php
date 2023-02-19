@@ -46,7 +46,7 @@ class EventBus extends Dispatcher implements EventBusInterface
     public function dispatch($event, $payload = [], $halt = false): mixed
     {
         return $this->pipeline
-            ->send($this->wrap($event))
+            ->send($this->wrap($event, $payload))
             ->through($this->middlewares)
             ->then(fn (Envelope $envelope) => parent::dispatch($envelope, $payload, $halt));
     }
@@ -177,10 +177,10 @@ class EventBus extends Dispatcher implements EventBusInterface
         return $envelope->last(MessageNameStamp::class)?->name ?? get_class($envelope->message);
     }
 
-    protected function wrap(mixed $event): object
+    protected function wrap(mixed $event, array $attributes = []): object
     {
         if (!is_object($event)) {
-            $event = new NoneObjectEvent($event);
+            return $this->envelopeFactory->wrapByName($event, $attributes);
         }
 
         return $this->envelopeFactory->wrap($event);
