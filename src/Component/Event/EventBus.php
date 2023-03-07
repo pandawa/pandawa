@@ -177,7 +177,7 @@ class EventBus extends Dispatcher implements EventBusInterface
         return $envelope->last(MessageNameStamp::class)?->name ?? get_class($envelope->message);
     }
 
-    protected function wrap(mixed $event, array $attributes = []): object
+    protected function wrap(mixed $event, array|object $attributes = []): object
     {
         if (!is_object($event)) {
             return $this->envelopeFactory->wrapByName($event, $attributes);

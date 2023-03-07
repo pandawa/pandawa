@@ -52,7 +52,7 @@ final class EnvelopeFactory
         return $envelope;
     }
 
-    public function wrapByName(string $messageName, array $attributes = []): Envelope
+    public function wrapByName(string $messageName, array|object $attributes = []): Envelope
     {
         if ($this->messageRegistry->hasName($messageName)) {
             $metadata = $this->messageRegistry->getByName($messageName);
