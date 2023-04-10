@@ -44,10 +44,9 @@ trait CriteriaTrait
     {
         return [
             ...$this->mapKeysToCamel($criteria['defaults'] ?? []),
-            ...$this->onlyData(
-                $request,
-                array_map(
-                    fn(string $key) => Str::camel($key),
+            ...$this->mapKeysToCamel(
+                $this->onlyData(
+                    $request,
                     $criteria['arguments'] ?? []
                 )
             ),
