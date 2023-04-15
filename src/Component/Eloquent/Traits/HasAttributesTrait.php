@@ -39,6 +39,17 @@ trait HasAttributesTrait
     }
 
     /**
+     * Force convert key to camel case when get a relationship.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        return parent::getRelationValue(camel_case($key));
+    }
+
+    /**
      * Force convert key to camel case when get from relation method.
      *
      * @param  string  $key
