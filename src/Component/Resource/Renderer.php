@@ -105,7 +105,8 @@ class Renderer implements RendererInterface
         }
 
         throw new InvalidArgumentException(
-            sprintf('Unsupported format "%s".', implode(', ', $request->getAcceptableContentTypes()))
+            sprintf('Unsupported format "%s".', implode(', ', $request->getAcceptableContentTypes())),
+            400
         );
     }
 
