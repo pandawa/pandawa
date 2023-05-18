@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Queue;
 
 use Illuminate\Queue\Events\JobProcessed;
+use Pandawa\Bundle\AnnotationBundle\AnnotationBundle;
 use Pandawa\Bundle\BusBundle\BusBundle;
 use Pandawa\Bundle\DatabaseBundle\DatabaseBundle;
 use Pandawa\Bundle\DependencyInjectionBundle\DependencyInjectionBundle;
@@ -77,6 +78,7 @@ class BundleTest extends TestCase
     protected function createApp(): Application
     {
         $app = new Application();
+        $app->register(new AnnotationBundle($app));
         $app->register(new DependencyInjectionBundle($app));
         $app->register(new QueueBundle($app));
         $app->register(new SerializerBundle($app));

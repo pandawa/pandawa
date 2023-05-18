@@ -32,6 +32,7 @@ use Illuminate\Queue\QueueManager;
 use Illuminate\Queue\QueueServiceProvider;
 use Illuminate\Queue\Worker;
 use Illuminate\Support\Facades\Facade;
+use Pandawa\Bundle\ConsoleBundle\Plugin\ImportConsolePlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Bundle\QueueBundle\Connector\BeanstalkdConnector;
@@ -115,6 +116,7 @@ class QueueBundle extends Bundle implements HasPluginInterface, DeferrableProvid
     {
         return [
             new ImportConfigurationPlugin(),
+            new ImportConsolePlugin(),
             new RegisterBundlesPlugin([
                 QueueServiceProvider::class,
             ]),
