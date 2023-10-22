@@ -1,0 +1,40 @@
+{
+    "name": "pandawa/broadcasting-bundle",
+    "description": "The pandawa broadcasting bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iqbal Maulana",
+            "email": "iq.bluejack@gmail.com"
+        },
+        {
+            "name": "Aldi Arief",
+            "email": "aldiarief598@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "pandawa/dependency-injection-bundle": "^5.0",
+        "pandawa/foundation-bundle": "^5.0",
+        "illuminate/broadcasting": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pandawa\\Bundle\\BroadcastingBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pandawa\\Bundle\\BroadcastingBundle\\BroadcastingBundle"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
