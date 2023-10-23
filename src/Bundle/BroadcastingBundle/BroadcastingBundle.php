@@ -25,7 +25,7 @@ class BroadcastingBundle extends Bundle implements HasPluginInterface, Deferrabl
         BroadcasterContract::class,
     ];
 
-    public function register(): void
+    public function configure(): void
     {
         $this->app->singleton(BroadcastManager::class, function ($app) {
             return new BroadcastManager($app);
