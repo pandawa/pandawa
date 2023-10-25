@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pandawa\Bundle\BroadcastingBundle\Listener;
 
-use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Contracts\Broadcasting\Factory as BroadcastFactory;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
@@ -13,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
  */
 final class BroadcastEvent
 {
-    public function __construct(private BroadcastFactory|BroadcastManager $factory)
+    public function __construct(private BroadcastFactory $factory)
     {
     }
 
