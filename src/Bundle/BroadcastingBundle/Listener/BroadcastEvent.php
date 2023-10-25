@@ -16,10 +16,10 @@ final class BroadcastEvent
     {
     }
 
-    public function handle($event): void
+    public function handle($eventName, $data): void
     {
-        if ($this->shouldBroadcast($event)) {
-            $this->factory->queue($event);
+        if (count($data) && $this->shouldBroadcast($data[0])) {
+            $this->factory->queue($data[0]);
         }
     }
 
