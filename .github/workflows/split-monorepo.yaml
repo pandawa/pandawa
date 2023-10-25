@@ -65,6 +65,8 @@ jobs:
             split_repository: 'session-bundle'
           - local_path:       'Bundle/SchedulingBundle'
             split_repository: 'scheduling-bundle'
+          - local_path:       'Bundle/BroadcastingBundle'
+            split_repository: 'broadcasting-bundle'
 
           # Components
           - local_path:       'Component/Config'
