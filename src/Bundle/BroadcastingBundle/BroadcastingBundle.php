@@ -8,10 +8,12 @@ use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Broadcasting\BroadcastServiceProvider;
 use Illuminate\Contracts\Broadcasting\Broadcaster as BroadcasterContract;
 use Illuminate\Contracts\Broadcasting\Factory as BroadcastingFactory;
+use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Pandawa\Bundle\FoundationBundle\Plugin\ImportConfigurationPlugin;
 use Pandawa\Bundle\FoundationBundle\Plugin\RegisterBundlesPlugin;
 use Pandawa\Component\Foundation\Bundle\Bundle;
+use Pandawa\Contracts\Event\EventBusInterface;
 use Pandawa\Contracts\Foundation\HasPluginInterface;
 
 /**
@@ -24,6 +26,11 @@ class BroadcastingBundle extends Bundle implements HasPluginInterface, Deferrabl
         BroadcastingFactory::class,
         BroadcasterContract::class,
     ];
+
+    public function boot(): void
+    {
+        $this->event()->listen('*', $this->config()->get('broadcasting.handler'));
+    }
 
     public function configure(): void
     {
@@ -48,5 +55,15 @@ class BroadcastingBundle extends Bundle implements HasPluginInterface, Deferrabl
                 BroadcastServiceProvider::class,
             ]),
         ];
+    }
+
+    protected function config(): Config
+    {
+        return $this->app['config'];
+    }
+
+    protected function event(): EventBusInterface
+    {
+        return $this->app['events'];
     }
 }
