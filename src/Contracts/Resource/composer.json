@@ -11,8 +11,8 @@
     "require": {
         "php": ">=8.1",
         "pandawa/transformer-contracts": "^5.0",
-        "illuminate/contracts": "^9.0",
-        "illuminate/http": "^9.0",
+        "illuminate/contracts": "^9.0|^10.0",
+        "illuminate/http": "^9.0|^10.0",
         "symfony/http-foundation": "^6.1"
     },
     "autoload": {

@@ -11,11 +11,11 @@
     "require": {
         "php": ">=8.1",
         "pandawa/bus-contracts": "^5.0",
-        "illuminate/contracts": "^9.0",
-        "illuminate/support": "^9.0",
-        "illuminate/bus": "^9.0",
-        "illuminate/container": "^9.0",
-        "illuminate/pipeline": "^9.0",
+        "illuminate/contracts": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0",
+        "illuminate/bus": "^9.0|^10.0",
+        "illuminate/container": "^9.0|^10.0",
+        "illuminate/pipeline": "^9.0|^10.0",
         "symfony/serializer": "^6.1"
     },
     "autoload": {
