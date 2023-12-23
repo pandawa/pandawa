@@ -16,7 +16,7 @@
     "require": {
         "php": ">=8.1",
         "doctrine/annotations": "^1.13",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^9.0|^10.0",
         "laravel/helpers": "^1.0",
         "laravel/horizon": "^5.10",
         "laravel/octane": "^1.3",
